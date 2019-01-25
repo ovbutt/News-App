@@ -12,7 +12,7 @@ export default class Pages extends Component {
     return(
       <View>
 <View style={{marginTop:20,marginLeft:20}}>
-<Thumbnail style={{marginBottom:5}} source={require('./thum/set.jpg')}  Settings/>
+<Thumbnail style={{marginBottom:5}} source={require('../../thum/set.jpg')}  Settings/>
 <Text style={{fontSize:30,fontStyle:'normal',color:'black',fontWeight:'bold'}}>Settings</Text>
 </View>
 <List.Section style={{color:'black'}} title="@Sofftar-Developers">
