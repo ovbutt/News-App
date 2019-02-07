@@ -1,72 +1,110 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text,Image,ImageBackground,ScrollView,TouchableOpacity, View} from 'react-native';
-import Icon from "react-native-vector-icons/Ionicons"
+import React, { Component } from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  Image,
+  ImageBackground,
+  ScrollView,
+  TouchableOpacity,
+  View
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import axios from "axios";
+import BreakingPost from "../components/BreakingPost";
+import OtherPosts from "../components/OtherPosts";
 
-
+let date = new Date().toDateString();
 export default class Discover extends Component {
-    static  navigationOptions ={
-        tabBarIcon:({tintColor}) =>(
-       <Icon name='ios-star'  color= {tintColor} size={30}/>)
-    }
+  state = { breaking: [] };
+
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="ios-today" color={tintColor} size={30} />
+    )
+  };
+
+  componentDidMount() {
+    axios
+      .get("http://198.245.53.50:5000/api/posts")
+      .then(response => {
+        console.log(response);
+        this.setState({ breaking: response.data });
+      })
+      .then(() => console.log("News State", this.state.breaking))
+      .catch(function(error) {
+        console.log("error", error);
+      });
+  }
+  renderBreakingPost() {
+    const { breaking } = this.state;
+    return breaking
+      .filter(
+        breaking => breaking.breaking === true && breaking.publish === true
+      )
+      .map(posts => <BreakingPost key={posts._id} posts={posts} />);
+  }
   render() {
     return (
-        <ImageBackground source={require('../../thum/back.jpg')} style={styles.backgroundImage}>
-                {this.props.children}
-                <View>
-                    <Text style={{marginTop:30,marginLeft:20,marginBottom:20,color:'black'}}>
-                        THIS WEEK
-                    </Text>
-                    <Text style={{fontWeight:'bold',marginLeft:20,fontSize:30,color:'black'}}>
-                        Discover
-                    </Text>
-                    <ScrollView horizontal={true}
-            showsHorizontalScrollIndicator={false}
+      <ImageBackground
+        
+        style={styles.backgroundImage}
+      >
+        {this.props.children}
+        <View>
+          <ScrollView>
+            <Text
+              style={{
+                marginTop: 50,
+                marginLeft: 10,
+                fontSize: 16,
+                color: "grey"
+              }}
             >
-                    <View style={{flexDirection:'row'}}>
-        <ImageBackground  source={require('../../thum/thumb-5.jpg')} imageStyle={{ borderRadius: 25 }} style={{height:405,width:332,marginLeft:10,marginRight:10}}>
-        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'rgba()'}}>
-        <Text style={[styles.textStyle,{backgroundColor:'transparent',fontFamily:'Arial',paddingTop:250,marginBottom:20,color:'white',fontSize:30,fontWeight:'bold'}]}>NASA Chooses Its Next Cheif Scientist</Text>
+              {date}
+            </Text>
+            <Text style={styles.todayText}>Breaking</Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <View style={{ flexDirection: "row" }}>
+                {this.renderBreakingPost()}
+              </View>
+            </ScrollView>
+
+            <Text style={(style = styles.todayText)}>Latest Posts</Text>
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 10
+              }}
+            >
+              <OtherPosts />
+            </View>
+          </ScrollView>
         </View>
-        </ImageBackground>
-
-        <ImageBackground  source={require('../../thum/thumb-19.jpg')} imageStyle={{ borderRadius: 25 }} style={{height:405,width:332 ,marginLeft:10,marginRight:10}}>
-        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'rgba()'}}>
-        <Text style={[styles.textStyle,{backgroundColor:'transparent',fontFamily:'Arial',paddingTop:250,marginBottom:20,fontSize:30,color:'white',fontWeight:'bold',fontWeight:'bold'}]}>Jeffery Campbell's New SHoes</Text>
-        </View>
-        </ImageBackground>
-
-        <ImageBackground  source={require('../../thum/thumb-6.jpg')} imageStyle={{ borderRadius: 25 }} style={{height:405,width:332,marginLeft:10,marginRight:10}}>
-        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'rgba()'}}>
-        <Text style={[styles.textStyle,{backgroundColor:'transparent',fontFamily:'Arial',paddingTop:250,marginBottom:20,color:'white',fontSize:30,fontWeight:'bold'}]}>The Best Models Of Sunglasses To Go Out</Text>
-        </View>
-        </ImageBackground>
-
-        <ImageBackground  source={require('../../thum/1.jpg')} imageStyle={{ borderRadius: 25 }} style={{height:405,width:332,marginLeft:10,marginRight:10}}>
-        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'rgba()'}}>
-        <Text style={[styles.textStyle,{backgroundColor:'transparent',fontFamily:'Arial',paddingTop:250,marginBottom:20,color:'white',fontSize:30,fontWeight:'bold'}]}>Soprano Announces His New Album</Text>
-        </View>
-        </ImageBackground>
-
-        <ImageBackground  source={require('../../thum/thumb-17.jpg')} imageStyle={{ borderRadius: 25 }} style={{height:405,width:332,marginLeft:10,marginRight:10}}>
-        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'rgba()'}}>
-        <Text style={[styles.textStyle,{backgroundColor:'transparent',fontFamily:'Arial',paddingTop:250,marginBottom:20,color:'white',fontSize:30,fontWeight:'bold'}]}>Will Conor Return to the UFC Octagon?</Text>
-        </View>
-        </ImageBackground>
-
-</View>
-</ScrollView>
-                </View>
-        </ImageBackground>
-    )
-
-}
+      </ImageBackground>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    backgroundImage: {
-        flex: 1,
-        width: null,
-        height: null,
-        resizeMode: 'cover'
-    }
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: "cover"
+  },
+  todayText: {
+    fontSize: 30,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    fontFamily: "Baskerville",
+    fontWeight: "bold",
+    color: "black"
+  }
 });
