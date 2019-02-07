@@ -15,7 +15,7 @@ const ACCESS_TOKEN = "access_token";
 export default class Pages extends Component {
   constructor(props) {
     super(props);
-    this.state = { token: '', fullName: '', email: "" };
+    this.state = { token: "", fullName: "", email: "" };
   }
   static navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
@@ -24,21 +24,24 @@ export default class Pages extends Component {
   };
 
   async getToken() {
-    const {fullName, email} = this.state
+    const { fullName, email } = this.state;
     try {
       let token = await AsyncStorage.getItem(ACCESS_TOKEN);
       this.setState({ token: token });
       axios
-      .post("http://198.245.53.50:5000/api/users/profile", {
-        token: token
-      })
-      .then(response => {
-        console.log(response);
-        this.setState({fullName : response.data.fullName, email: response.data.email});
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        .post("http://198.245.53.50:5000/api/users/profile", {
+          token: token
+        })
+        .then(response => {
+          console.log(response);
+          this.setState({
+            fullName: response.data.fullName,
+            email: response.data.email
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
       console.log("Token is", token);
       //this.removeToken();
     } catch (error) {
@@ -52,7 +55,8 @@ export default class Pages extends Component {
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       console.log("Token removed");
-      this.getToken();
+      {this.props.navigation.navigate('Login')}
+      //this.getToken();
     } catch (error) {
       console.log("Cannot remove token");
     }
@@ -60,8 +64,8 @@ export default class Pages extends Component {
 
   render() {
     const { fullName, email } = this.state;
-    const {push} = this.props.navigation
-    console.log(fullName, email)
+    const { push } = this.props.navigation;
+    console.log(fullName, email);
     return (
       <View>
         <View style={{ marginTop: 20 }}>
@@ -103,7 +107,7 @@ export default class Pages extends Component {
               <Button
                 title="Log Out"
                 onPress={() => {
-                  this.removeToken; this.props.navigation.navigate('Discover')
+                  this.removeToken();
                 }}
               />
             </View>

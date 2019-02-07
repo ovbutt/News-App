@@ -9,7 +9,7 @@ import {
   AsyncStorage
 } from "react-native";
 import axios from "axios";
-
+import Today from './Today'
 const ACCESS_TOKEN = "access_token";
 
 export default class LoginScreen extends Component {
@@ -74,7 +74,7 @@ export default class LoginScreen extends Component {
       .then(this.storeToken.bind(this))
       .then(this.onLoginSuccess.bind(this))
       .then(() => {
-        this.props.navigation.navigate("First");
+        this.props.navigation.navigate("Today");
       })
       .catch(this.onloginFailure.bind(this));
   }

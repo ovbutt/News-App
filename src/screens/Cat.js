@@ -36,7 +36,7 @@ export default class Cat extends Component {
     //const {push} = this.props.navigation
     return (
       <View>
-        <CatogariesContainer/>
+      
         <Text
           style={{
             fontSize: 15,
@@ -52,7 +52,7 @@ export default class Cat extends Component {
 
         <View style={styles.container}>
           <View style={{ flexDirection: "row", marginTop: 10 }}>
-            <TouchableOpacity onPress={()=>{this.navigator.push('CategoriesView')}}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView')}}>
               <ImageBackground
                 source={require("../../thum/sports.jpg")}
                 imageStyle={{ borderRadius: 10 }}
@@ -84,7 +84,7 @@ export default class Cat extends Component {
             <ImageBackground
               source={require("../../thum/music.jpg")}
               imageStyle={{ borderRadius: 10 }}
-              style={styles.ImageStyle}
+              style={styles.ImageStyle2}
             >
               <View
                 style={{
@@ -142,7 +142,7 @@ export default class Cat extends Component {
             <ImageBackground
               source={require("../../thum/travel.jpg")}
               imageStyle={{ borderRadius: 10 }}
-              style={styles.ImageStyle}
+              style={styles.ImageStyle2}
             >
               <View
                 style={{
@@ -170,7 +170,7 @@ export default class Cat extends Component {
           </View>
           <View style={{ flexDirection: "row", marginTop: 10 }}>
             <ImageBackground
-              source={require("../../thum/gaming.jpg")}
+              source={require("../../thum/sports.jpg")}
               imageStyle={{ borderRadius: 10 }}
               style={styles.ImageStyle}
             >
@@ -200,7 +200,7 @@ export default class Cat extends Component {
             <ImageBackground
               source={require("../../thum/food.jpg")}
               imageStyle={{ borderRadius: 10 }}
-              style={styles.ImageStyle}
+              style={styles.ImageStyle2}
             >
               <View
                 style={{
@@ -262,13 +262,15 @@ export default class Cat extends Component {
   }
 }
 
-const CatogariesStackNavigator = createStackNavigator({
-  CategoriesView: CategoriesView
-});
-const CatogariesContainer = createAppContainer(CatogariesStackNavigator);
+
 
 const styles = StyleSheet.create({
   ImageStyle: {
+    width: 170,
+    height: 100,
+    marginBottom: 15,
+  },
+  ImageStyle2: {
     width: 170,
     height: 100,
     marginBottom: 15,

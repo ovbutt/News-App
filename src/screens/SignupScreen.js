@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from "react-native";
 import axios from "axios";
+import Today from './Today'
 
 const ACCESS_TOKEN = "access_token";
 
@@ -86,7 +87,7 @@ export default class LoginScreen extends Component {
           .then(response => console.log(response))
           .then(this.getTokenFromLoginRequest.bind(this))
           .then(this.onSignupSuccess.bind(this))
-          .then(() => this.props.navigation.navigate('First'))
+          .then(() => this.props.navigation.navigate('Today'))
           .catch(this.onSignupFailure.bind(this));
       } else {
         alert("Password must be atleast 6 characters ");
@@ -164,6 +165,12 @@ export default class LoginScreen extends Component {
           value={this.state.password_confirmation}
         />
         {this.renderButton()}
+        <Text
+          style={styles.textStyle}
+          onPress={() => this.props.navigation.goBack()}
+        >
+          Log In
+        </Text>
       </View>
     );
   }
@@ -196,5 +203,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: 30,
     paddingRight: 30
+  },
+  textStyle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black"
   }
 });

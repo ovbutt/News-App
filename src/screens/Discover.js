@@ -24,7 +24,7 @@ export default class Discover extends Component {
     )
   };
 
-  componentDidMount() {
+  componentWillMount() {
     axios
       .get("http://198.245.53.50:5000/api/posts")
       .then(response => {

@@ -148,10 +148,9 @@ export default class Search extends Component {
           />
         </View>
         <FlatList
-          data={this.state.dataSource.filter(dataSource=>dataSource.title == 'He who fears he ')}
+          data={this.state.dataSource.filter(dataSource=>dataSource.title == 'He who fears he will suffer, already suffers because he fears')}
           keyExtractor={item => item._id}
           renderItem={this.renderItem}
-          onEndReachedThreshold={50}
           ItemSeparatorComponent={this.renderSeparator}
         />
         <View>
@@ -165,7 +164,7 @@ export default class Search extends Component {
               marginTop: 20
             }}
           >
-            Popular Categories {search}
+            Popular Categories
           </Text>
         </View>
         <View style={{ alignItems: "center", justifyContent: "center" }}>

@@ -42,7 +42,7 @@ class OtherPosts extends Component {
     );
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState({ loading: true });
     axios
       .get("http://198.245.53.50:5000/api/posts")
