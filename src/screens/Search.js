@@ -7,7 +7,8 @@ import {
   Text,
   View,
   FlatList,
-  Image
+  Image,
+  ImageBackground
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -63,12 +64,13 @@ export default class Search extends Component {
 
   static navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-search" color={tintColor} size={30} />
+      <Icon name="ios-search" color={tintColor}  size={30} />
     )
   };
 
   renderItem = ({ item }) => {
     return (
+      
       <View style={{ flexDirection: "row", width: 400 }}>
         <Image
           imageStyle={{ borderRadius: 10 }}
@@ -109,6 +111,7 @@ export default class Search extends Component {
           height: 1,
           width: "86%",
           backgroundColor: "#CED0CE",
+    
           marginLeft: "23%"
         }}
       />
@@ -119,24 +122,16 @@ export default class Search extends Component {
     //const {}
     const { search, loading } = this.state;
     return (
+      <ImageBackground
+        source={require('../../thum/cropLightBlue.jpg')}
+        style={{height: '100%', width: '100%'}}
+      >
       <View>
-        <View>
-          <View>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 25,
-                color: "black",
-                marginLeft: 10,
-                marginTop: 30
-              }}
-            >
-              Search
-            </Text>
-          </View>
+        <View style={{marginTop: 30}}>
+          
           <SearchBar
             showLoading={loading}
-            platform="ios"
+            platform="android"
             // cancelButtonTitle="Cancel"
             placeholder="Search"
             cancelButtonProps={{ color: "#bfbfbf" }}
@@ -172,13 +167,14 @@ export default class Search extends Component {
             <TouchableOpacity
               key={item.id}
               style={styles.container}
-              //onPress={() => this.setState({ search: item.name })}
+              onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: item.name})}}
             >
               <Text style={styles.text}>{item.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
+      </ImageBackground>
     );
   }
 }
@@ -186,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     marginTop: 10,
-    backgroundColor: "#bfbfbf",
+    backgroundColor: "white",
     alignItems: "center",
     width: 350,
     borderRadius: 20

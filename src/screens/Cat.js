@@ -52,7 +52,7 @@ export default class Cat extends Component {
 
         <View style={styles.container}>
           <View style={{ flexDirection: "row", marginTop: 10 }}>
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView')}}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Business'})}}>
               <ImageBackground
                 source={require("../../thum/sports.jpg")}
                 imageStyle={{ borderRadius: 10 }}
@@ -81,6 +81,7 @@ export default class Cat extends Component {
                 </View>
               </ImageBackground>
             </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'World'})}}>
             <ImageBackground
               source={require("../../thum/music.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -109,8 +110,10 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row", marginTop: 0 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Fashion'})}}>
             <ImageBackground
               source={require("../../thum/photography.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -139,6 +142,8 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Politics'})}}>
             <ImageBackground
               source={require("../../thum/travel.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -167,8 +172,10 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Sports'})}}>
             <ImageBackground
               source={require("../../thum/sports.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -197,6 +204,8 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Health'})}}>
             <ImageBackground
               source={require("../../thum/food.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -225,8 +234,10 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
           </View>
           <View>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Science'})}}>
             <ImageBackground
               source={require("../../thum/food.jpg")}
               imageStyle={{ borderRadius: 10 }}
@@ -255,6 +266,7 @@ export default class Cat extends Component {
                 </Text>
               </View>
             </ImageBackground>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

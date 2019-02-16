@@ -26,28 +26,26 @@ export default class Discover extends Component {
 
   componentWillMount() {
     axios
-      .get("http://198.245.53.50:5000/api/posts")
+      .get("http://198.245.53.50:5000/api/breaking")
       .then(response => {
-        console.log(response);
-        this.setState({ breaking: response.data });
+        console.log(response.data);
+        this.setState({ breaking: response.data.posts });
       })
       .then(() => console.log("News State", this.state.breaking))
       .catch(function(error) {
-        console.log("error", error);
+        console.log("Error Is:", error);
       });
   }
   renderBreakingPost() {
-    const { breaking } = this.state;
-    return breaking
-      .filter(
-        breaking => breaking.breaking === true && breaking.publish === true
-      )
-      .map(posts => <BreakingPost key={posts._id} posts={posts} />);
+    //const { breaking } = this.state;
+    return this.state.breaking.map(posts => (
+      <BreakingPost key={posts._id} posts={posts} />
+    ));
   }
   render() {
     return (
       <ImageBackground
-        
+        source={require("../../thum/crop.jpg")}
         style={styles.backgroundImage}
       >
         {this.props.children}
@@ -58,7 +56,7 @@ export default class Discover extends Component {
                 marginTop: 50,
                 marginLeft: 10,
                 fontSize: 16,
-                color: "grey"
+                color: "white"
               }}
             >
               {date}
@@ -105,6 +103,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: "Baskerville",
     fontWeight: "bold",
-    color: "black"
+    color: "white"
   }
 });

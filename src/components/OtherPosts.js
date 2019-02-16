@@ -34,7 +34,7 @@ class OtherPosts extends Component {
           <Text style={styles.titleTextStyle}>
             {item.title.substring(0, 30) + "..."}
           </Text>
-          <Text>
+          <Text style={{color: 'white'}}>
             {item.createdAt.substring(0,10)}
           </Text>
         </View>
@@ -45,10 +45,10 @@ class OtherPosts extends Component {
   componentWillMount() {
     this.setState({ loading: true });
     axios
-      .get("http://198.245.53.50:5000/api/posts")
+      .get("http://198.245.53.50:5000/api/posts/1")
       .then(response => {
         console.log(response);
-        this.setState({ dataSource: response.data });
+        this.setState({ dataSource: response.data.posts });
       })
       .then(() => console.log("DataSource", this.state.dataSource))
       //.then(this.setState({ loading: false }))
@@ -84,10 +84,7 @@ class OtherPosts extends Component {
         style={{ justifyContent: "center", alignItems: "center", width: 380 }}
       >
         <FlatList
-          data={this.state.dataSource.filter(
-            dataSource =>
-              dataSource.breaking === false && dataSource.publish === true
-          )}
+          data={this.state.dataSource}
           keyExtractor={item => item._id}
           renderItem={this.renderItem}
           //onEndReachedThreshold={5}
@@ -139,7 +136,7 @@ const styles = StyleSheet.create({
     fontFamily: "Arial",
     fontWeight: "500",
     fontSize: 16,
-    color: "black",
+    color: "white",
     paddingTop: 10,
     paddingBottom: 10
   },
@@ -148,7 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: "Arial",
     fontWeight: "500",
     fontSize: 14,
-    color: "grey",
+    color: "white",
     paddingTop: 10
   },
   textViewStyle: {

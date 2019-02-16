@@ -12,10 +12,17 @@ import axios from 'axios'
 import Icon from "react-native-vector-icons/Ionicons";
 
 class CategoriesView extends Component{
-  constructor(){
-    super()
-    this.state={dataSource:[]}
+  constructor(props){
+    super(props)
+    this.state={dataSource:[],
+    catagory: this.props.navigation.state.params.category}
     //this.state={catagory} = this.props.catagory
+  }
+
+
+  componentWillMount(){
+    axios.get('http://198.245.53.50:5000/api/post-by-catagory/'+this.state.catagory)
+    .then(response => this.setState({dataSource: response.data}))
   }
 
   renderItem=({item})=>{
@@ -43,10 +50,12 @@ class CategoriesView extends Component{
 
   render(){
     return(
-      <View>
+      <View style={styles.container}>
+        <Text style={{fontSize: 20, margin: 10, color: 'black', fontWeight: '700'}}>{this.state.catagory}</Text>
         <FlatList
           data={this.state.dataSource}
           renderItem={this.renderItem}
+          keyExtractor={item => item._id}
           numColumns={2}
         />
       </View>
@@ -101,5 +110,11 @@ const styles = StyleSheet.create({
     paddingTop: 200,
     fontSize: 25,
     alignItems: "center"
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
   }
 });

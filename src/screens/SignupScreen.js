@@ -6,10 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,
+  ImageBackground,
+  ScrollView
 } from "react-native";
 import axios from "axios";
-import Today from './Today'
+import Today from "./Today";
 
 const ACCESS_TOKEN = "access_token";
 
@@ -22,7 +24,7 @@ export default class LoginScreen extends Component {
       password: "",
       password_confirmation: "",
       loading: false,
-      token: ''
+      token: ""
     };
   }
 
@@ -37,7 +39,7 @@ export default class LoginScreen extends Component {
     }
   }
 
-  getTokenFromLoginRequest (){
+  getTokenFromLoginRequest() {
     const { email, password } = this.state;
 
     axios
@@ -49,7 +51,7 @@ export default class LoginScreen extends Component {
         console.log(response);
         this.setState({ token: response.data.token });
       })
-      .then(this.storeToken.bind(this))
+      .then(this.storeToken.bind(this));
   }
 
   //state = { fullName: "", email: "", password: "", loading: false };
@@ -87,7 +89,7 @@ export default class LoginScreen extends Component {
           .then(response => console.log(response))
           .then(this.getTokenFromLoginRequest.bind(this))
           .then(this.onSignupSuccess.bind(this))
-          .then(() => this.props.navigation.navigate('Today'))
+          .then(() => this.props.navigation.navigate("App"))
           .catch(this.onSignupFailure.bind(this));
       } else {
         alert("Password must be atleast 6 characters ");
@@ -99,14 +101,12 @@ export default class LoginScreen extends Component {
     }
   }
   onSignupSuccess() {
-    
     this.setState({
       fullName: "",
       email: "",
       password: "",
       loading: false
     });
-    
   }
   onSignupFailure() {
     this.setState({
@@ -123,55 +123,78 @@ export default class LoginScreen extends Component {
         style={styles.button}
         onPress={this.onSignupButtonPress.bind(this)}
       >
-        <Text style={{ color: "white" }}> SignUp </Text>
+        <Text style={{ color: "#003366", fontSize: 18, fontWeight: '700' }}> Sign Up </Text>
       </TouchableOpacity>
     );
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.textStyle}>Singup</Text>
-        <TextInput
-          fontSize={20}
-          placeholder="Full Name"
-          autoCapitalize="words"
-          autoCorrect={false}
-          onChangeText={fullName => this.setState({ fullName })}
-          value={this.state.fullName}
-        />
-        <TextInput
-          fontSize={20}
-          placeholder="example@gmail.com"
-          autoCorrect={false}
-          onChangeText={email => this.setState({ email })}
-          value={this.state.email}
-        />
-        <TextInput
-          fontSize={20}
-          placeholder="Password"
-          autoCorrect={false}
-          secureTextEntry={true}
-          onChangeText={password => this.setState({ password })}
-          value={this.state.password}
-        />
-        <TextInput
-          fontSize={20}
-          placeholder="Confirm Password"
-          autoCorrect={false}
-          secureTextEntry={true}
-          onChangeText={password_confirmation =>
-            this.setState({ password_confirmation })
-          }
-          value={this.state.password_confirmation}
-        />
-        {this.renderButton()}
-        <Text
+      <ImageBackground
+        source={require("../../thum/signupWallpaper.png")}
+        style={{ height: "100%", width: "100%" }}
+      >
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 80, marginTop: 120}}>Sign Up</Text>
+          <TextInput
+            fontSize={20}
+            placeholder="Full Name"
+            autoCapitalize="words"
+            autoCorrect={false}
+            onChangeText={fullName => this.setState({ fullName })}
+            value={this.state.fullName}
+            placeholderTextColor="white"
+            style={{color: 'white'}}
+            
+          />
+          <TextInput
+            fontSize={20}
+            placeholder="example@gmail.com"
+            autoCorrect={false}
+            onChangeText={email => this.setState({ email })}
+            value={this.state.email}
+            placeholderTextColor="white"
+            style={{color: 'white'}}
+          />
+          <TextInput
+            fontSize={20}
+            placeholder="Password"
+            autoCorrect={false}
+            secureTextEntry={true}
+            onChangeText={password => this.setState({ password })}
+            value={this.state.password}
+            placeholderTextColor="white"
+            style={{color: 'white'}}
+          />
+          <TextInput
+            fontSize={20}
+            placeholder="Confirm Password"
+            autoCorrect={false}
+            secureTextEntry={true}
+            onChangeText={password_confirmation =>
+              this.setState({ password_confirmation })
+            }
+            value={this.state.password_confirmation}
+            placeholderTextColor="white"
+            style={{color: 'white'}}
+          />
+
+          {this.renderButton()}
+          {/* <Text
           style={styles.textStyle}
           onPress={() => this.props.navigation.goBack()}
         >
           Log In
-        </Text>
-      </View>
+        </Text> */}
+          <TouchableOpacity
+            style={styles.button2}
+            onPress={() => this.props.navigation.goBack()}
+          >
+            <Text style={{ color: "white",  fontSize: 18, fontWeight: '400' }}> Log In </Text>
+          </TouchableOpacity>
+        </View>
+        </ScrollView>
+      </ImageBackground>
     );
   }
 }
@@ -180,12 +203,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 20
   },
   textStyle: {
-    fontSize: 20,
+    fontSize: 50,
     fontWeight: "bold",
-    color: "black"
+    color: "#fff"
   },
   input: {
     backgroundColor: "rgba(255, 255, 255, 0.4)",
@@ -198,11 +222,27 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    backgroundColor: "#000",
-    padding: 10,
-    borderRadius: 20,
-    paddingLeft: 30,
-    paddingRight: 30
+    justifyContent: 'center',
+    backgroundColor: "#fff",
+    // padding: 10,
+    borderRadius: 25,
+    // paddingLeft: 30,
+    // paddingRight: 30,
+    height: 40,
+    width: 250,
+    marginTop: 80
+  },
+  button2: {
+    alignItems: "center",
+    justifyContent: 'center',
+    backgroundColor: "#003366",
+    // padding: 10,
+    borderRadius: 25,
+    // paddingLeft: 30,
+    // paddingRight: 30,
+    marginTop: 10,
+    height: 40,
+    width: 250,
   },
   textStyle: {
     fontSize: 20,
