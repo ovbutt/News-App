@@ -14,14 +14,17 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
 class OtherPosts extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { dataSource: [], loading: false };
   }
 
   renderItem = ({ item }) => {
     //item = item.filter(item=>item.breaking === false)
     return (
+      <TouchableOpacity
+        onPress={() => {this.props.navigation.navigate('NewsDetail')}}
+      >
       <View style={{ flexDirection: "row", width: 380 }}>
         <Image
           imageStyle={{ borderRadius: 10 }}
@@ -39,6 +42,7 @@ class OtherPosts extends Component {
           </Text>
         </View>
       </View>
+      </TouchableOpacity>
     );
   };
 

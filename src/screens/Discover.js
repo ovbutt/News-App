@@ -7,7 +7,9 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
-  View
+  View,
+  FlatList,
+  ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -16,15 +18,151 @@ import OtherPosts from "../components/OtherPosts";
 
 let date = new Date().toDateString();
 export default class Discover extends Component {
-  state = { breaking: [] };
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: [],
+      page: 1,
+      refreshing: false,
+      loading1: true,
+      loading2: true,
+      breaking: []
+    };
+  }
+
+  // state = { breaking: [] };
 
   static navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
       <Icon name="ios-today" color={tintColor} size={30} />
     )
   };
+  renderItem = ({ item }) => {
+    //item = item.filter(item=>item.breaking === false)
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate("NewsDetail", { data: item });
+        }}
+      >
+        <View style={{ flexDirection: "row", width: 380 }}>
+          <Image
+            imageStyle={{ borderRadius: 10 }}
+            source={{ uri: item.photoUrl }}
+            style={styles.imageThumbStyle}
+          />
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
 
+            <Text style={styles.titleTextStyle}>
+              {item.title.substring(0, 30) + "..."}
+            </Text>
+            <Text style={{ color: "white" }}>
+              {item.createdAt.substring(0, 10)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  renderBreakingItem = ({ item }) => {
+    return (
+      <View style={styles.containerBig}>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("NewsDetail", { data: item });
+          }}
+        >
+          <ImageBackground
+            source={{ uri: item.photoUrl }}
+            imageStyle={{ borderRadius: 25 }}
+            style={styles.imageThumbStyleBig}
+          >
+            <View
+              style={{
+                paddingTop: 230,
+                flexDirection: "row",
+                //marginBottom: 10,
+                alignContent: "space-around"
+              }}
+            >
+              <View style={{ flex: 4 }}>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    color: "white",
+                    marginLeft: 5,
+                    fontStyle: "normal",
+                    fontWeight: "bold"
+                  }}
+                >
+                  {item.title.substring(0, 30) + "..."}
+                </Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Icon
+                  name="ios-chatbubbles"
+                  size={30}
+                  style={{ color: "grey", marginTop: 80 }}
+                >
+                  {item.commentsGot.length}
+                </Icon>
+              </View>
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  closeActivityIndicator1 = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          loading1: false,
+        }),
+      3000
+    );
+  closeActivityIndicator2 = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          loading2: false,
+        }),
+      3000
+    );
   componentWillMount() {
+    this.getBreakingPosts();
+    this.getLatestPosts();
+  }
+  getLatestPosts() {
+    this.closeActivityIndicator2();
+    axios
+      .get("http://198.245.53.50:5000/api/posts/"+this.state.page)
+      .then(response => {
+        console.log(response);
+        this.setState({ dataSource: this.state.page === 1 ? response.data.posts : [...this.state.dataSource,...response.data.posts], refreshing: false });
+      })
+      .then(() => console.log("DataSource", this.state.dataSource))
+      .catch(function(error) {
+        console.log("error", error);
+        this.setState({refreshing: false})
+      });
+  }
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "23%"
+        }}
+      />
+    );
+  };
+  getBreakingPosts() {
+    this.closeActivityIndicator1();
     axios
       .get("http://198.245.53.50:5000/api/breaking")
       .then(response => {
@@ -36,11 +174,22 @@ export default class Discover extends Component {
         console.log("Error Is:", error);
       });
   }
-  renderBreakingPost() {
-    //const { breaking } = this.state;
-    return this.state.breaking.map(posts => (
-      <BreakingPost key={posts._id} posts={posts} />
-    ));
+
+  renderFooter(){
+    //if (this.state.refreshing) return null;
+
+    return(
+      <View style={{ paddingVertical: 20, borderTopWidth: 1, borderTopColor: '#CED0CE' }}>
+        <ActivityIndicator animating size='large' color='white'/>
+      </View>
+    )
+  }
+  handleRefresh(){
+    this.setState({refreshing: true})
+  }
+  handleLoadMore=()=>{
+    this.setState({refreshing:true})
+    this.setState({ page: this.state.page + 1 }, () => { this.getLatestPosts()})
   }
   render() {
     return (
@@ -62,14 +211,24 @@ export default class Discover extends Component {
               {date}
             </Text>
             <Text style={styles.todayText}>Breaking</Text>
-            <ScrollView
+            {/* <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-            >
-              <View style={{ flexDirection: "row" }}>
-                {this.renderBreakingPost()}
-              </View>
-            </ScrollView>
+            > */}
+            {this.state.loading1 && (<ActivityIndicator size='large' animating={this.state.loading1} color='white' />)}
+
+            <View style={{ flexDirection: "row" }}>
+              {/* Breaking Post Data Start */}
+              {/* {this.renderBreakingFlatlist()} */}
+              <FlatList
+                data={this.state.breaking}
+                keyExtractor={item => item._id}
+                renderItem={this.renderBreakingItem}
+                horizontal={true}
+              />
+              {/* Breaking Post Data End */}
+            </View>
+            {/* </ScrollView> */}
 
             <Text style={(style = styles.todayText)}>Latest Posts</Text>
             <View
@@ -80,7 +239,35 @@ export default class Discover extends Component {
                 marginTop: 10
               }}
             >
-              <OtherPosts />
+              {this.state.loading2 && (<ActivityIndicator size='large' animating={this.state.loading2} color='white' />)}
+
+              {/* LatestPostsDataStart */}
+              {/* {this.renderLatestFlatList()} */}
+              {/* <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: 380
+                }}
+              > */}
+                <FlatList
+                  data={this.state.dataSource}
+                  keyExtractor={item => item._id}
+                  renderItem={this.renderItem}
+                  //onEndReachedThreshold={5}
+                  ItemSeparatorComponent={this.renderSeparator}
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                ListHeaderComponent={() => (!this.state.dataSource.length ?
+                  <Text style={{fontSize: 16, color: 'white'}}>No Latest News</Text>
+                  : null)}
+                  ListFooterComponent={this.renderFooter}
+                  onEndReached={this.handleLoadMore}
+                  onEndReachedThreshold={0 }
+                  
+                />
+              {/* </View> */}
+              {/* LatestPostsDataFinish */}
             </View>
           </ScrollView>
         </View>
@@ -104,5 +291,49 @@ const styles = StyleSheet.create({
     fontFamily: "Baskerville",
     fontWeight: "bold",
     color: "white"
+  },
+  imageThumbStyle: {
+    height: 80,
+    width: 80,
+    marginTop: 10,
+    marginLeft: 10,
+    marginBottom: 2,
+    marginRight: 10,
+    borderRadius: 5
+  },
+  titleTextStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 16,
+    color: "white",
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  catagoryStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 14,
+    color: "white",
+    paddingTop: 10
+  },
+  textViewStyle: {
+    justifyContent: "center",
+    paddingTop: 200,
+    fontSize: 25,
+    alignItems: "center"
+  },
+  imageThumbStyleBig: {
+    height: 350,
+    width: 320,
+    marginBottom: 30
+  },
+  containerBig: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+    marginEnd: 10
   }
 });

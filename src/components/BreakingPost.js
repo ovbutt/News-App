@@ -14,7 +14,9 @@ const BreakingPost = ({ posts }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => { this.props.navigation.navigate('NewsDetail')}}
+      >
         <ImageBackground
           source={{ uri: photoUrl }}
           imageStyle={{ borderRadius: 25 }}
