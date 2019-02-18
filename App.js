@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, AsyncStorage } from "react-native";
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
-import MainScreen from "./src/screens/MainScreen";
 import LoginScreen from "./src/screens/LoginScreen";
 import SignupScreen from "./src/screens/SignupScreen";
 import Cat from "./src/screens/Cat";
@@ -11,9 +10,12 @@ import Today from "./src/screens/Today";
 import Discover from "./src/screens/Discover";
 import Search from "./src/screens/Search";
 import Pages from "./src/screens/Pages";
+import BreakingPosts from './src/components/BreakingPost'
+import OtherPosts from './src/components/OtherPosts'
 import NewsDetail from './src/components//NewsDetail'
-
+import Icon from "react-native-vector-icons/Ionicons";
 export default class App extends Component {
+
   render() {
     return <AppContainer />;
   }
@@ -21,6 +23,8 @@ export default class App extends Component {
 const TodayNavigator = createStackNavigator(
   {
    Today : Discover,
+   BreakingPosts : BreakingPosts,
+   OtherPosts : OtherPosts,
    NewsDetail : NewsDetail
 
   },{
@@ -30,7 +34,7 @@ const TodayNavigator = createStackNavigator(
   });
   const CategoryNavigator = createStackNavigator(
     {
-     Cat : Cat,
+      Categories : Cat,
      CategoriesView : CategoriesView,
      NewsDetail : NewsDetail
   
@@ -54,20 +58,19 @@ const TodayNavigator = createStackNavigator(
   const AppTabNavigator = createBottomTabNavigator(
     {
       Today: {
-        screen: Discover,
-         
+        screen: TodayNavigator,   
       },
-      Cat: {
-        screen: Cat
+      Categories: {
+        screen: CategoryNavigator
       },
-      Discover: {
+      GoLive: {
         screen: Today
       },
       Search: {
-        screen: Search
+        screen: SearchNavigator
       },
-      Pages: {
-        screen: Pages
+      Profile: {
+        screen: Pages,
       }
     },
     {
@@ -75,18 +78,27 @@ const TodayNavigator = createStackNavigator(
       swipeEnabled: true,
       tabBarPosition: "bottom",
       tabBarOptions: {
-        style: {
-          ...Platform.select({
-            android: {
-              backgroundColor: "white"
-            }
-          })
-        },
-        activeTintColor: "#000",
+        activeTintColor: "#003366",
         inactiveTintColor: "#d1cece",
         showLabel: true,
         showIcon: true
-      }
+      },
+      defaultNavigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, tintColor }) => {
+          const { routeName } = navigation.state;
+          let iconName;
+          if (routeName === 'Today') {
+            iconName = 'ios-star';
+          } else if (routeName === 'Categories') {
+            iconName = 'ios-apps'
+          }
+          else if (routeName === 'Search') {
+            iconName = 'ios-search'
+          }
+          return <Icon name={iconName} size={25} color={tintColor} />;
+        },
+      }),
+      
     }
   );
 const AppStack = createStackNavigator({ First: AppTabNavigator },{
@@ -94,7 +106,7 @@ const AppStack = createStackNavigator({ First: AppTabNavigator },{
     header: null
   }
 });
-const AuthStack = createStackNavigator({ Login: LoginScreen, Signup : SignupScreen, Pages: Pages  });
+const AuthStack = createStackNavigator({ Login: LoginScreen, Signup : SignupScreen, Profile: Pages  });
 
 const AuthSwitchNavigator = createSwitchNavigator ({
   AuthLoadingScreen: AuthLoadingScreen,

@@ -11,7 +11,7 @@ import {
   ScrollView
 } from "react-native";
 import axios from "axios";
-import Today from './Today'
+import Today from "./Today";
 const ACCESS_TOKEN = "access_token";
 
 export default class LoginScreen extends Component {
@@ -101,7 +101,7 @@ export default class LoginScreen extends Component {
     //console.log('State: ', this.state.hidePassword)
   }
 
- // toggleShow;
+  // toggleShow;
 
   renderButton() {
     if (this.state.loading) {
@@ -112,7 +112,10 @@ export default class LoginScreen extends Component {
           style={styles.button}
           onPress={this.onLoginButtonPress.bind(this)}
         >
-          <Text style={{ color: "#003366", fontSize: 18, fontWeight: '700' }}> Log In </Text>
+          <Text style={{ color: "#003366", fontSize: 18, fontWeight: "700" }}>
+            {" "}
+            Log In{" "}
+          </Text>
         </TouchableOpacity>
       );
     }
@@ -121,53 +124,73 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <ImageBackground
-        source={require('../../thum/loginwallpaper.png')}
-        style={{height: '100%', width: '100%'}}
+        source={require("../../thum/loginwallpaper.png")}
+        style={{ height: "100%", width: "100%" }}
       >
-      <ScrollView>
-      <View style={styles.container}>
-        <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 50, marginTop: 150}}>Log In</Text>
-        <TextInput
-          fontSize={20}
-          placeholder="example@gmail.com"
-          autoCorrect={false}
-          onChangeText={email => this.setState({ email })}
-          value={this.state.text}
-          placeholderTextColor="white"
-            style={{color: 'white'}}
-        />
+        <ScrollView>
+          <View style={styles.container}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 30,
+                fontWeight: "700",
+                marginBottom: 50,
+                marginTop: 150
+              }}
+            >
+              Log In
+            </Text>
+            <TextInput
+              fontSize={20}
+              placeholder="example@gmail.com"
+              autoCorrect={false}
+              onChangeText={email => this.setState({ email })}
+              value={this.state.text}
+              placeholderTextColor="white"
+              style={{ color: "white" }}
+              selectionColor="white"
+              underlineColorAndroid="white"
+            />
 
-        <TouchableOpacity
-          onPress={this.toggleShowButton.bind(this)}
-          style={styles.showButton}
-        >
-          <Text style={{color: 'white'}}>{this.state.hidePassword ? "Show" : "Hide"}</Text>
-        </TouchableOpacity>
+            
 
-        <TextInput
-          fontSize={20}
-          placeholder="Password"
-          secureTextEntry={this.state.hidePassword}
-          onChangeText={password => this.setState({ password })}
-          value={this.state.password}
-          placeholderTextColor="white"
-            style={{color: 'white'}}
-        />
-        {this.renderButton()}
-        <TouchableOpacity
-          style={styles.button2}
-          onPress={() => this.props.navigation.navigate("Signup")}
-        >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: '400' }}> Create Account </Text>
-        </TouchableOpacity>
-        {/* <Text
+            <TextInput
+              fontSize={20}
+              placeholder="Password"
+              secureTextEntry={this.state.hidePassword}
+              onChangeText={password => this.setState({ password })}
+              value={this.state.password}
+              placeholderTextColor="white"
+              style={{ color: "white" }}
+              selectionColor="white"
+              underlineColorAndroid="white"
+            />
+            <TouchableOpacity
+              onPress={this.toggleShowButton.bind(this)}
+              style={styles.showButton}
+            >
+              <Text style={{ color: "white" }}>
+                {this.state.hidePassword ? "Show" : "Hide"}
+              </Text>
+            </TouchableOpacity>
+            {this.renderButton()}
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() => this.props.navigation.navigate("Signup")}
+            >
+              <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
+                {" "}
+                Create Account{" "}
+              </Text>
+            </TouchableOpacity>
+            {/* <Text
           style={styles.textStyle}
           onPress={() => this.props.navigation.navigate("Signup")}
         >
           Create Account
         </Text> */}
-      </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
       </ImageBackground>
     );
   }
@@ -197,7 +220,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: "#fff",
     // padding: 10,
     borderRadius: 25,
@@ -209,7 +232,7 @@ const styles = StyleSheet.create({
   },
   button2: {
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: "#003366",
     // padding: 10,
     borderRadius: 25,
@@ -217,10 +240,10 @@ const styles = StyleSheet.create({
     // paddingRight: 30,
     marginTop: 10,
     height: 40,
-    width: 250,
+    width: 250
   },
   showButton: {
     position: "absolute",
-    right: 30,
+    right: 30
   }
 });

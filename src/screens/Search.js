@@ -24,7 +24,7 @@ export default class Search extends Component {
   state = {
     dataSource: [],
     search: "",
-    loading: false,
+    loading: true,
     //dataSource: [],
     names: [
       {
@@ -89,9 +89,9 @@ export default class Search extends Component {
   };
 
   searchIt() {
-    this.setState({ loading: true });
+    
     axios
-      .get("http://198.245.53.50:5000/api/posts")
+      .get("http://198.245.53.50:5000/api/search"+this.state.search)
       .then(response => {
         console.log(response);
         this.setState({ dataSource: response.data });
@@ -143,7 +143,7 @@ export default class Search extends Component {
           />
         </View>
         <FlatList
-          data={this.state.dataSource.filter(dataSource=>dataSource.title == 'He who fears he will suffer, already suffers because he fears')}
+          data={this.state.dataSource}
           keyExtractor={item => item._id}
           renderItem={this.renderItem}
           ItemSeparatorComponent={this.renderSeparator}

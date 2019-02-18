@@ -135,7 +135,7 @@ export default class LoginScreen extends Component {
       >
       <ScrollView>
         <View style={styles.container}>
-          <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 80, marginTop: 120}}>Sign Up</Text>
+          <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 50, marginTop: 120}}>Sign Up</Text>
           <TextInput
             fontSize={20}
             placeholder="Full Name"
@@ -145,6 +145,8 @@ export default class LoginScreen extends Component {
             value={this.state.fullName}
             placeholderTextColor="white"
             style={{color: 'white'}}
+              selectionColor='white'
+              underlineColorAndroid='white'
             
           />
           <TextInput
@@ -155,6 +157,8 @@ export default class LoginScreen extends Component {
             value={this.state.email}
             placeholderTextColor="white"
             style={{color: 'white'}}
+              selectionColor='white'
+              underlineColorAndroid='white'
           />
           <TextInput
             fontSize={20}
@@ -165,6 +169,8 @@ export default class LoginScreen extends Component {
             value={this.state.password}
             placeholderTextColor="white"
             style={{color: 'white'}}
+            selectionColor='white'
+            underlineColorAndroid='white'
           />
           <TextInput
             fontSize={20}
@@ -177,6 +183,8 @@ export default class LoginScreen extends Component {
             value={this.state.password_confirmation}
             placeholderTextColor="white"
             style={{color: 'white'}}
+              selectionColor='white'
+              underlineColorAndroid='white'
           />
 
           {this.renderButton()}
