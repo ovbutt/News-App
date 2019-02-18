@@ -130,7 +130,7 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <ImageBackground
-        source={require("../../thum/signupWallpaper.png")}
+        source={require("../../thum/signupWallpaper.jpg")}
         style={{ height: "100%", width: "100%" }}
       >
       <ScrollView>

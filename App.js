@@ -12,45 +12,8 @@ import Discover from "./src/screens/Discover";
 import Search from "./src/screens/Search";
 import Pages from "./src/screens/Pages";
 import NewsDetail from './src/components//NewsDetail'
-import { Label } from "native-base";
-
-//import axios from "axios";
-
-//const ACCESS_TOKEN = "access_token";
 
 export default class App extends Component {
-  // constructor() {
-  //   super();
-  //   this.state = { token: "", authenticated: null };
-  // }
-
-  // componentWillMount() {
-  //   this.getToken();
-  // }
-
-  // checkToken(token) {
-  //   //const { authenticated } = this.state;
-  //   axios
-  //     .post("http://198.245.53.50:5000/api/users/check", {
-  //       token: token
-  //     })
-  //     .then(response => {
-  //       this.setState({ authenticated: response.data.authenticated });
-  //     })
-  //     .then(this.renderScreens.bind(this));
-  // }
-  // async getToken() {
-  //   try {
-  //     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-  //     //this.setState({ token: token });
-  //     this.checkToken(token);
-  //     console.log("Token is", token);
-  //     //this.getToken();
-  //   } catch (error) {
-  //     console.log("Cannot get token");
-  //   }
-  // }
-
   render() {
     return <AppContainer />;
   }
