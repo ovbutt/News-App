@@ -5,30 +5,50 @@ import {
   View,
   Image,
   ScrollView,
-  WebView
+  WebView,
+  Button
 } from "react-native";
+import HTMLView from "react-native-htmlview";
 
 export default class NewsDetail extends Component {
   constructor(props) {
     super(props);
     this.state = { data: this.props.navigation.state.params.data };
   }
+  static navigationOptions = {
+    headerTitle: "News"
+  };
   render() {
     const { data } = this.state;
     return (
-      
-        <View style={styles.container}>
+      <View style={styles.container}>
         <ScrollView>
           <Text
             style={{
               fontSize: 20,
               fontWeight: "bold",
               color: "black",
-              padding: 8
+              margin: 10,
             }}
           >
             {data.title}
           </Text>
+          <View
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+              borderColor: "grey"
+            }}
+          >
+            <Text style={{ color: "black" }}>Date: </Text>
+            <Text>{data.updatedAt.substring(0, 10)}</Text>
+            <Text style={{ color: "black", marginLeft: 10 }}>Tags: </Text>
+            <Text>{data.tags}</Text>
+          </View>
           <Image
             source={{ uri: data.photoUrl }}
             style={{
@@ -38,30 +58,13 @@ export default class NewsDetail extends Component {
               marginTop: 8
             }}
           />
-         
-        <WebView
-        style={styles.webContainer}
-            //automaticallyAdjustContentInsets={false}
-            //ref={'webview'}
-            // javaScriptEnabled={true}
-            // domStorageEnabled={true}
-            source={{ html: data.description }}
-          />
-      
-    
-          {/* <Text style={{ fontSize: 16, justifyContent: "space-around" }}>
-            
-            {data.description}
-          </Text> */}
-          <View style={{ marginTop: 10, flexDirection: "row", justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderColor: 'grey' }}>
-            <Text style={{color: 'black'}}>Date: </Text>
-            <Text>{data.updatedAt.substring(0,10)}</Text>
-            <Text style={{ color: 'black', marginLeft: 10 }}>Tags: </Text>
-            <Text>{data.tags}</Text>
+
+        
+          <View style={{ padding: 15 }}>
+            <HTMLView value={data.description} stylesheet={styles} />
           </View>
         </ScrollView>
-        </View>
-      
+      </View>
     );
   }
 }
@@ -73,7 +76,13 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   webContainer: {
-    height: 180,
-    width: '100%',
+    height: 100,
+    width: "100%"
+  },
+  p: {
+    fontWeight: "300",
+    fontSize: 16,
+    textAlign: "justify",
+    color: "#000"
   }
 });

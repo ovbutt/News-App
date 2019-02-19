@@ -11,7 +11,7 @@ import {
   ScrollView
 } from "react-native";
 import axios from "axios";
-import Today from "./Today";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const ACCESS_TOKEN = "access_token";
 
@@ -33,7 +33,6 @@ export default class LoginScreen extends Component {
     try {
       await AsyncStorage.setItem(ACCESS_TOKEN, token);
       console.log("Token Saved", token);
-      //this.getToken();
     } catch (error) {
       console.log("Token cannot be saved");
     }
@@ -53,8 +52,6 @@ export default class LoginScreen extends Component {
       })
       .then(this.storeToken.bind(this));
   }
-
-  //state = { fullName: "", email: "", password: "", loading: false };
 
   static navigationOptions = {
     header: null
@@ -136,6 +133,8 @@ export default class LoginScreen extends Component {
       <ScrollView>
         <View style={styles.container}>
           <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 50, marginTop: 120}}>Sign Up</Text>
+          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%'}} >
+              <Icon name='ios-contact' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
           <TextInput
             fontSize={20}
             placeholder="Full Name"
@@ -144,11 +143,13 @@ export default class LoginScreen extends Component {
             onChangeText={fullName => this.setState({ fullName })}
             value={this.state.fullName}
             placeholderTextColor="white"
-            style={{color: 'white'}}
+            style={{color: 'white', height: '100%', width: '80%'}}
               selectionColor='white'
               underlineColorAndroid='white'
-            
           />
+          </View>
+          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%', marginTop: 10}} >
+              <Icon name='ios-mail' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
           <TextInput
             fontSize={20}
             placeholder="example@gmail.com"
@@ -156,10 +157,14 @@ export default class LoginScreen extends Component {
             onChangeText={email => this.setState({ email })}
             value={this.state.email}
             placeholderTextColor="white"
-            style={{color: 'white'}}
+            style={{color: 'white', height: '100%', width: '80%'}}
               selectionColor='white'
               underlineColorAndroid='white'
+              autoCapitalize = "none"
           />
+          </View>
+          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%',  marginTop: 10}} >
+              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
           <TextInput
             fontSize={20}
             placeholder="Password"
@@ -168,10 +173,14 @@ export default class LoginScreen extends Component {
             onChangeText={password => this.setState({ password })}
             value={this.state.password}
             placeholderTextColor="white"
-            style={{color: 'white'}}
+            style={{color: 'white', height: '100%', width: '80%'}}
             selectionColor='white'
             underlineColorAndroid='white'
+            autoCapitalize = "none"
           />
+          </View>
+          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%',  marginTop: 10}} >
+              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
           <TextInput
             fontSize={20}
             placeholder="Confirm Password"
@@ -182,10 +191,12 @@ export default class LoginScreen extends Component {
             }
             value={this.state.password_confirmation}
             placeholderTextColor="white"
-            style={{color: 'white'}}
+            style={{color: 'white' , height: '100%', width: '80%'}}
               selectionColor='white'
               underlineColorAndroid='white'
+              autoCapitalize = "none"
           />
+          </View>
 
           {this.renderButton()}
           {/* <Text
@@ -232,10 +243,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: "#fff",
-    // padding: 10,
     borderRadius: 25,
-    // paddingLeft: 30,
-    // paddingRight: 30,
     height: 40,
     width: 250,
     marginTop: 80
@@ -244,10 +252,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: "#003366",
-    // padding: 10,
     borderRadius: 25,
-    // paddingLeft: 30,
-    // paddingRight: 30,
     marginTop: 10,
     height: 40,
     width: 250,

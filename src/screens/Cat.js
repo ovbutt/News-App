@@ -83,7 +83,7 @@ export default class Cat extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'World'})}}>
             <ImageBackground
-              source={require("../../thum/music.jpg")}
+              source={require("../../thum/travel.jpg")}
               imageStyle={{ borderRadius: 10 }}
               style={styles.ImageStyle2}
             >

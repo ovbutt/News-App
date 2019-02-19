@@ -33,9 +33,10 @@ export default class Discover extends Component {
   // state = { breaking: [] };
 
   static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-today" color={tintColor} size={30} />
-    )
+    // tabBarIcon: ({ tintColor }) => (
+    //   <Icon name="ios-today" color={tintColor} size={30} />
+    // )
+    header: null
   };
   renderItem = ({ item }) => {
     //item = item.filter(item=>item.breaking === false)
@@ -119,7 +120,7 @@ export default class Discover extends Component {
     setTimeout(
       () =>
         this.setState({
-          loading1: false,
+          loading1: false
         }),
       3000
     );
@@ -127,9 +128,17 @@ export default class Discover extends Component {
     setTimeout(
       () =>
         this.setState({
-          loading2: false,
+          loading2: false
         }),
       3000
+    );
+  closeRefreshingIndicator = () =>
+    setTimeout(
+      () =>
+        this.setState({
+         refreshing: false
+        }),
+      2000
     );
   componentWillMount() {
     this.getBreakingPosts();
@@ -138,15 +147,20 @@ export default class Discover extends Component {
   getLatestPosts() {
     this.closeActivityIndicator2();
     axios
-      .get("http://198.245.53.50:5000/api/posts/"+this.state.page)
+      .get("http://198.245.53.50:5000/api/posts/" + this.state.page)
       .then(response => {
         console.log(response);
-        this.setState({ dataSource: this.state.page === 1 ? response.data.posts : [...this.state.dataSource,...response.data.posts], refreshing: false });
+        this.setState({
+          dataSource:
+            this.state.page === 1
+              ? response.data.posts
+              : [...this.state.dataSource, ...response.data.posts]
+        });
       })
       .then(() => console.log("DataSource", this.state.dataSource))
       .catch(function(error) {
         console.log("error", error);
-        this.setState({refreshing: false})
+        //this.setState({refreshing: false})
       });
   }
   renderSeparator = () => {
@@ -175,22 +189,31 @@ export default class Discover extends Component {
       });
   }
 
-  renderFooter(){
-    //if (this.state.refreshing) return null;
-
-    return(
-      <View style={{ paddingVertical: 20, borderTopWidth: 1, borderTopColor: '#CED0CE' }}>
-        <ActivityIndicator animating size='large' color='white'/>
+  renderFooter=()=> {
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderTopColor: "#CED0CE"
+        }}
+      >
+        {this.state.refreshing && (
+          <ActivityIndicator size="large" color="white" />
+        )}
       </View>
-    )
+    );
   }
-  handleRefresh(){
+  handleRefresh() {
+    this.setState({ refreshing: true });
+  }
+  handleLoadMore = () => {
     this.setState({refreshing: true})
-  }
-  handleLoadMore=()=>{
-    this.setState({refreshing:true})
-    this.setState({ page: this.state.page + 1 }, () => { this.getLatestPosts()})
-  }
+    this.closeRefreshingIndicator();
+    this.setState({ page: this.state.page + 1 }, () => {
+      this.getLatestPosts();
+    });
+  };
   render() {
     return (
       <ImageBackground
@@ -212,21 +235,26 @@ export default class Discover extends Component {
             </Text>
             <Text style={styles.todayText}>Breaking</Text>
             {/* <ScrollView
-              horizontal={true}
+              //horizontal={true}
               showsHorizontalScrollIndicator={false}
             > */}
-            {this.state.loading1 && (<ActivityIndicator size='large' animating={this.state.loading1} color='white' />)}
+            {this.state.loading1 && (
+              <ActivityIndicator
+                size="large"
+                animating={this.state.loading1}
+                color="white"
+              />
+            )}
 
             <View style={{ flexDirection: "row" }}>
-              {/* Breaking Post Data Start */}
-              {/* {this.renderBreakingFlatlist()} */}
               <FlatList
                 data={this.state.breaking}
                 keyExtractor={item => item._id}
                 renderItem={this.renderBreakingItem}
                 horizontal={true}
+                alwaysBounceHorizontal={true}
+                showsHorizontalScrollIndicator={false}
               />
-              {/* Breaking Post Data End */}
             </View>
             {/* </ScrollView> */}
 
@@ -236,36 +264,36 @@ export default class Discover extends Component {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 10
+                marginTop: 10,
+                paddingLeft: "5%",
+                paddingRight: "5%"
               }}
             >
-              {this.state.loading2 && (<ActivityIndicator size='large' animating={this.state.loading2} color='white' />)}
-
-              {/* LatestPostsDataStart */}
-              {/* {this.renderLatestFlatList()} */}
-              {/* <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 380
-                }}
-              > */}
-                <FlatList
-                  data={this.state.dataSource}
-                  keyExtractor={item => item._id}
-                  renderItem={this.renderItem}
-                  //onEndReachedThreshold={5}
-                  ItemSeparatorComponent={this.renderSeparator}
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.handleRefresh}
-                ListHeaderComponent={() => (!this.state.dataSource.length ?
-                  <Text style={{fontSize: 16, color: 'white'}}>No Latest News</Text>
-                  : null)}
-                  ListFooterComponent={this.renderFooter}
-                  onEndReached={this.handleLoadMore}
-                  onEndReachedThreshold={0 }
-                  
+              {this.state.loading2 && (
+                <ActivityIndicator
+                  size="large"
+                  animating={this.state.loading2}
+                  color="white"
                 />
+              )}
+              <FlatList
+                data={this.state.dataSource}
+                keyExtractor={item => item._id}
+                renderItem={this.renderItem}
+                ItemSeparatorComponent={this.renderSeparator}
+                //refreshing={this.state.refreshing}
+                //onRefresh={this.handleRefresh}
+                ListHeaderComponent={() =>
+                  !this.state.dataSource.length ? (
+                    <Text style={{ fontSize: 16, color: "white" }}>
+                      No Latest News
+                    </Text>
+                  ) : null
+                }
+                ListFooterComponent={this.renderFooter}
+                //onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0.5}
+              />
               {/* </View> */}
               {/* LatestPostsDataFinish */}
             </View>

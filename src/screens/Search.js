@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default class Search extends Component {
   // constructor() {
@@ -24,7 +25,7 @@ export default class Search extends Component {
   state = {
     dataSource: [],
     search: "",
-    loading: true,
+    loading: false,
     //dataSource: [],
     names: [
       {
@@ -55,7 +56,14 @@ export default class Search extends Component {
         id: 6,
         name: "Science"
       }
-    ]
+    ],
+    business: "Business",
+      world: "World",
+      fashion: "Fashion",
+      politics: "Politics",
+      sports: "Sports",
+      health: "Health",
+      science: "Science"
   };
   alertItemName = item => {
     alert(item.name);
@@ -63,15 +71,16 @@ export default class Search extends Component {
   };
 
   static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-search" color={tintColor}  size={30} />
-    )
+    // tabBarIcon: ({ tintColor }) => (
+    //   <Icon name="ios-search" color={tintColor}  size={30} />
+    // )
+    header: null
   };
 
   renderItem = ({ item }) => {
     return (
-      
-      <View style={{ flexDirection: "row", width: 400 }}>
+      <TouchableOpacity onPress={()=>this.props.navigation.navigate('NewsDetail', {data:item})}>
+      <View style={{ flexDirection: "row", paddingLeft: '5%', paddingRight: '5%' }}>
         <Image
           imageStyle={{ borderRadius: 10 }}
           source={{ uri: item.photoUrl }}
@@ -81,17 +90,22 @@ export default class Search extends Component {
           <Text style={styles.catagoryStyle}>{item.catagory}</Text>
 
           <Text style={styles.titleTextStyle}>
-            {item.title.substring(0, 37) + "..."}
+            {item.title.substring(0, 30) + "..."}
+          </Text>
+          <Text style={{color: 'white'}}>
+            {item.createdAt.substring(0,10)}
           </Text>
         </View>
+        
       </View>
+      </TouchableOpacity>
     );
   };
 
   searchIt() {
-    
+    console.log('SearchState:',this.state.search)
     axios
-      .get("http://198.245.53.50:5000/api/search"+this.state.search)
+      .get("http://198.245.53.50:5000/api/search/"+this.state.search)
       .then(response => {
         console.log(response);
         this.setState({ dataSource: response.data });
@@ -109,9 +123,8 @@ export default class Search extends Component {
       <View
         style={{
           height: 1,
-          width: "86%",
+          width: "70%",
           backgroundColor: "#CED0CE",
-    
           marginLeft: "23%"
         }}
       />
@@ -142,27 +155,290 @@ export default class Search extends Component {
             }}
           />
         </View>
-        <FlatList
-          data={this.state.dataSource}
-          keyExtractor={item => item._id}
-          renderItem={this.renderItem}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
         <View>
+        {
+          this.state.dataSource.length?
+
+          (
+          <FlatList
+            data={this.state.dataSource}
+            keyExtractor={item => item._id}
+            renderItem={this.renderItem}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={() => (!this.state.dataSource.length? 
+              <Text style={{color: 'white', fontSize: 16, fontWeight: '700'}}>The list is empty</Text>  
+              : null)
+            }
+          />
+        
+          ) 
+          :
+          (
+            // <View style={styles.emptyListStyle}>
+            //   <Text style={styles.emptyMessageStyle}>The list is empty</Text>  
+            // </View>
+            <ScrollView>
+            <View style={styles.containerCategories}>
+           
+            <View>
           <Text
             style={{
               fontWeight: "bold",
-              fontSize: 20,
-              color: "black",
+              fontSize: 26,
+              color: "white",
               marginLeft: 10,
-              marginBottom: 10,
+              marginBottom: 5,
               marginTop: 20
             }}
           >
             Popular Categories
           </Text>
         </View>
-        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Business'})}}>
+              <ImageBackground
+                source={require("../../thum/business.jpg")}
+                imageStyle={{ borderRadius: 10 }}
+                style={styles.ImageStyle}
+              >
+                <View
+                  style={{
+                    justifyContent: "center",
+                    paddingTop: 60,
+                    alignItems: "flex-start",
+                    backgroundColor: "rgba()"
+                  }}
+                >
+                  <Text
+                    style={{
+                      backgroundColor: "transparent",
+                      marginLeft: 10,
+                      fontFamily: "Arial",
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: "white"
+                    }}
+                  >
+                    {this.state.business}
+                  </Text>
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'World'})}}>
+            <ImageBackground
+              source={require("../../thum/travel.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.world}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 0 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Fashion'})}}>
+            <ImageBackground
+              source={require("../../thum/photography.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.fashion}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Politics'})}}>
+            <ImageBackground
+              source={require("../../thum/politic.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.politics}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Sports'})}}>
+            <ImageBackground
+              source={require("../../thum/sports.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.sports}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Health'})}}>
+            <ImageBackground
+              source={require("../../thum/health.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.health}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Science'})}}>
+            <ImageBackground
+              source={require("../../thum/science.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.science}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          
+        </View>
+        </ScrollView>
+          )
+        }
+      </View>
+        {/* <FlatList
+          data={this.state.dataSource}
+          keyExtractor={item => item._id}
+          renderItem={this.renderItem}
+          ItemSeparatorComponent={this.renderSeparator}
+          
+        /> */}
+        {/* <View>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 26,
+              color: "white",
+              marginLeft: 10,
+              marginBottom: 5,
+              marginTop: 20
+            }}
+          >
+            Popular Categories
+          </Text>
+        </View> */}
+        {/* <View style={{ alignItems: "center", justifyContent: "center" }}>
           {this.state.names.map((item, index) => (
             <TouchableOpacity
               key={item.id}
@@ -172,7 +448,226 @@ export default class Search extends Component {
               <Text style={styles.text}>{item.name}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
+                {/* <View style={styles.containerCategories}>
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Business'})}}>
+              <ImageBackground
+                source={require("../../thum/business.jpg")}
+                imageStyle={{ borderRadius: 10 }}
+                style={styles.ImageStyle}
+              >
+                <View
+                  style={{
+                    justifyContent: "center",
+                    paddingTop: 60,
+                    alignItems: "flex-start",
+                    backgroundColor: "rgba()"
+                  }}
+                >
+                  <Text
+                    style={{
+                      backgroundColor: "transparent",
+                      marginLeft: 10,
+                      fontFamily: "Arial",
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: "white"
+                    }}
+                  >
+                    {this.state.business}
+                  </Text>
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'World'})}}>
+            <ImageBackground
+              source={require("../../thum/travel.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.world}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 0 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Fashion'})}}>
+            <ImageBackground
+              source={require("../../thum/photography.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.fashion}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Politics'})}}>
+            <ImageBackground
+              source={require("../../thum/politic.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.politics}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Sports'})}}>
+            <ImageBackground
+              source={require("../../thum/sports.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  alignItems: "flex-start",
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.sports}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Health'})}}>
+            <ImageBackground
+              source={require("../../thum/health.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle2}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.health}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+          <View>
+          <TouchableOpacity onPress={()=>{this.props.navigation.navigate('CategoriesView', {category: 'Science'})}}>
+            <ImageBackground
+              source={require("../../thum/science.jpg")}
+              imageStyle={{ borderRadius: 10 }}
+              style={styles.ImageStyle}
+            >
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  paddingTop: 60,
+                  fontSize: 20,
+                  backgroundColor: "rgba()"
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 10,
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    fontSize: 20,
+                    color: "white"
+                  }}
+                >
+                  {this.state.science}
+                </Text>
+              </View>
+            </ImageBackground>
+            </TouchableOpacity>
+          </View>
+        </View> */}
       </View>
       </ImageBackground>
     );
@@ -204,7 +699,7 @@ const styles = StyleSheet.create({
     fontFamily: "Arial",
     fontWeight: "500",
     fontSize: 16,
-    color: "black",
+    color: "white",
     paddingTop: 20
   },
   catagoryStyle: {
@@ -212,7 +707,7 @@ const styles = StyleSheet.create({
     fontFamily: "Arial",
     fontWeight: "500",
     fontSize: 14,
-    color: "grey",
+    color: "white",
     paddingTop: 10
   },
   textViewStyle: {
@@ -220,5 +715,20 @@ const styles = StyleSheet.create({
     paddingTop: 200,
     fontSize: 25,
     alignItems: "center"
+  },
+  containerCategories: {
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  ImageStyle: {
+    width: 170,
+    height: 100,
+    marginBottom: 15,
+  },
+  ImageStyle2: {
+    width: 170,
+    height: 100,
+    marginBottom: 15,
+    marginLeft: 20
   }
 });

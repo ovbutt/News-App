@@ -22,6 +22,12 @@ class CategoriesView extends Component {
     };
     //this.state={catagory} = this.props.catagory
   }
+  static navigationOptions = {
+    // tabBarIcon: ({ tintColor }) => (
+    //   <Icon name="ios-search" color={tintColor}  size={30} />
+    // )
+    header: null
+  };
   closeActivityIndicator = () => setTimeout(() => this.setState({
     loading: false
   }), 5000)
@@ -86,7 +92,7 @@ class CategoriesView extends Component {
       <View style={styles.container}>
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 26,
             margin: 10,
             color: "black",
             fontWeight: "700"
@@ -147,11 +153,13 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     fontFamily: "Arial",
     fontWeight: "bold",
-    color: "white"
+    color: "white",
+    padding: 8,
+    fontSize: 18,
   },
   textViewStyle: {
     justifyContent: "center",
-    paddingTop: 200,
+    paddingTop: 170,
     fontSize: 25,
     alignItems: "center"
   },
@@ -159,6 +167,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
   }
 });

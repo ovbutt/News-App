@@ -11,8 +11,10 @@ import {
   ScrollView
 } from "react-native";
 import axios from "axios";
-import Today from "./Today";
+import Icon from "react-native-vector-icons/Ionicons";
+
 const ACCESS_TOKEN = "access_token";
+
 
 export default class LoginScreen extends Component {
   constructor() {
@@ -37,25 +39,6 @@ export default class LoginScreen extends Component {
       console.log("Token cannot be saved");
     }
   }
-
-  // async getToken() {
-  //   try {
-  //     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-  //     console.log("Token is", token);
-  //     this.checkToken();
-  //   } catch (error) {
-  //     console.log("Cannot get token");
-  //   }
-  // }
-
-  // checkToken(){
-  //   const {token} = this.state
-  //   axios
-  //     .post("http://198.245.53.50:5000/api/users/check", {
-  //       token: token
-  //     })
-  //     .then(response => console.log(response));
-  // }
 
   static navigationOptions = {
     header: null
@@ -94,14 +77,8 @@ export default class LoginScreen extends Component {
   }
 
   toggleShowButton() {
-    // if (this.state.hidePassword) {
-    //   this.setState({ hidePassword: false });
-    // } else this.setState({ hidePassword: true });
     this.setState({ hidePassword: !this.state.hidePassword });
-    //console.log('State: ', this.state.hidePassword)
   }
-
-  // toggleShow;
 
   renderButton() {
     if (this.state.loading) {
@@ -140,6 +117,8 @@ export default class LoginScreen extends Component {
             >
               Log In
             </Text>
+            <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%'}} >
+              <Icon name='ios-mail' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
             <TextInput
               fontSize={20}
               placeholder="example@gmail.com"
@@ -147,13 +126,14 @@ export default class LoginScreen extends Component {
               onChangeText={email => this.setState({ email })}
               value={this.state.text}
               placeholderTextColor="white"
-              style={{ color: "white" }}
+              style={{ color: "white", height: '100%', width: '75%' }}
               selectionColor="white"
               underlineColorAndroid="white"
+              autoCapitalize = "none"
             />
-
-            
-
+            </View>
+            <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%', marginTop: 20}} >
+              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
             <TextInput
               fontSize={20}
               placeholder="Password"
@@ -161,34 +141,29 @@ export default class LoginScreen extends Component {
               onChangeText={password => this.setState({ password })}
               value={this.state.password}
               placeholderTextColor="white"
-              style={{ color: "white" }}
+              style={{ color: "white", height: '100%', width: '70%' }}
               selectionColor="white"
               underlineColorAndroid="white"
+              autoCapitalize = "none"
             />
             <TouchableOpacity
               onPress={this.toggleShowButton.bind(this)}
               style={styles.showButton}
             >
-              <Text style={{ color: "white" }}>
-                {this.state.hidePassword ? "Show" : "Hide"}
-              </Text>
+              <Icon style={{ color: "white" }} name={this.state.hidePassword ? "ios-eye" : "ios-eye-off"} size={25}/>
             </TouchableOpacity>
+            </View>
+            
             {this.renderButton()}
             <TouchableOpacity
               style={styles.button2}
               onPress={() => this.props.navigation.navigate("Signup")}
             >
               <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
-                {" "}
-                Create Account{" "}
+                
+                Create Account
               </Text>
             </TouchableOpacity>
-            {/* <Text
-          style={styles.textStyle}
-          onPress={() => this.props.navigation.navigate("Signup")}
-        >
-          Create Account
-        </Text> */}
           </View>
         </ScrollView>
       </ImageBackground>
@@ -222,10 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
-    // padding: 10,
     borderRadius: 25,
-    // paddingLeft: 30,
-    // paddingRight: 30,
     height: 40,
     width: 250,
     marginTop: 80
@@ -234,16 +206,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#003366",
-    // padding: 10,
     borderRadius: 25,
-    // paddingLeft: 30,
-    // paddingRight: 30,
     marginTop: 10,
     height: 40,
     width: 250
   },
   showButton: {
-    position: "absolute",
-    right: 30
+    paddingTop: 8,
+    paddingLeft: 10
+
   }
 });

@@ -23,13 +23,11 @@ export default class App extends Component {
 const TodayNavigator = createStackNavigator(
   {
    Today : Discover,
-   BreakingPosts : BreakingPosts,
-   OtherPosts : OtherPosts,
    NewsDetail : NewsDetail
 
   },{
     defaultNavigationOptions:{
-      header: null
+      //header: null
     }
   });
   const CategoryNavigator = createStackNavigator(
@@ -51,7 +49,7 @@ const TodayNavigator = createStackNavigator(
     
       },{
         defaultNavigationOptions:{
-          header: null
+          //header: null
         }
       });
     
@@ -60,9 +58,9 @@ const TodayNavigator = createStackNavigator(
       Today: {
         screen: TodayNavigator,   
       },
-      Categories: {
-        screen: CategoryNavigator
-      },
+      // Categories: {
+      //   screen: CategoryNavigator
+      // },
       GoLive: {
         screen: Today
       },
