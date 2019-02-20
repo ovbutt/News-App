@@ -65,8 +65,7 @@ export default class LoginScreen extends Component {
   }
 
   onLoginSuccess() {
-    this.setState({
-      email: "",
+    this.setState({ 
       password: "",
       loading: false
     });
@@ -124,7 +123,7 @@ export default class LoginScreen extends Component {
               placeholder="example@gmail.com"
               autoCorrect={false}
               onChangeText={email => this.setState({ email })}
-              value={this.state.text}
+              value={this.state.email}
               placeholderTextColor="white"
               style={{ color: "white", height: '100%', width: '75%' }}
               selectionColor="white"

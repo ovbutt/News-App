@@ -6,9 +6,12 @@ import {
   Image,
   ScrollView,
   WebView,
-  Button
+  Button,
+  TextInput,
 } from "react-native";
 import HTMLView from "react-native-htmlview";
+import Icon from "react-native-vector-icons/Ionicons";
+
 
 export default class NewsDetail extends Component {
   constructor(props) {
@@ -16,7 +19,7 @@ export default class NewsDetail extends Component {
     this.state = { data: this.props.navigation.state.params.data };
   }
   static navigationOptions = {
-    headerTitle: "News"
+    headerTitle: "News Details"
   };
   render() {
     const { data } = this.state;
@@ -58,12 +61,30 @@ export default class NewsDetail extends Component {
               marginTop: 8
             }}
           />
-
+<View
+            style={{
+              marginTop: 5,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "black" }}>Category: </Text>
+            <Text>{data.catagory}</Text>
+          </View>
         
-          <View style={{ padding: 15 }}>
+          <View style={{ padding: 15, alignItems: 'center', justifyContent: 'center', flex: 1 }}>
             <HTMLView value={data.description} stylesheet={styles} />
           </View>
         </ScrollView>
+        <View style={{flexDirection: 'row'}}>
+          <TextInput
+            placeholder='Type a comment...'
+            scrollEnabled={true}
+            style={{fontSize: 16 ,borderRadius: 25, borderWidth: 1, borderColor: 'grey', width: '80%', margin: 10, height: '65%', paddingLeft: 15}}
+          ></TextInput>
+          <Icon name='ios-send' size={40} color='#003366' style={{marginTop: 15 }} />
+        </View>
       </View>
     );
   }

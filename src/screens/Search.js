@@ -8,7 +8,8 @@ import {
   View,
   FlatList,
   Image,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -26,6 +27,7 @@ export default class Search extends Component {
     dataSource: [],
     search: "",
     loading: false,
+    gotData: true,
     //dataSource: [],
     names: [
       {
@@ -101,14 +103,33 @@ export default class Search extends Component {
       </TouchableOpacity>
     );
   };
-
+  closeRefreshingIndicator = () =>
+  setTimeout(
+    () =>
+      this.setState({
+       loading: false
+      }),
+    2000
+  );
+  
+  gotData=()=>{
+    if (!this.state.dataSource.length)
+    {
+      this.setState({gotData : false})
+    }
+    else{
+      this.setState({gotData : true})
+    }
+  }
   searchIt() {
     console.log('SearchState:',this.state.search)
+    this.closeRefreshingIndicator()
     axios
       .get("http://198.245.53.50:5000/api/search/"+this.state.search)
       .then(response => {
         console.log(response);
         this.setState({ dataSource: response.data });
+        this.gotData();
       })
       .then(this.setState({ loading: false }))
       .then(() => console.log("DataSource", this.state.dataSource))
@@ -152,10 +173,15 @@ export default class Search extends Component {
             value={search}
             onSubmitEditing={() => {
               this.searchIt();
+              this.setState({loading: true})
             }}
           />
         </View>
-        <View>
+        {!this.state.gotData && (
+      <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 10}}>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: '700'}}>No News Found</Text>
+        </View>)}
+        <View style={{marginBottom: 180}}>
         {
           this.state.dataSource.length?
 
@@ -165,10 +191,7 @@ export default class Search extends Component {
             keyExtractor={item => item._id}
             renderItem={this.renderItem}
             ItemSeparatorComponent={this.renderSeparator}
-            ListHeaderComponent={() => (!this.state.dataSource.length? 
-              <Text style={{color: 'white', fontSize: 16, fontWeight: '700'}}>The list is empty</Text>  
-              : null)
-            }
+            
           />
         
           ) 

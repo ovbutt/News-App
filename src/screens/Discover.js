@@ -66,7 +66,7 @@ export default class Discover extends Component {
       </TouchableOpacity>
     );
   };
-
+ 
   renderBreakingItem = ({ item }) => {
     return (
       <View style={styles.containerBig}>
@@ -283,13 +283,13 @@ export default class Discover extends Component {
                 ItemSeparatorComponent={this.renderSeparator}
                 //refreshing={this.state.refreshing}
                 //onRefresh={this.handleRefresh}
-                ListHeaderComponent={() =>
-                  !this.state.dataSource.length ? (
-                    <Text style={{ fontSize: 16, color: "white" }}>
-                      No Latest News
-                    </Text>
-                  ) : null
-                }
+                // ListHeaderComponent={() =>
+                //   !this.state.dataSource.length ? (
+                //     <Text style={{ fontSize: 16, color: "white" }}>
+                //       No Latest News
+                //     </Text>
+                //   ) : null
+                // }
                 ListFooterComponent={this.renderFooter}
                 //onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.5}

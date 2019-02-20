@@ -52,17 +52,24 @@ const TodayNavigator = createStackNavigator(
           //header: null
         }
       });
-    
+      const GoLiveNavigator = createStackNavigator(
+        {
+          GoLive : Today,
+        //  CategoriesView : CategoriesView,
+          NewsDetail : NewsDetail
+      
+        }
+      )
   const AppTabNavigator = createBottomTabNavigator(
     {
-      Today: {
+      Explore: {
         screen: TodayNavigator,   
       },
       // Categories: {
       //   screen: CategoryNavigator
       // },
       GoLive: {
-        screen: Today
+        screen: GoLiveNavigator
       },
       Search: {
         screen: SearchNavigator
@@ -85,13 +92,17 @@ const TodayNavigator = createStackNavigator(
         tabBarIcon: ({ focused, tintColor }) => {
           const { routeName } = navigation.state;
           let iconName;
-          if (routeName === 'Today') {
+          if (routeName === 'Explore') {
             iconName = 'ios-star';
           } else if (routeName === 'Categories') {
             iconName = 'ios-apps'
           }
           else if (routeName === 'Search') {
             iconName = 'ios-search'
+          }
+          else if(routeName === 'GoLive')
+          {
+            iconName = 'ios-add-circle'
           }
           return <Icon name={iconName} size={25} color={tintColor} />;
         },

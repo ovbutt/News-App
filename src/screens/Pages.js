@@ -7,7 +7,11 @@ import {
   View,
   AsyncStorage,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  ScrollView
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -16,7 +20,7 @@ const ACCESS_TOKEN = "access_token";
 export default class Pages extends Component {
   constructor(props) {
     super(props);
-    this.state = { token: "", fullName: "", email: "" };
+    this.state = { token: "", fullName: "", email: "", loading2: true, dataSource: [] };
   }
   static navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
@@ -51,6 +55,7 @@ export default class Pages extends Component {
   }
   componentWillMount() {
     this.getToken();
+    this.getLatestPosts();
   }
   async removeToken() {
     try {
@@ -62,6 +67,73 @@ export default class Pages extends Component {
       console.log("Cannot remove token");
     }
   }
+  closeActivityIndicator2 = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          loading2: false
+        }),
+      3000
+    );
+  getLatestPosts() {
+    this.closeActivityIndicator2();
+    axios
+      .get("http://198.245.53.50:5000/api/posts/4")
+      .then(response => {
+        console.log(response);
+        this.setState({
+          dataSource:
+            this.state.page === 1
+              ? response.data.posts
+              : [...this.state.dataSource, ...response.data.posts]
+        });
+      })
+      .then(() => console.log("DataSource", this.state.dataSource))
+      .catch(function(error) {
+        console.log("error", error);
+        //this.setState({refreshing: false})
+      });
+  }
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "23%"
+        }}
+      />
+    );
+  };
+  renderItem = ({ item }) => {
+    //item = item.filter(item=>item.breaking === false)
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate("NewsDetail", { data: item });
+        }}
+      >
+        <View style={{ flexDirection: "row", width: 380 }}>
+          <Image
+            imageStyle={{ borderRadius: 10 }}
+            source={{ uri: item.photoUrl }}
+            style={styles.imageThumbStyle}
+          />
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
+
+            <Text style={styles.titleTextStyle}>
+              {item.title.substring(0, 30) + "..."}
+            </Text>
+            <Text style={{ color: "white" }}>
+              {item.createdAt.substring(0, 10)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   render() {
     const { fullName, email } = this.state;
@@ -72,6 +144,7 @@ export default class Pages extends Component {
         source={require('../../thum/profileWallpaper.jpg')}
         style={{height: '100%', width: '100%'}}
       >
+      <ScrollView>
       <View>
         <View style={{ marginTop: 20 }}>
           <Text
@@ -86,6 +159,8 @@ export default class Pages extends Component {
           >
             Profile
           </Text>
+          <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 20}}>
+          <View style={{flexDirection: 'row', borderColor: 'white', borderWidth: 1, borderRadius: 25, paddingBottom: 20, paddingLeft: 20, paddingRight: 20}}>
           <View
             style={{
               alignItems: "center",
@@ -93,10 +168,11 @@ export default class Pages extends Component {
               marginTop: 20
             }}
           >
-            <Icon name="ios-contact" color='white' size={150} />
+
+            <Icon name="ios-contact" color='white' size={80} />
           </View>
           
-          <View style={{ flexDirection: "column", justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+          <View style={{ flexDirection: "column", justifyContent: 'center', alignItems: 'flex-start' }}>
             <View
               style={{ flexDirection: "row", marginLeft: 20, marginTop: 20 }}
             >
@@ -110,6 +186,8 @@ export default class Pages extends Component {
               <Text style={styles.nameEmailText}>Email: </Text>
               <Text style={styles.nameEmailText}>{email}</Text>
             </View>
+            </View>
+            </View>
             <View style={{ marginTop: 20 }}>
               <TouchableOpacity
                 
@@ -120,11 +198,55 @@ export default class Pages extends Component {
               >
               <Text style={{color: 'white', fontSize: 18, fontWeight:'500'}}>Log Out</Text>
               </TouchableOpacity>
-            </View>
+            
             
           </View>
         </View>
       </View>
+      <Text style={{color: 'white', fontSize: 25, fontWeight: 'bold', marginLeft: 20, marginTop: 20}}>My Posts</Text>
+      <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 10,
+                paddingLeft: "5%",
+                paddingRight: "5%",
+                marginBottom: 10
+              }}
+            >
+              {this.state.loading2 && (
+                <ActivityIndicator
+                  size="large"
+                  animating={this.state.loading2}
+                  color="white"
+                />
+              )}
+              <FlatList
+                data={this.state.dataSource}
+                keyExtractor={item => item._id}
+                renderItem={this.renderItem}
+                ItemSeparatorComponent={this.renderSeparator}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                //refreshing={this.state.refreshing}
+                //onRefresh={this.handleRefresh}
+                // ListHeaderComponent={() =>
+                //   !this.state.dataSource.length ? (
+                //     <Text style={{ fontSize: 16, color: "white" }}>
+                //       No Latest News
+                //     </Text>
+                //   ) : null
+                // }
+                // ListFooterComponent={this.renderFooter}
+                // //onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0.5}
+              />
+              {/* </View> */}
+              {/* LatestPostsDataFinish */}
+            </View>
+      </View>
+      </ScrollView>
       </ImageBackground>
     );
   }
@@ -156,6 +278,32 @@ const styles = StyleSheet.create({
     // paddingRight: 30,
     marginTop: 10,
     height: 40,
-    width: 250,
+    width: 300,
   },
+  imageThumbStyle: {
+    height: 80,
+    width: 80,
+    marginTop: 10,
+    marginLeft: 10,
+    marginBottom: 2,
+    marginRight: 10,
+    borderRadius: 5
+  },
+  titleTextStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 16,
+    color: "white",
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  catagoryStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 14,
+    color: "white",
+    paddingTop: 10
+  }
 });
