@@ -13,8 +13,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
-import BreakingPost from "../components/BreakingPost";
-import OtherPosts from "../components/OtherPosts";
 
 let date = new Date().toDateString();
 export default class Discover extends Component {
@@ -190,6 +188,8 @@ export default class Discover extends Component {
   }
 
   renderFooter=()=> {
+    if(this.state.refreshing)
+    {
     return (
       <View
         style={{
@@ -204,15 +204,28 @@ export default class Discover extends Component {
       </View>
     );
   }
+  else {
+    return null
+  // <Text style={{color: 'white'}}>No more list to load</Text>
+}
+  }
   handleRefresh() {
     this.setState({ refreshing: true });
   }
   handleLoadMore = () => {
-    this.setState({refreshing: true})
-    this.closeRefreshingIndicator();
-    this.setState({ page: this.state.page + 1 }, () => {
-      this.getLatestPosts();
-    });
+    //console.warn('HandleLoadMore')
+    if (this.state.refreshing){
+      return null;
+    }
+    this.setState(
+      (prevState) =>{ return { refreshing : true, page : prevState.page+1 }},
+      () => {this.getLatestPosts();}
+    )
+    // this.setState({refreshing: true})
+    // this.closeRefreshingIndicator();
+    // this.setState({ page: this.state.page + 1 }, () => {
+    //   this.getLatestPosts();
+    // });
   };
   render() {
     return (
@@ -252,7 +265,6 @@ export default class Discover extends Component {
                 keyExtractor={item => item._id}
                 renderItem={this.renderBreakingItem}
                 horizontal={true}
-                alwaysBounceHorizontal={true}
                 showsHorizontalScrollIndicator={false}
               />
             </View>
@@ -279,7 +291,7 @@ export default class Discover extends Component {
               <FlatList
                 data={this.state.dataSource}
                 keyExtractor={item => item._id}
-                renderItem={this.renderItem}
+                renderItem={this.renderItem}s
                 ItemSeparatorComponent={this.renderSeparator}
                 //refreshing={this.state.refreshing}
                 //onRefresh={this.handleRefresh}
@@ -291,11 +303,11 @@ export default class Discover extends Component {
                 //   ) : null
                 // }
                 ListFooterComponent={this.renderFooter}
-                //onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0.5}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0.1}
               />
               {/* </View> */}
-              {/* LatestPostsDataFinish */}
+              
             </View>
           </ScrollView>
         </View>

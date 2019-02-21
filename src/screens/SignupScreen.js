@@ -14,8 +14,10 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const ACCESS_TOKEN = "access_token";
+const ACCESS_EMAIL = "access_email";
+const ACCESS_NAME = "access_name";
 
-export default class LoginScreen extends Component {
+export default class SignupScreen extends Component {
   constructor() {
     super();
     this.state = {
@@ -24,21 +26,27 @@ export default class LoginScreen extends Component {
       password: "",
       password_confirmation: "",
       loading: false,
-      token: ""
+      token: "",
+      userEmail: '',
+      userName: '',
     };
+    //this.getTokenFromLoginRequest = this.getTokenFromLoginRequest.bind(this)
   }
 
-  async storeToken() {
-    const { token } = this.state;
+  async storeToken(token, userEmail, userName) {
+    //const { token, userName, userEmail } = this.state;
+    //console.log('states', token, userName, userEmail)
     try {
       await AsyncStorage.setItem(ACCESS_TOKEN, token);
+      await AsyncStorage.setItem(ACCESS_NAME, userName);
+      await AsyncStorage.setItem(ACCESS_EMAIL, userEmail);
       console.log("Token Saved", token);
     } catch (error) {
       console.log("Token cannot be saved");
     }
   }
 
-  getTokenFromLoginRequest() {
+  getTokenFromLoginRequest = () => {
     const { email, password } = this.state;
 
     axios
@@ -48,9 +56,15 @@ export default class LoginScreen extends Component {
       })
       .then(response => {
         console.log(response);
-        this.setState({ token: response.data.token });
+        console.log('token', response.data.token, 'userName', response.data.user.fullName, 'userEmail', response.data.user.email)
+        //this.setState({ token: response.data.token, userEmail: response.data.user.email, userName: response.data.user.fullName  });
+        let token = response.data.token;
+        let userEmail = response.data.user.email
+        let userName = response.data.user.fullName
+        console.log('states', token, userName, userEmail)
+        this.storeToken(token, userEmail, userName )
       })
-      .then(this.storeToken.bind(this));
+     //.then(this.storeToken(token, userEmail, ));
   }
 
   static navigationOptions = {
@@ -73,28 +87,40 @@ export default class LoginScreen extends Component {
       password
     );
 
+    const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     this.setState({ loading: true });
-
-    if (password === password_confirmation) {
-      if (password.length >= 6) {
-        axios
-          .post("http://198.245.53.50:5000/api/signup", {
-            fullName: fullName,
-            email: email,
-            password: password
-          })
-          .then(response => console.log(response))
-          .then(this.getTokenFromLoginRequest.bind(this))
-          .then(this.onSignupSuccess.bind(this))
-          .then(() => this.props.navigation.navigate("App"))
-          .catch(this.onSignupFailure.bind(this));
-      } else {
-        alert("Password must be atleast 6 characters ");
-        this.setState({ loading: false });
-      }
-    } else {
+    if (!fullName.length) {
+      alert("Please enter your full name");
+      this.setState({ loading: false });
+    } else if (!email.length) {
+      alert("Email cannot be empty");
+      this.setState({ loading: false });
+    } else if (!emailCheckRegex.test(email)) {
+      alert(
+        "Invalid Email, Please enter a valid Email (e.g example@gmail.com)"
+      );
+      this.setState({ loading: false });
+    } else if (!password.length) {
+      alert("Password cannot be empty");
+      this.setState({ loading: false });
+    } else if (password.length < 6) {
+      alert("Password must be atleast 6 characters");
+      this.setState({ loading: false });
+    } else if (password != password_confirmation) {
       alert("Password does not match");
       this.setState({ loading: false });
+    } else {
+      axios
+        .post("http://198.245.53.50:5000/api/signup", {
+          fullName: fullName,
+          email: email,
+          password: password
+        })
+        .then(response => console.log(response))
+        .then(this.getTokenFromLoginRequest())
+        .then(this.onSignupSuccess.bind(this))
+        .then(() => this.props.navigation.navigate("App"))
+        .catch(this.onSignupFailure.bind(this));
     }
   }
   onSignupSuccess() {
@@ -120,7 +146,10 @@ export default class LoginScreen extends Component {
         style={styles.button}
         onPress={this.onSignupButtonPress.bind(this)}
       >
-        <Text style={{ color: "#003366", fontSize: 18, fontWeight: '700' }}> Sign Up </Text>
+        <Text style={{ color: "#003366", fontSize: 18, fontWeight: "700" }}>
+          {" "}
+          Sign Up{" "}
+        </Text>
       </TouchableOpacity>
     );
   }
@@ -130,88 +159,176 @@ export default class LoginScreen extends Component {
         source={require("../../thum/signupWallpaper.jpg")}
         style={{ height: "100%", width: "100%" }}
       >
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={{color: '#fff', fontSize: 30, fontWeight: '700', marginBottom: 50, marginTop: 120}}>Sign Up</Text>
-          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%'}} >
-              <Icon name='ios-contact' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-          <TextInput
-            fontSize={20}
-            placeholder="Full Name"
-            autoCapitalize="words"
-            autoCorrect={false}
-            onChangeText={fullName => this.setState({ fullName })}
-            value={this.state.fullName}
-            placeholderTextColor="white"
-            style={{color: 'white', height: '100%', width: '80%'}}
-              selectionColor='white'
-              underlineColorAndroid='white'
-          />
-          </View>
-          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%', marginTop: 10}} >
-              <Icon name='ios-mail' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-          <TextInput
-            fontSize={20}
-            placeholder="example@gmail.com"
-            autoCorrect={false}
-            onChangeText={email => this.setState({ email })}
-            value={this.state.email}
-            placeholderTextColor="white"
-            style={{color: 'white', height: '100%', width: '80%'}}
-              selectionColor='white'
-              underlineColorAndroid='white'
-              autoCapitalize = "none"
-          />
-          </View>
-          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%',  marginTop: 10}} >
-              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-          <TextInput
-            fontSize={20}
-            placeholder="Password"
-            autoCorrect={false}
-            secureTextEntry={true}
-            onChangeText={password => this.setState({ password })}
-            value={this.state.password}
-            placeholderTextColor="white"
-            style={{color: 'white', height: '100%', width: '80%'}}
-            selectionColor='white'
-            underlineColorAndroid='white'
-            autoCapitalize = "none"
-          />
-          </View>
-          <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%',  marginTop: 10}} >
-              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-          <TextInput
-            fontSize={20}
-            placeholder="Confirm Password"
-            autoCorrect={false}
-            secureTextEntry={true}
-            onChangeText={password_confirmation =>
-              this.setState({ password_confirmation })
-            }
-            value={this.state.password_confirmation}
-            placeholderTextColor="white"
-            style={{color: 'white' , height: '100%', width: '80%'}}
-              selectionColor='white'
-              underlineColorAndroid='white'
-              autoCapitalize = "none"
-          />
-          </View>
+        <ScrollView>
+          <View style={styles.container}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 30,
+                fontWeight: "700",
+                marginBottom: 50,
+                marginTop: 120
+              }}
+            >
+              Sign Up
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%"
+              }}
+            >
+              <Icon
+                name="ios-contact"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="Full Name"
+                autoCapitalize="words"
+                autoCorrect={false}
+                onChangeText={fullName => this.setState({ fullName })}
+                value={this.state.fullName}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "80%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%",
+                marginTop: 10
+              }}
+            >
+              <Icon
+                name="ios-mail"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="example@gmail.com"
+                autoCorrect={false}
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "80%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+                autoCapitalize="none"
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%",
+                marginTop: 10
+              }}
+            >
+              <Icon
+                name="ios-lock"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="Password"
+                autoCorrect={false}
+                secureTextEntry={true}
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "80%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+                autoCapitalize="none"
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%",
+                marginTop: 10
+              }}
+            >
+              <Icon
+                name="ios-lock"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="Confirm Password"
+                autoCorrect={false}
+                secureTextEntry={true}
+                onChangeText={password_confirmation =>
+                  this.setState({ password_confirmation })
+                }
+                value={this.state.password_confirmation}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "80%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+                autoCapitalize="none"
+              />
+            </View>
 
-          {this.renderButton()}
-          {/* <Text
+            {this.renderButton()}
+            {/* <Text
           style={styles.textStyle}
           onPress={() => this.props.navigation.goBack()}
         >
           Log In
         </Text> */}
-          <TouchableOpacity
-            style={styles.button2}
-            onPress={() => this.props.navigation.goBack()}
-          >
-            <Text style={{ color: "white",  fontSize: 18, fontWeight: '400' }}> Log In </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() => this.props.navigation.goBack()}
+            >
+              <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
+                {" "}
+                Log In{" "}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </ImageBackground>
     );
@@ -241,7 +358,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: "#fff",
     borderRadius: 25,
     height: 40,
@@ -250,12 +367,12 @@ const styles = StyleSheet.create({
   },
   button2: {
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: "#003366",
     borderRadius: 25,
     marginTop: 10,
     height: 40,
-    width: 250,
+    width: 250
   },
   textStyle: {
     fontSize: 20,

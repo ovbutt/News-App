@@ -5,10 +5,14 @@ import {
   View,
   Image,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView,
+  PixelRatio
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
+import { Header, Left, Right } from "native-base";
+
 
 export default class Today extends Component {
   constructor(props) {
@@ -18,16 +22,43 @@ export default class Today extends Component {
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
   }
+  selectVideoTapped() {
+    const options = {
+      title: "Video Picker",
+      takePhotoButtonTitle: "Take Video...",
+      mediaType: "video",
+      videoQuality: "medium"
+    };
+
+    ImagePicker.launchCamera(options, (response) => {
+      console.log("Response = ", response);
+
+      if (response.didCancel) {
+        console.log("User cancelled video picker");
+      } else if (response.error) {
+        console.log("ImagePicker Error: ", response.error);
+      } else if (response.customButton) {
+        console.log("User tapped custom button: ", response.customButton);
+      } else {
+        this.setState({
+          videoSource: response.uri
+        });
+      }
+    });
+  }
   static navigationOptions = {
-    headerTitle: "Go Live",
-    headerRight: (
-      <Icon
-        name="tv"
-        onPress={() => alert("Go Live Button")}
-        size={30}
-        style={{ marginRight: 20, color: "#000" }}
-      />
-    )
+    // headerTitle: "Go Live",
+    // headerRight: (
+    //   <TouchableOpacity  onPress={()=>this.selectPhotoTapped.bind(this)}>
+    //   <Icon
+    //     name="tv"
+       
+    //     size={30}
+    //     style={{ marginRight: 20, color: "#000" }}
+    //   />
+    //   </TouchableOpacity>
+    // )
+    header: null
   };
   selectPhotoTapped() {
     const options = {
@@ -35,19 +66,19 @@ export default class Today extends Component {
       maxWidth: 500,
       maxHeight: 500,
       storageOptions: {
-        skipBackup: true,
-      },
+        skipBackup: true
+      }
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
+    ImagePicker.launchImageLibrary(options, response => {
+      console.log("Response = ", response);
 
       if (response.didCancel) {
-        console.log('User cancelled photo picker');
+        console.log("User cancelled photo picker");
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        console.log("ImagePicker Error: ", response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        console.log("User tapped custom button: ", response.customButton);
       } else {
         let source = { uri: response.uri };
 
@@ -55,86 +86,103 @@ export default class Today extends Component {
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          avatarSource: source,
+          avatarSource: source
         });
       }
     });
   }
 
-  selectVideoTapped() {
-    const options = {
-      title: 'Video Picker',
-      takePhotoButtonTitle: 'Take Video...',
-      mediaType: 'video',
-      videoQuality: 'medium',
-    };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        this.setState({
-          videoSource: response.uri,
-        });
-      }
-    });
-  }
   render() {
     return (
-      <View style={styles.container}>
-      <View>
-        <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
-          <View
-            style={[
-              styles.avatar,
-              styles.avatarContainer,
-              { marginBottom: 20 },
-            ]}
-          >
-            {this.state.avatarSource === null ? (
-             <Icon name="camera-retro" size={35} color="black"  style={{ marginLeft: 20, marginTop: 10}}/>
-            ) : (
-              <Image style={styles.avatar} source={this.state.avatarSource} />
-            )}
+      
+      <ScrollView>
+        <Header style={{backgroundColor: 'white'}}>
+        <Left>
+          <Text style={{color: 'black', fontSize: 18, fontWeight: 'bold', marginLeft: 20}}>Go Live</Text>
+        </Left>
+          <Right>
+          <TouchableOpacity onPress={()=>{this.selectVideoTapped()}} >
+       <Icon
+        name="tv"
+        size={30}
+        style={{ marginRight: 20, color: "#000" }}
+        
+      />
+      </TouchableOpacity>
+          </Right>
+        </Header>
+        <View style={{ marginTop: 20 }}>
+          <View style={styles.container}>
+            <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
+              <View
+                style={[
+                  styles.avatar,
+                  styles.avatarContainer,
+                  { marginBottom: 20 }
+                ]}
+              >
+                {this.state.avatarSource === null ? (
+                  <Text>Select a Photo</Text>
+                ) : (
+                  <Image
+                    style={styles.avatar}
+                    source={this.state.avatarSource}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+          <View style={{ marginLeft: 10, marginRight: 10 }}>
+            <TextInput placeholder="Title" underlineColorAndroid='grey' selectionColor='grey' />
+            <TextInput placeholder="Category" underlineColorAndroid='grey' selectionColor='grey' />
 
-      </View>
-        <TextInput placeholder="Title" />
-        <TextInput placeholder="Category" />
-        <TextInput placeholder="Tags" />
-        <TextInput placeholder="Description" />
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => alert("Save this post")}
+            <TextInput placeholder="Tags" underlineColorAndroid='grey' selectionColor='grey' />
+
+            <TextInput
+              placeholder="Description"
+              multiline={true}
+              numberOfLines={5}
+              scrollEnabled={true}
+              editable = {true}
+              {...this.props}
+              //underlineColorAndroid='grey' selectionColor='grey'
+              style={{borderColor: 'grey', borderRadius: 10, borderWidth: 1, marginTop: 10, marginBottom: 20}}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 50
+            }}
           >
-            <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
-              Save
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button2}
-            onPress={() => alert("Publish this post")}
-          >
-            <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
-              Publish
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {/* <Text style={styles.todayText}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => alert("Save this post")}
+            >
+              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+                Save
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() => alert("Publish this post")}
+            >
+              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+                Publish
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <Text style={styles.todayText}>
           Go Live
         </Text>
         <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
         >
         </Image> */}
-      </View>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -148,10 +196,8 @@ const styles = StyleSheet.create({
     color: "black"
   },
   container: {
-    flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF"
+    alignItems: "center"
   },
   button: {
     alignItems: "center",
@@ -159,7 +205,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#003366",
     borderRadius: 25,
     height: 40,
-    width: 150,
+    width: 120,
     marginTop: 10
   },
   button2: {
@@ -169,7 +215,18 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginTop: 10,
     height: 40,
-    width: 150,
+    width: 120,
     marginLeft: 20
+  },
+  avatarContainer: {
+    borderColor: "#9B9B9B",
+    borderWidth: 1 / PixelRatio.get(),
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  avatar: {
+    borderRadius: 75,
+    width: 130,
+    height: 130
   }
 });

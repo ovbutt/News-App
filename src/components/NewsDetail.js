@@ -18,9 +18,15 @@ export default class NewsDetail extends Component {
     super(props);
     this.state = { data: this.props.navigation.state.params.data };
   }
+  componentWillUnmount(){
+    console.log('Component Will Unmount Called')
+  }
   static navigationOptions = {
     headerTitle: "News Details"
   };
+  
+  
+
   render() {
     const { data } = this.state;
     return (

@@ -17,36 +17,38 @@ import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 
 const ACCESS_TOKEN = "access_token";
+const ACCESS_EMAIL = "access_email";
+const ACCESS_NAME = "access_name";
 export default class Pages extends Component {
   constructor(props) {
     super(props);
     this.state = { token: "", fullName: "", email: "", loading2: true, dataSource: [] };
   }
   static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-contact" color={tintColor} size={30} />
-    )
+    header : null
   };
 
   async getToken() {
     const { fullName, email } = this.state;
     try {
       let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-      this.setState({ token: token });
-      axios
-        .post("http://198.245.53.50:5000/api/users/profile", {
-          token: token
-        })
-        .then(response => {
-          console.log(response);
-          this.setState({
-            fullName: response.data.fullName,
-            email: response.data.email
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      let fullName = await AsyncStorage.getItem(ACCESS_NAME);
+      let email = await AsyncStorage.getItem(ACCESS_EMAIL);
+      this.setState({ token: token, fullName:fullName, email: email });
+      // axios
+      //   .post("http://198.245.53.50:5000/api/users/profile", {
+      //     token: token
+      //   })
+      //   .then(response => {
+      //     console.log(response);
+      //     this.setState({
+      //       fullName: response.data.fullName,
+      //       email: response.data.email
+      //     });
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
       console.log("Token is", token);
       //this.removeToken();
     } catch (error) {
@@ -60,6 +62,8 @@ export default class Pages extends Component {
   async removeToken() {
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(ACCESS_EMAIL);
+      await AsyncStorage.removeItem(ACCESS_NAME);
       console.log("Token removed");
       {this.props.navigation.navigate('Login')}
       //this.getToken();
@@ -138,7 +142,7 @@ export default class Pages extends Component {
   render() {
     const { fullName, email } = this.state;
     const { push } = this.props.navigation;
-    console.log(fullName, email);
+    console.log('Name:',fullName, 'Email:' , email);
     return (
       <ImageBackground
         source={require('../../thum/profileWallpaper.jpg')}

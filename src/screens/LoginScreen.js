@@ -14,6 +14,8 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const ACCESS_TOKEN = "access_token";
+const ACCESS_EMAIL = "access_email";
+const ACCESS_NAME = "access_name";
 
 
 export default class LoginScreen extends Component {
@@ -25,14 +27,18 @@ export default class LoginScreen extends Component {
       error: "",
       loading: false,
       hidePassword: true,
-      token: ""
+      token: "",
+      userEmail: '',
+      userName: '',
     };
   }
 
   async storeToken() {
-    const { token } = this.state;
+    const { token, userEmail, userName } = this.state;
     try {
       await AsyncStorage.setItem(ACCESS_TOKEN, token);
+      await AsyncStorage.setItem(ACCESS_EMAIL, userEmail);
+      await AsyncStorage.setItem(ACCESS_NAME, userName);
       console.log("Token Saved", token);
       //this.getToken();
     } catch (error) {
@@ -45,27 +51,42 @@ export default class LoginScreen extends Component {
   };
   onLoginButtonPress() {
     const { email, password } = this.state;
+    const emailCheckRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     this.setState({ error: "", loading: true });
 
-    axios
-      .post("http://198.245.53.50:5000/api/sign-in", {
-        email: email,
-        password: password
-      })
-      .then(response => {
-        console.log(response);
-        this.setState({ token: response.data.token });
-      })
-      .then(this.storeToken.bind(this))
-      .then(this.onLoginSuccess.bind(this))
-      .then(() => {
-        this.props.navigation.navigate("App");
-      })
-      .catch(this.onloginFailure.bind(this));
+    if (!email.length) {
+      alert("Email cannot be empty");
+      this.setState({ loading: false });
+    } else if (!emailCheckRegex.test(email)) {
+      alert("Invalid Email, Please enter a valid Email (e.g example@gmail.com)");
+      this.setState({ loading: false });
+    } else if (!password.length) {
+      alert("Password cannot be empty");
+      this.setState({ loading: false });
+    } else if (password.length < 6) {
+      alert("Password must be atleast 6 characters");
+      this.setState({ loading: false });
+    } else {
+      axios
+        .post("http://198.245.53.50:5000/api/sign-in", {
+          email: email,
+          password: password
+        })
+        .then(response => {
+          console.log(response);
+          this.setState({ token: response.data.token, userEmail: response.data.user.email, userName: response.data.user.fullName  });
+        })
+        .then(this.storeToken.bind(this))
+        .then(this.onLoginSuccess.bind(this))
+        .then(() => {
+          this.props.navigation.navigate("App");
+        })
+        .catch(this.onloginFailure.bind(this));
+    }
   }
 
   onLoginSuccess() {
-    this.setState({ 
+    this.setState({
       password: "",
       loading: false
     });
@@ -116,50 +137,90 @@ export default class LoginScreen extends Component {
             >
               Log In
             </Text>
-            <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%'}} >
-              <Icon name='ios-mail' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-            <TextInput
-              fontSize={20}
-              placeholder="example@gmail.com"
-              autoCorrect={false}
-              onChangeText={email => this.setState({ email })}
-              value={this.state.email}
-              placeholderTextColor="white"
-              style={{ color: "white", height: '100%', width: '75%' }}
-              selectionColor="white"
-              underlineColorAndroid="white"
-              autoCapitalize = "none"
-            />
-            </View>
-            <View style={{flexDirection: 'row' , borderColor: 'white', borderWidth: 1, borderRadius: 25, height: '8%', width: '70%', marginTop: 20}} >
-              <Icon name='ios-lock' size={25} style={{color: 'white', paddingLeft: 15, paddingTop: 8, paddingRight: 10}}/>
-            <TextInput
-              fontSize={20}
-              placeholder="Password"
-              secureTextEntry={this.state.hidePassword}
-              onChangeText={password => this.setState({ password })}
-              value={this.state.password}
-              placeholderTextColor="white"
-              style={{ color: "white", height: '100%', width: '70%' }}
-              selectionColor="white"
-              underlineColorAndroid="white"
-              autoCapitalize = "none"
-            />
-            <TouchableOpacity
-              onPress={this.toggleShowButton.bind(this)}
-              style={styles.showButton}
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%"
+              }}
             >
-              <Icon style={{ color: "white" }} name={this.state.hidePassword ? "ios-eye" : "ios-eye-off"} size={25}/>
-            </TouchableOpacity>
+              <Icon
+                name="ios-mail"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="example@gmail.com"
+                autoCorrect={false}
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "75%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+                autoCapitalize="none"
+              />
             </View>
-            
+            <View
+              style={{
+                flexDirection: "row",
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 25,
+                height: "8%",
+                width: "70%",
+                marginTop: 20
+              }}
+            >
+              <Icon
+                name="ios-lock"
+                size={25}
+                style={{
+                  color: "white",
+                  paddingLeft: 15,
+                  paddingTop: 8,
+                  paddingRight: 10
+                }}
+              />
+              <TextInput
+                fontSize={20}
+                placeholder="Password"
+                secureTextEntry={this.state.hidePassword}
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                placeholderTextColor="white"
+                style={{ color: "white", height: "100%", width: "70%" }}
+                selectionColor="white"
+                underlineColorAndroid="white"
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                onPress={this.toggleShowButton.bind(this)}
+                style={styles.showButton}
+              >
+                <Icon
+                  style={{ color: "white" }}
+                  name={this.state.hidePassword ? "ios-eye" : "ios-eye-off"}
+                  size={25}
+                />
+              </TouchableOpacity>
+            </View>
+
             {this.renderButton()}
             <TouchableOpacity
               style={styles.button2}
               onPress={() => this.props.navigation.navigate("Signup")}
             >
               <Text style={{ color: "white", fontSize: 18, fontWeight: "400" }}>
-                
                 Create Account
               </Text>
             </TouchableOpacity>
@@ -213,6 +274,5 @@ const styles = StyleSheet.create({
   showButton: {
     paddingTop: 8,
     paddingLeft: 10
-
   }
 });

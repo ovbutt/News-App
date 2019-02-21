@@ -10,8 +10,6 @@ import Today from "./src/screens/Today";
 import Discover from "./src/screens/Discover";
 import Search from "./src/screens/Search";
 import Pages from "./src/screens/Pages";
-import BreakingPosts from './src/components/BreakingPost'
-import OtherPosts from './src/components/OtherPosts'
 import NewsDetail from './src/components//NewsDetail'
 import Icon from "react-native-vector-icons/Ionicons";
 export default class App extends Component {
@@ -56,7 +54,15 @@ const TodayNavigator = createStackNavigator(
         {
           GoLive : Today,
         //  CategoriesView : CategoriesView,
-          NewsDetail : NewsDetail
+          NewsDetail : NewsDetail,
+      
+        }
+      )
+      const ProfileNavigator = createStackNavigator(
+        {
+          Profile : Pages,
+        //  CategoriesView : CategoriesView,
+          NewsDetail : NewsDetail,
       
         }
       )
@@ -75,11 +81,12 @@ const TodayNavigator = createStackNavigator(
         screen: SearchNavigator
       },
       Profile: {
-        screen: Pages,
+        screen: ProfileNavigator,
       }
     },
     {
-      animationEnabled: true,
+      lazy: true,
+      animationEnabled : true,
       swipeEnabled: true,
       tabBarPosition: "bottom",
       tabBarOptions: {
@@ -103,6 +110,10 @@ const TodayNavigator = createStackNavigator(
           else if(routeName === 'GoLive')
           {
             iconName = 'ios-add-circle'
+          }
+          else if(routeName === 'Profile')
+          {
+            iconName = 'ios-contact'
           }
           return <Icon name={iconName} size={25} color={tintColor} />;
         },

@@ -26,7 +26,7 @@ class CategoriesView extends Component {
     // tabBarIcon: ({ tintColor }) => (
     //   <Icon name="ios-search" color={tintColor}  size={30} />
     // )
-    header: null
+    headerTitle : 'Categories'
   };
   closeActivityIndicator = () => setTimeout(() => this.setState({
     loading: false
@@ -85,6 +85,33 @@ class CategoriesView extends Component {
       );
     }
   }
+  // renderFooter=()=> {
+  //   if(this.state.refreshing){
+  //   return (
+  //     <View
+  //       style={{
+  //         paddingVertical: 20,
+  //         borderTopWidth: 1,
+  //         borderTopColor: "#CED0CE"
+  //       }}
+  //     >
+  //       {this.state.refreshing && (
+  //         <ActivityIndicator size="large" color="white" />
+  //       )}
+        
+  //     </View>
+  //   );}
+  //   else {return null}
+  // }
+
+  handleLoadMore = () => {
+    console.warn('HandleLoadMore')
+    // this.setState({refreshing: true})
+    // this.closeRefreshingIndicator();
+    // this.setState({ page: this.state.page + 1 }, () => {
+    //   this.getLatestPosts();
+    // });
+  };
 
   render() {
     
@@ -107,6 +134,9 @@ class CategoriesView extends Component {
           renderItem={this.renderItem}
           keyExtractor={item => item._id}
           numColumns={2}
+          //ListFooterComponent={this.renderFooter}
+          onEndReached={this.handleLoadMore}
+          onEndReachedThreshold={1}
         />
         
       </View>
