@@ -19,10 +19,12 @@ import axios from "axios";
 const ACCESS_TOKEN = "access_token";
 const ACCESS_EMAIL = "access_email";
 const ACCESS_NAME = "access_name";
+const ACCESS_ID = "access_id";
 export default class Pages extends Component {
   constructor(props) {
     super(props);
     this.state = { token: "", fullName: "", email: "", loading2: true, dataSource: [] };
+    this.getToken();
   }
   static navigationOptions = {
     header : null
@@ -56,7 +58,7 @@ export default class Pages extends Component {
     }
   }
   componentWillMount() {
-    this.getToken();
+    //this.getToken();
     this.getLatestPosts();
   }
   async removeToken() {
@@ -64,6 +66,7 @@ export default class Pages extends Component {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       await AsyncStorage.removeItem(ACCESS_EMAIL);
       await AsyncStorage.removeItem(ACCESS_NAME);
+      await AsyncStorage.removeItem(ACCESS_ID);
       console.log("Token removed");
       {this.props.navigation.navigate('Login')}
       //this.getToken();

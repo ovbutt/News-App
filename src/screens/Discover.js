@@ -302,7 +302,7 @@ export default class Discover extends Component {
                 //     </Text>
                 //   ) : null
                 // }
-                ListFooterComponent={this.renderFooter}
+                //ListFooterComponent={this.renderFooter}
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.1}
               />

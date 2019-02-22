@@ -16,6 +16,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 const ACCESS_TOKEN = "access_token";
 const ACCESS_EMAIL = "access_email";
 const ACCESS_NAME = "access_name";
+const ACCESS_ID = "access_id";
 
 export default class SignupScreen extends Component {
   constructor() {
@@ -29,18 +30,20 @@ export default class SignupScreen extends Component {
       token: "",
       userEmail: '',
       userName: '',
+      userId: '',
     };
     //this.getTokenFromLoginRequest = this.getTokenFromLoginRequest.bind(this)
   }
 
-  async storeToken(token, userEmail, userName) {
+  async storeToken(token, userEmail, userName, userId) {
     //const { token, userName, userEmail } = this.state;
     //console.log('states', token, userName, userEmail)
     try {
       await AsyncStorage.setItem(ACCESS_TOKEN, token);
       await AsyncStorage.setItem(ACCESS_NAME, userName);
       await AsyncStorage.setItem(ACCESS_EMAIL, userEmail);
-      console.log("Token Saved", token);
+      await AsyncStorage.setItem(ACCESS_ID, userId);
+      console.log("Token Saved", token, userId);
     } catch (error) {
       console.log("Token cannot be saved");
     }
@@ -61,8 +64,9 @@ export default class SignupScreen extends Component {
         let token = response.data.token;
         let userEmail = response.data.user.email
         let userName = response.data.user.fullName
-        console.log('states', token, userName, userEmail)
-        this.storeToken(token, userEmail, userName )
+        let userId = response.data.user._id
+        console.log('states', token, userName, userEmail, userId)
+        this.storeToken(token, userEmail, userName, userId )
       })
      //.then(this.storeToken(token, userEmail, ));
   }

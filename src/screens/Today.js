@@ -12,12 +12,22 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
 import { Header, Left, Right } from "native-base";
-
+import axios from "axios";
 
 export default class Today extends Component {
   constructor(props) {
     super(props);
-    this.state = { avatarSource: null, videoSource: null };
+    this.state = {
+      avatarSource: null,
+      videoSource: null,
+      title: "",
+      category: "",
+      tags: "",
+      description: "",
+      publish: false,
+      breaking: false,
+      photoUrl : ''
+    };
 
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
@@ -30,7 +40,7 @@ export default class Today extends Component {
       videoQuality: "medium"
     };
 
-    ImagePicker.launchCamera(options, (response) => {
+    ImagePicker.launchCamera(options, response => {
       console.log("Response = ", response);
 
       if (response.didCancel) {
@@ -52,7 +62,7 @@ export default class Today extends Component {
     //   <TouchableOpacity  onPress={()=>this.selectPhotoTapped.bind(this)}>
     //   <Icon
     //     name="tv"
-       
+
     //     size={30}
     //     style={{ marginRight: 20, color: "#000" }}
     //   />
@@ -80,36 +90,89 @@ export default class Today extends Component {
       } else if (response.customButton) {
         console.log("User tapped custom button: ", response.customButton);
       } else {
-        let source = { uri: response.uri };
+        //let source = { uri: response.uri };
 
         // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        let source = { uri: "data:image/jpeg;base64," + response.data };
 
         this.setState({
-          avatarSource: source
+          avatarSource: source,
+          photoUrl: "data:image/jpeg;base64," + response.data
         });
       }
     });
   }
 
+  onPublishButton(){
+    const {
+      title,
+      category,
+      tags,
+      description,
+      publish,
+      breaking,
+      photoUrl
+    } = this.state;
+    //this.setState({publish: true})
+    console.log(
+      "Data in State:",
+      "Title: ",
+      title,
+      "Category: ",
+      category,
+      "tags: ",
+      tags,
+      "description: ",
+      description,
+      "photoUrl: ",
+      photoUrl
+    );
+    axios
+      .post("http://198.245.53.50:5000/api/posts/add", {
+        title: title,
+        category: category,
+        tags: tags,
+        description: description,
+        publish: true,
+        breaking: false,
+        photoUrl: photoUrl
+      })
+      .then(response => {
+        console.log("Post Response", response);
+      })
+      .catch(error => {
+        console.log("Post Error", error);
+      });
+  };
 
   render() {
     return (
-      
       <ScrollView>
-        <Header style={{backgroundColor: 'white'}}>
-        <Left>
-          <Text style={{color: 'black', fontSize: 18, fontWeight: 'bold', marginLeft: 20}}>Go Live</Text>
-        </Left>
+        <Header style={{ backgroundColor: "white" }}>
+          <Left>
+            <Text
+              style={{
+                color: "black",
+                fontSize: 18,
+                fontWeight: "bold",
+                marginLeft: 20
+              }}
+            >
+              Go Live
+            </Text>
+          </Left>
           <Right>
-          <TouchableOpacity onPress={()=>{this.selectVideoTapped()}} >
-       <Icon
-        name="tv"
-        size={30}
-        style={{ marginRight: 20, color: "#000" }}
-        
-      />
-      </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.selectVideoTapped();
+              }}
+            >
+              <Icon
+                name="tv"
+                size={30}
+                style={{ marginRight: 20, color: "#000" }}
+              />
+            </TouchableOpacity>
           </Right>
         </Header>
         <View style={{ marginTop: 20 }}>
@@ -134,20 +197,50 @@ export default class Today extends Component {
             </TouchableOpacity>
           </View>
           <View style={{ marginLeft: 10, marginRight: 10 }}>
-            <TextInput placeholder="Title" underlineColorAndroid='grey' selectionColor='grey' />
-            <TextInput placeholder="Category" underlineColorAndroid='grey' selectionColor='grey' />
-
-            <TextInput placeholder="Tags" underlineColorAndroid='grey' selectionColor='grey' />
+            <TextInput
+              fontSize={20}
+              onChangeText={title => this.setState({ title })}
+              value={this.state.title}
+              placeholder="Title"
+              underlineColorAndroid="grey"
+              selectionColor="grey"
+            />
+            <TextInput
+              fontSize={20}
+              onChangeText={category => this.setState({ category })}
+              value={this.state.category}
+              placeholder="Category"
+              underlineColorAndroid="grey"
+              selectionColor="grey"
+            />
 
             <TextInput
+              fontSize={20}
+              onChangeText={tags => this.setState({ tags })}
+              value={this.state.tags}
+              placeholder="Tags"
+              underlineColorAndroid="grey"
+              selectionColor="grey"
+            />
+
+            <TextInput
+              fontSize={20}
+              onChangeText={description => this.setState({ description })}
+              value={this.state.description}
               placeholder="Description"
               multiline={true}
               numberOfLines={5}
               scrollEnabled={true}
-              editable = {true}
+              editable={true}
               {...this.props}
               //underlineColorAndroid='grey' selectionColor='grey'
-              style={{borderColor: 'grey', borderRadius: 10, borderWidth: 1, marginTop: 10, marginBottom: 20}}
+              style={{
+                borderColor: "grey",
+                borderRadius: 10,
+                borderWidth: 1,
+                marginTop: 10,
+                marginBottom: 20
+              }}
             />
           </View>
           <View
@@ -168,7 +261,7 @@ export default class Today extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button2}
-              onPress={() => alert("Publish this post")}
+              onPress={() => {this.onPublishButton()}}
             >
               <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
                 Publish
