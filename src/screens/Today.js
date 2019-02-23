@@ -7,7 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  PixelRatio
+  PixelRatio,
+  ActivityIndicator,
+  FlatList,
+  ImageBackground
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
@@ -26,11 +29,14 @@ export default class Today extends Component {
       description: "",
       publish: false,
       breaking: false,
-      photoUrl : ''
+      photoUrl: "",
+      loading2: true, dataSource: []
     };
 
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
+ 
+    this.getLatestPosts()
   }
   selectVideoTapped() {
     const options = {
@@ -103,7 +109,7 @@ export default class Today extends Component {
     });
   }
 
-  onPublishButton(){
+  onPublishButton() {
     const {
       title,
       category,
@@ -143,139 +149,236 @@ export default class Today extends Component {
       .catch(error => {
         console.log("Post Error", error);
       });
+  }
+
+  onSaveButton() {
+    const {
+      title,
+      category,
+      tags,
+      description,
+      publish,
+      breaking,
+      photoUrl
+    } = this.state;
+    //this.setState({publish: true})
+    console.log(
+      "Data in State:",
+      "Title: ",
+      title,
+      "Category: ",
+      category,
+      "tags: ",
+      tags,
+      "description: ",
+      description,
+      "photoUrl: ",
+      photoUrl
+    );
+    axios
+      .post("http://198.245.53.50:5000/api/posts/add", {
+        title: title,
+        category: category,
+        tags: tags,
+        description: description,
+        publish: false,
+        breaking: false,
+        photoUrl: photoUrl
+      })
+      .then(response => {
+        console.log("Post Response", response);
+      })
+      .catch(error => {
+        console.log("Post Error", error);
+      });
+  }
+  closeActivityIndicator2 = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          loading2: false
+        }),
+      3000
+    );
+  getLatestPosts() {
+    this.closeActivityIndicator2();
+    axios
+      .get("http://198.245.53.50:5000/api/posts/4")
+      .then(response => {
+        console.log(response);
+        this.setState({
+          dataSource:
+            this.state.page === 1
+              ? response.data.posts
+              : [...this.state.dataSource, ...response.data.posts]
+        });
+      })
+      .then(() => console.log("DataSource", this.state.dataSource))
+      .catch(function(error) {
+        console.log("error", error);
+        //this.setState({refreshing: false})
+      });
+  }
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "23%"
+        }}
+      />
+    );
   };
+  renderItem = ({ item }) => {
+    //item = item.filter(item=>item.breaking === false)
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate("NewsDetail", { data: item });
+        }}
+      >
+        <View style={{ flexDirection: "row", width: 380 }}>
+          <Image
+            imageStyle={{ borderRadius: 10 }}
+            source={{ uri: item.photoUrl }}
+            style={styles.imageThumbStyle}
+          />
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
+
+            <Text style={styles.titleTextStyle}>
+              {item.title.substring(0, 30) + "..."}
+            </Text>
+            <Text style={{ color: "grey" }}>
+              {item.createdAt.substring(0, 10)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
 
   render() {
     return (
-      <ScrollView>
-        <Header style={{ backgroundColor: "white" }}>
-          <Left>
+      <View style={{flex:1}}>
+        <ScrollView>
+          <Header style={{ backgroundColor: "white" }}>
+            <Left>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginLeft: 20
+                }}
+              >
+                Go Live
+              </Text>
+            </Left>
+            <Right>
+              <TouchableOpacity
+                onPress={() => {
+                  this.selectVideoTapped();
+                }}
+              >
+                <Icon
+                  name="tv"
+                  size={30}
+                  style={{ marginRight: 20, color: "#000" }}
+                />
+              </TouchableOpacity>
+            </Right>
+          </Header>
+
+          <View>
             <Text
               style={{
                 color: "black",
-                fontSize: 18,
+                fontSize: 25,
                 fontWeight: "bold",
-                marginLeft: 20
+                marginLeft: 20,
+                marginTop: 20
               }}
             >
-              Go Live
+              My Posts
             </Text>
-          </Left>
-          <Right>
-            <TouchableOpacity
-              onPress={() => {
-                this.selectVideoTapped();
-              }}
-            >
-              <Icon
-                name="tv"
-                size={30}
-                style={{ marginRight: 20, color: "#000" }}
-              />
-            </TouchableOpacity>
-          </Right>
-        </Header>
-        <View style={{ marginTop: 20 }}>
-          <View style={styles.container}>
-            <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
-              <View
-                style={[
-                  styles.avatar,
-                  styles.avatarContainer,
-                  { marginBottom: 20 }
-                ]}
-              >
-                {this.state.avatarSource === null ? (
-                  <Text>Select a Photo</Text>
-                ) : (
-                  <Image
-                    style={styles.avatar}
-                    source={this.state.avatarSource}
-                  />
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ marginLeft: 10, marginRight: 10 }}>
-            <TextInput
-              fontSize={20}
-              onChangeText={title => this.setState({ title })}
-              value={this.state.title}
-              placeholder="Title"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            />
-            <TextInput
-              fontSize={20}
-              onChangeText={category => this.setState({ category })}
-              value={this.state.category}
-              placeholder="Category"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            />
-
-            <TextInput
-              fontSize={20}
-              onChangeText={tags => this.setState({ tags })}
-              value={this.state.tags}
-              placeholder="Tags"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            />
-
-            <TextInput
-              fontSize={20}
-              onChangeText={description => this.setState({ description })}
-              value={this.state.description}
-              placeholder="Description"
-              multiline={true}
-              numberOfLines={5}
-              scrollEnabled={true}
-              editable={true}
-              {...this.props}
-              //underlineColorAndroid='grey' selectionColor='grey'
+            <View
               style={{
-                borderColor: "grey",
-                borderRadius: 10,
-                borderWidth: 1,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
                 marginTop: 10,
-                marginBottom: 20
+                paddingLeft: "5%",
+                paddingRight: "5%",
+                marginBottom: 10
               }}
-            />
+            >
+              {this.state.loading2 && (
+                <ActivityIndicator
+                  size="large"
+                  animating={this.state.loading2}
+                  color="#003366"
+                />
+              )}
+              <FlatList
+                data={this.state.dataSource}
+                keyExtractor={item => item._id}
+                renderItem={this.renderItem}
+                ItemSeparatorComponent={this.renderSeparator}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                //refreshing={this.state.refreshing}
+                //onRefresh={this.handleRefresh}
+                // ListHeaderComponent={() =>
+                //   !this.state.dataSource.length ? (
+                //     <Text style={{ fontSize: 16, color: "white" }}>
+                //       No Latest News
+                //     </Text>
+                //   ) : null
+                // }
+                // ListFooterComponent={this.renderFooter}
+                // //onEndReached={this.handleLoadMore}
+                // onEndReachedThreshold={0.5}
+              />
+              {/* </View> */}
+              {/* LatestPostsDataFinish */}
+            </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
+          {/* <View
+            style={{ flex: 1,
               justifyContent: "center",
-              marginBottom: 50
-            }}
+              alignItems: "center" , marginTop: 200}}
           >
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => alert("Save this post")}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Save
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button2}
-              onPress={() => {this.onPublishButton()}}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Publish
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {/* <Text style={styles.todayText}>
-          Go Live
-        </Text>
-        <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
+            <Text style={{ color: "black", fontWeight: "bold", fontSize: 20 }}>
+              Press "+" button to Add new Post.
+            </Text>
+          </View> */}
+        </ScrollView>
+
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 60,
+            position: "absolute",
+            bottom: 15,
+            right: 15,
+            height: 60,
+            backgroundColor: "#003366",
+            borderRadius: 100
+          }}
+          onPress={() => {
+            this.props.navigation.navigate("PostForm");
+          }}
         >
-        </Image> */}
-        </View>
-      </ScrollView>
+          <Icon name="plus" size={25} color="#fff" />
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -321,5 +424,31 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 130,
     height: 130
+  },
+  imageThumbStyle: {
+    height: 80,
+    width: 80,
+    marginTop: 10,
+    marginLeft: 10,
+    marginBottom: 2,
+    marginRight: 10,
+    borderRadius: 5
+  },
+  titleTextStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 16,
+    color: "black",
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  catagoryStyle: {
+    backgroundColor: "transparent",
+    fontFamily: "Arial",
+    fontWeight: "500",
+    fontSize: 14,
+    color: "grey",
+    paddingTop: 10
   }
 });

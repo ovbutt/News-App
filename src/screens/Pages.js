@@ -20,6 +20,7 @@ const ACCESS_TOKEN = "access_token";
 const ACCESS_EMAIL = "access_email";
 const ACCESS_NAME = "access_name";
 const ACCESS_ID = "access_id";
+
 export default class Pages extends Component {
   constructor(props) {
     super(props);

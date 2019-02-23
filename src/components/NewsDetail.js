@@ -69,6 +69,7 @@ export default class NewsDetail extends Component {
       })
       .then(response => {
         console.log("Response Comment: ", response);
+        this.setState({commentPost: ""})
       })
       .catch(error => {
         console.log("Error Comment: ", error);
@@ -78,25 +79,31 @@ export default class NewsDetail extends Component {
     //item = item.filter(item=>item.breaking === false)
     return (
       <TouchableOpacity
-      // onPress={() => {
-      //   this.props.navigation.navigate("NewsDetail", { data: item });
-      // }}
+        // onPress={() => {
+        //   this.props.navigation.navigate("NewsDetail", { data: item });
+        // }}
+        onLongPress={() => alert("Long Pressed")}
       >
-        {/* <View style={{ flexDirection: "row", width: 380 }}>
-          <Image
+        <View style={{ flexDirection: "row", width: 380 }}>
+          {/* <Image
             imageStyle={{ borderRadius: 10 }}
             source={{ uri: item.photoUrl }}
             style={styles.imageThumbStyle}
           /> */}
-        <View style={{ flexDirection: "column" }}>
-          {/* <Text style={styles.catagoryStyle}>{item.comment}</Text> */}
+          <Icon
+            name="ios-contact"
+            size={35}
+            style={{ color: "grey", marginTop: 10, marginRight: 10 }}
+          />
+          <View style={{ flexDirection: "column" }}>
+            {/* <Text style={styles.catagoryStyle}>{item.comment}</Text> */}
 
-          <Text style={styles.titleTextStyle}>{item.comment}</Text>
-          {/* <Text style={{ color: "white" }}>
+            <Text style={styles.titleTextStyle}>{item.comment}</Text>
+            <Text style={{ color: "grey", marginLeft: 200, marginBottom: 10 }}>
               {item.createdAt.substring(0, 10)}
-            </Text> */}
+            </Text>
+          </View>
         </View>
-        {/* </View> */}
       </TouchableOpacity>
     );
   };
@@ -105,9 +112,9 @@ export default class NewsDetail extends Component {
       <View
         style={{
           height: 1,
-          width: "86%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "23%"
+          width: "100%",
+          backgroundColor: "#CED0CE"
+          //marginLeft: "23%"
         }}
       />
     );
@@ -140,11 +147,11 @@ export default class NewsDetail extends Component {
                     marginTop: 2
                   }}
                 >
-                  Go Live
+                  News
                 </Text>
               </View>
             </Left>
-            <Right />
+            <Right/>
           </Header>
           <Text
             style={{
@@ -206,17 +213,28 @@ export default class NewsDetail extends Component {
             <HTMLView value={data.description} stylesheet={styles} />
           </View>
 
-          <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold', marginLeft: 20}}>Comments</Text>
+          <Text
+            style={{
+              color: "black",
+              fontSize: 25,
+              fontWeight: "bold",
+              marginLeft: 20
+            }}
+          >
+            Comments
+          </Text>
 
-          <View  style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 10,
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginBottom: 80
-              }}>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 10,
+              paddingLeft: "5%",
+              paddingRight: "5%",
+              marginBottom: 80
+            }}
+          >
             <FlatList
               data={data.commentsGot}
               keyExtractor={item => item._id}
@@ -289,7 +307,7 @@ const styles = StyleSheet.create({
   titleTextStyle: {
     backgroundColor: "transparent",
     fontFamily: "Arial",
-    fontWeight: "500",
+    fontWeight: "100",
     fontSize: 16,
     color: "black",
     paddingTop: 10,

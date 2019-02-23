@@ -19,10 +19,10 @@ export default class Search extends Component {
   constructor() {
     super();
     this.state = {
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true,
+      // dataSource: [],
+      // search: "",
+      // loading: false,
+      // gotData: true,
 
       business: "Business",
       world: "World",
@@ -34,63 +34,63 @@ export default class Search extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    console.log("componentWillReceiveProps called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
-  componentWillUnmount(){
-    console.log("componentWillUnmount called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
+  // componentWillReceiveProps() {
+  //   console.log("componentWillReceiveProps called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
+  // componentWillUnmount(){
+  //   console.log("componentWillUnmount called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
 
-  componentWillFocus(){
-    console.log("componentWillFocus called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
+  // componentWillFocus(){
+  //   console.log("componentWillFocus called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
 
-  componentDidFocus(){
-    console.log("componentDidFocus called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
+  // componentDidFocus(){
+  //   console.log("componentDidFocus called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
 
-  componentWillBlur(){
-    console.log("componentWillBlur called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
-  componentDidBlur(){
-    console.log("componentDidBlur called.");
-    this.setState({
-      dataSource: [],
-      search: "",
-      loading: false,
-      gotData: true
-    });
-  };
+  // componentWillBlur(){
+  //   console.log("componentWillBlur called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
+  // componentDidBlur(){
+  //   console.log("componentDidBlur called.");
+  //   this.setState({
+  //     dataSource: [],
+  //     search: "",
+  //     loading: false,
+  //     gotData: true
+  //   });
+  // };
 
   static navigationOptions = {
     // tabBarIcon: ({ tintColor }) => (
@@ -99,94 +99,93 @@ export default class Search extends Component {
     header: null
   };
 
-  renderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          this.props.navigation.navigate("NewsDetail", { data: item })
-        }
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingLeft: "5%",
-            paddingRight: "5%"
-          }}
-        >
-          <Image
-            imageStyle={{ borderRadius: 10 }}
-            source={{ uri: item.photoUrl }}
-            style={styles.imageThumbStyle}
-          />
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
+  // renderItem = ({ item }) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() =>
+  //         this.props.navigation.navigate("NewsDetail", { data: item })
+  //       }
+  //     >
+  //       <View
+  //         style={{
+  //           flexDirection: "row",
+  //           paddingLeft: "5%",
+  //           paddingRight: "5%"
+  //         }}
+  //       >
+  //         <Image
+  //           imageStyle={{ borderRadius: 10 }}
+  //           source={{ uri: item.photoUrl }}
+  //           style={styles.imageThumbStyle}
+  //         />
+  //         <View style={{ flexDirection: "column" }}>
+  //           <Text style={styles.catagoryStyle}>{item.catagory}</Text>
 
-            <Text style={styles.titleTextStyle}>
-              {item.title.substring(0, 30) + "..."}
-            </Text>
-            <Text style={{ color: "white" }}>
-              {item.createdAt.substring(0, 10)}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-  closeRefreshingIndicator = () =>
-    setTimeout(
-      () =>
-        this.setState({
-          loading: false
-        }),
-      2000
-    );
+  //           <Text style={styles.titleTextStyle}>
+  //             {item.title.substring(0, 30) + "..."}
+  //           </Text>
+  //           <Text style={{ color: "white" }}>
+  //             {item.createdAt.substring(0, 10)}
+  //           </Text>
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // };
+  // closeRefreshingIndicator = () =>
+  //   setTimeout(
+  //     () =>
+  //       this.setState({
+  //         loading: false
+  //       }),
+  //     2000
+  //   );
 
-  gotData = () => {
-    if (!this.state.dataSource.length) {
-      this.setState({ gotData: false });
-    } else {
-      this.setState({ gotData: true });
-    }
-  };
-  searchIt() {
-    console.log("SearchState:", this.state.search);
-    this.closeRefreshingIndicator();
-    if(!this.state.search.length){
-      alert('Please enter a keyword to search')
-    }
-    else
-    {axios
-      .get("http://198.245.53.50:5000/api/search/" + this.state.search)
-      .then(response => {
-        console.log(response);
-        this.setState({ dataSource: response.data });
-        this.gotData();
-      })
-      .then(this.setState({ loading: false }))
-      .then(() => console.log("DataSource", this.state.dataSource))
-      .catch(function(error) {
-        console.log("error", error);
-      });
-    }//alert(`Search ${this.state.search}`);
-  }
+  // gotData = () => {
+  //   if (!this.state.dataSource.length) {
+  //     this.setState({ gotData: false });
+  //   } else {
+  //     this.setState({ gotData: true });
+  //   }
+  // };
+  // searchIt() {
+  //   console.log("SearchState:", this.state.search);
+  //   this.closeRefreshingIndicator();
+  //   if (!this.state.search.length) {
+  //     alert("Please enter a keyword to search");
+  //   } else {
+  //     axios
+  //       .get("http://198.245.53.50:5000/api/search/" + this.state.search)
+  //       .then(response => {
+  //         console.log(response);
+  //         this.setState({ dataSource: response.data });
+  //         this.gotData();
+  //       })
+  //       .then(this.setState({ loading: false }))
+  //       .then(() => console.log("DataSource", this.state.dataSource))
+  //       .catch(function(error) {
+  //         console.log("error", error);
+  //       });
+  //   } //alert(`Search ${this.state.search}`);
+  // }
 
-  renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: "70%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "23%"
-        }}
-      />
-    );
-  };
+  // renderSeparator = () => {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: 1,
+  //         width: "70%",
+  //         backgroundColor: "#CED0CE",
+  //         marginLeft: "23%"
+  //       }}
+  //     />
+  //   );
+  // };
 
   render() {
     //const {}
     const { search, loading } = this.state;
-    console.log('state: ', this.props.navigation.state)
+    console.log("state: ", this.props.navigation.state);
     return (
       <ImageBackground
         source={require("../../thum/cropLightBlue.jpg")}
@@ -194,7 +193,7 @@ export default class Search extends Component {
       >
         <View>
           <View style={{ marginTop: 30 }}>
-            <SearchBar
+            {/* <SearchBar
               showLoading={loading}
               platform="android"
               // cancelButtonTitle="Cancel"
@@ -222,9 +221,28 @@ export default class Search extends Component {
                   gotData: true
                 });
               }}
-            />
+            /> */}
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate("SearchResult");
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 50,
+                  backgroundColor: "white",
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name="ios-search" size={30} color="grey" />
+                <Text style={{marginLeft: 20, fontSize: 18, fontFamily: '700', color: 'grey'}}>Search</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          {!this.state.gotData && (
+          {/* {!this.state.gotData && (
             <View
               style={{
                 alignItems: "center",
@@ -236,8 +254,8 @@ export default class Search extends Component {
                 No News Found
               </Text>
             </View>
-          )}
-          <View style={{ marginBottom: 170 }}>
+          )} */}
+          {/* <View style={{ marginBottom: 170 }}>
             {this.state.dataSource.length ? (
               <FlatList
                 data={this.state.dataSource}
@@ -245,289 +263,294 @@ export default class Search extends Component {
                 renderItem={this.renderItem}
                 ItemSeparatorComponent={this.renderSeparator}
               />
-            ) : (
-              // <View style={styles.emptyListStyle}>
-              //   <Text style={styles.emptyMessageStyle}>The list is empty</Text>
-              // </View>
+            ) : ( */}
+          
+          {/* <View style={styles.emptyListStyle}>
+             <Text style={styles.emptyMessageStyle}>The list is empty</Text>
+          
+          </View> */}
+          
+            <View style={styles.containerCategories}>
+              <View>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 26,
+                    color: "white",
+                    marginLeft: 10,
+                    marginBottom: 10,
+                    marginTop: 10
+                  }}
+                >
+                  Popular Categories
+                </Text>
+              </View>
               <ScrollView>
-                <View style={styles.containerCategories}>
-                  <View>
-                    <Text
+              <View style={{ flexDirection: "row", marginTop: 5 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Business"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/business.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle}
+                  >
+                    <View
                       style={{
-                        fontWeight: "bold",
-                        fontSize: 26,
-                        color: "white",
-                        marginLeft: 10,
-                        marginBottom: 5,
-                        marginTop: 20
+                        justifyContent: "center",
+                        paddingTop: 60,
+                        alignItems: "flex-start",
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      Popular Categories
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", marginTop: 5 }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Business"
-                        });
-                      }}
-                    >
-                      <ImageBackground
-                        source={require("../../thum/business.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            paddingTop: 60,
-                            alignItems: "flex-start",
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.business}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "World"
-                        });
+                        {this.state.business}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "World"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/travel.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle2}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/travel.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle2}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.world}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{ flexDirection: "row", marginTop: 0 }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Fashion"
-                        });
+                        {this.state.world}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row", marginTop: 0 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Fashion"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/photography.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        alignItems: "flex-start",
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/photography.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            alignItems: "flex-start",
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.fashion}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Politics"
-                        });
+                        {this.state.fashion}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Politics"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/politic.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle2}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        alignItems: "flex-start",
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/politic.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle2}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            alignItems: "flex-start",
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.politics}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{ flexDirection: "row", marginTop: 10 }}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Sports"
-                        });
+                        {this.state.politics}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Sports"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/sports.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        alignItems: "flex-start",
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/sports.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            alignItems: "flex-start",
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.sports}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Health"
-                        });
+                        {this.state.sports}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Health"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/health.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle2}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/health.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle2}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.health}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
-                  <View style ={{marginBottom: 50}}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.props.navigation.navigate("CategoriesView", {
-                          category: "Science"
-                        });
+                        {this.state.health}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+              <View style={{ marginBottom: 80 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("CategoriesView", {
+                      category: "Science"
+                    });
+                  }}
+                >
+                  <ImageBackground
+                    source={require("../../thum/science.jpg")}
+                    imageStyle={{ borderRadius: 10 }}
+                    style={styles.ImageStyle}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                        paddingTop: 60,
+                        fontSize: 20,
+                        backgroundColor: "rgba()"
                       }}
                     >
-                      <ImageBackground
-                        source={require("../../thum/science.jpg")}
-                        imageStyle={{ borderRadius: 10 }}
-                        style={styles.ImageStyle}
+                      <Text
+                        style={{
+                          backgroundColor: "transparent",
+                          marginLeft: 10,
+                          fontFamily: "Arial",
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "white"
+                        }}
                       >
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignItems: "flex-start",
-                            paddingTop: 60,
-                            fontSize: 20,
-                            backgroundColor: "rgba()"
-                          }}
-                        >
-                          <Text
-                            style={{
-                              backgroundColor: "transparent",
-                              marginLeft: 10,
-                              fontFamily: "Arial",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              color: "white"
-                            }}
-                          >
-                            {this.state.science}
-                          </Text>
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                        {this.state.science}
+                      </Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
               </ScrollView>
-            )}
-          </View>
+            </View>
+            
+          
+          {/* )} */}
+          {/* </View> */}
           {/* <FlatList
           data={this.state.dataSource}
           keyExtractor={item => item._id}
@@ -832,14 +855,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-around"
   },
   ImageStyle: {
-    width: 170,
-    height: 100,
+    marginLeft: '2%',
+    width: 165,
+    height: 95,
     marginBottom: 15
   },
   ImageStyle2: {
-    width: 170,
-    height: 100,
+    width: 165,
+    height: 95,
     marginBottom: 15,
-    marginLeft: 20
+    marginLeft: 10,
+    marginRight: '2%'
   }
 });

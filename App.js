@@ -11,6 +11,8 @@ import Discover from "./src/screens/Discover";
 import Search from "./src/screens/Search";
 import Pages from "./src/screens/Pages";
 import NewsDetail from './src/components//NewsDetail'
+import PostForm from './src/components/PostForm'
+import SearchResult from './src/components/SearchResult' 
 import Icon from "react-native-vector-icons/Ionicons";
 export default class App extends Component {
 
@@ -42,6 +44,7 @@ const TodayNavigator = createStackNavigator(
     const SearchNavigator = createStackNavigator(
       {
        Search : Search,
+       SearchResult : SearchResult,
        CategoriesView : CategoriesView,
        NewsDetail : NewsDetail
     
@@ -53,7 +56,7 @@ const TodayNavigator = createStackNavigator(
       const GoLiveNavigator = createStackNavigator(
         {
           GoLive : Today,
-        //  CategoriesView : CategoriesView,
+          PostForm : PostForm,
           NewsDetail : NewsDetail,
       
         }

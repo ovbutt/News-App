@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
+import { Header, Left, Right } from "native-base";
+
 
 class CategoriesView extends Component {
   constructor(props) {
@@ -26,11 +28,12 @@ class CategoriesView extends Component {
     // tabBarIcon: ({ tintColor }) => (
     //   <Icon name="ios-search" color={tintColor}  size={30} />
     // )
-    headerTitle : 'Categories'
+    //headerTitle : 'Categories'
+    header : null
   };
   closeActivityIndicator = () => setTimeout(() => this.setState({
     loading: false
-  }), 5000)
+  }), 3000)
   componentWillMount() {
     this.closeActivityIndicator()
     axios
@@ -116,8 +119,37 @@ class CategoriesView extends Component {
   render() {
     
     return (
+      <ScrollView>
+      <Header style={{ backgroundColor: "white" }}>
+            <Left>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <Icon
+                    name="ios-arrow-back"
+                    size={30}
+                    style={{ color: "#000", marginLeft: 10, marginRight: 10 }}
+                  />
+                </TouchableOpacity>
+
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    marginLeft: 30,
+                    marginTop: 2
+                  }}
+                >
+                  {this.state.catagory}
+                </Text>
+              </View>
+            </Left>
+            <Right/>
+          </Header>
       <View style={styles.container}>
-        <Text
+        {/* <Text
           style={{
             fontSize: 26,
             margin: 10,
@@ -126,8 +158,8 @@ class CategoriesView extends Component {
           }}
         >
           {this.state.catagory}
-        </Text>
-        {this.state.loading && (<ActivityIndicator size='large' animating={this.state.loading}/>)}
+        </Text> */}
+        {this.state.loading && (<ActivityIndicator size='large'/>)}
         {/* {this.renderList()} */}
         <FlatList
           data={this.state.dataSource}
@@ -135,11 +167,12 @@ class CategoriesView extends Component {
           keyExtractor={item => item._id}
           numColumns={2}
           //ListFooterComponent={this.renderFooter}
-          onEndReached={this.handleLoadMore}
-          onEndReachedThreshold={1}
+          // onEndReached={this.handleLoadMore}
+          // onEndReachedThreshold={1}
         />
         
       </View>
+      </ScrollView>
     );
   }
 }
