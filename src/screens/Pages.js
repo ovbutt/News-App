@@ -119,7 +119,7 @@ export default class Pages extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate("NewsDetail", { data: item });
+          this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
         <View style={{ flexDirection: "row", width: 380 }}>

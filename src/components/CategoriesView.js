@@ -48,7 +48,7 @@ class CategoriesView extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate("NewsDetail", { data: item });
+          this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
         <ImageBackground

@@ -28,20 +28,14 @@ export default class Discover extends Component {
     };
   }
 
-  // state = { breaking: [] };
-
   static navigationOptions = {
-    // tabBarIcon: ({ tintColor }) => (
-    //   <Icon name="ios-today" color={tintColor} size={30} />
-    // )
     header: null
   };
   renderItem = ({ item }) => {
-    //item = item.filter(item=>item.breaking === false)
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate("NewsDetail", { data: item });
+          this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
         <View style={{ flexDirection: "row", width: 380 }}>
@@ -64,13 +58,13 @@ export default class Discover extends Component {
       </TouchableOpacity>
     );
   };
- 
+
   renderBreakingItem = ({ item }) => {
     return (
       <View style={styles.containerBig}>
         <TouchableOpacity
           onPress={() => {
-            this.props.navigation.navigate("NewsDetail", { data: item });
+            this.props.navigation.navigate("NewsDetail", { data: item._id });
           }}
         >
           <ImageBackground
@@ -134,7 +128,7 @@ export default class Discover extends Component {
     setTimeout(
       () =>
         this.setState({
-         refreshing: false
+          refreshing: false
         }),
       2000
     );
@@ -187,45 +181,40 @@ export default class Discover extends Component {
       });
   }
 
-  renderFooter=()=> {
-    if(this.state.refreshing)
-    {
-    return (
-      <View
-        style={{
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          borderTopColor: "#CED0CE"
-        }}
-      >
-        {this.state.refreshing && (
-          <ActivityIndicator size="large" color="white" />
-        )}
-      </View>
-    );
-  }
-  else {
-    return null
-  // <Text style={{color: 'white'}}>No more list to load</Text>
-}
-  }
+  renderFooter = () => {
+    if (this.state.refreshing) {
+      return (
+        <View
+          style={{
+            paddingVertical: 20,
+            borderTopWidth: 1,
+            borderTopColor: "#CED0CE"
+          }}
+        >
+          {this.state.refreshing && (
+            <ActivityIndicator size="large" color="white" />
+          )}
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
   handleRefresh() {
     this.setState({ refreshing: true });
   }
   handleLoadMore = () => {
-    //console.warn('HandleLoadMore')
-    if (this.state.refreshing){
+    if (this.state.refreshing) {
       return null;
     }
     this.setState(
-      (prevState) =>{ return { refreshing : true, page : prevState.page+1 }},
-      () => {this.getLatestPosts();}
-    )
-    // this.setState({refreshing: true})
-    // this.closeRefreshingIndicator();
-    // this.setState({ page: this.state.page + 1 }, () => {
-    //   this.getLatestPosts();
-    // });
+      prevState => {
+        return { refreshing: true, page: prevState.page + 1 };
+      },
+      () => {
+        this.getLatestPosts();
+      }
+    );
   };
   render() {
     return (
@@ -247,10 +236,6 @@ export default class Discover extends Component {
               {date}
             </Text>
             <Text style={styles.todayText}>Breaking</Text>
-            {/* <ScrollView
-              //horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            > */}
             {this.state.loading1 && (
               <ActivityIndicator
                 size="large"
@@ -268,7 +253,6 @@ export default class Discover extends Component {
                 showsHorizontalScrollIndicator={false}
               />
             </View>
-            {/* </ScrollView> */}
 
             <Text style={(style = styles.todayText)}>Latest Posts</Text>
             <View
@@ -291,23 +275,12 @@ export default class Discover extends Component {
               <FlatList
                 data={this.state.dataSource}
                 keyExtractor={item => item._id}
-                renderItem={this.renderItem}s
+                renderItem={this.renderItem}
+                s
                 ItemSeparatorComponent={this.renderSeparator}
-                //refreshing={this.state.refreshing}
-                //onRefresh={this.handleRefresh}
-                // ListHeaderComponent={() =>
-                //   !this.state.dataSource.length ? (
-                //     <Text style={{ fontSize: 16, color: "white" }}>
-                //       No Latest News
-                //     </Text>
-                //   ) : null
-                // }
-                //ListFooterComponent={this.renderFooter}
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.1}
               />
-              {/* </View> */}
-              
             </View>
           </ScrollView>
         </View>

@@ -16,19 +16,34 @@ import { Header, Left, Right } from "native-base";
 import axios from "axios";
 
 const ACCESS_ID = "access_id";
+
 export default class NewsDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.navigation.state.params.data,
+      propPostid : this.props.navigation.state.params.data ||'',
+      data: [],
       id: "",
-      commentPost: ""
+      commentPost: "",
+      //commentsGot: this.props.navigation.state.params.commentsGot
     };
     this.getToken();
   }
-  componentWillUnmount() {
-    console.log("Component Will Unmount Called");
-  }
+
+  componentWillMount(){
+    console.log('Idfromprops: ', this.state.propPostid)
+    const { commentsGot, data } = this.state;
+    axios.get('http://198.245.53.50:5000/api/postsById/' + this.state.propPostid)
+    .then(response => {
+     this.setState({propPostid: response.data._id, data: response.data})
+      console.log('DataState:',response.data.commentsGot)
+    })
+    .catch(error => console.log('PostById Error:', error))
+    // console.log("Data State:", data);
+    // this.setState({ commentsGot : data.commentsGot });
+    console.log("Comments Got:", commentsGot);
+  };
+
   static navigationOptions = {
     header: null
   };
@@ -36,16 +51,13 @@ export default class NewsDetail extends Component {
   async getToken() {
     try {
       let id = await AsyncStorage.getItem(ACCESS_ID);
-      // let fullName = await AsyncStorage.getItem(ACCESS_NAME);
-      // let email = await AsyncStorage.getItem(ACCESS_EMAIL);
       this.setState({ id: id });
-
       console.log("Id is", id);
-      //this.removeToken();
     } catch (error) {
       console.log("Cannot get token");
     }
   }
+
   onPostButtonPressed() {
     const { commentPost, id, data } = this.state;
     let postId = data._id;
@@ -69,12 +81,19 @@ export default class NewsDetail extends Component {
       })
       .then(response => {
         console.log("Response Comment: ", response);
-        this.setState({commentPost: ""})
+        this.setState({propPostid: response.data._id, data: response.data, commentPost: ''})
+        //this.setState({commentPost : ''})
+        console.log('New Coment Array', this.state.commentsGot)
+        //{this.props.navigation.push('NewsDetail', {data: this.state.propPostid})}
+
+        //this.setState({ commentPost: ''});
+        
       })
       .catch(error => {
         console.log("Error Comment: ", error);
       });
   }
+
   renderItem = ({ item }) => {
     //item = item.filter(item=>item.breaking === false)
     return (
@@ -84,7 +103,7 @@ export default class NewsDetail extends Component {
         // }}
         onLongPress={() => alert("Long Pressed")}
       >
-        <View style={{ flexDirection: "row", width: 380 }}>
+        <View style={{ flexDirection: "row", width: 370 }}>
           {/* <Image
             imageStyle={{ borderRadius: 10 }}
             source={{ uri: item.photoUrl }}
@@ -100,13 +119,14 @@ export default class NewsDetail extends Component {
 
             <Text style={styles.titleTextStyle}>{item.comment}</Text>
             <Text style={{ color: "grey", marginLeft: 200, marginBottom: 10 }}>
-              {item.createdAt.substring(0, 10)}
+              {item.commentedBy.fullName}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     );
   };
+
   renderSeparator = () => {
     return (
       <View
@@ -119,9 +139,10 @@ export default class NewsDetail extends Component {
       />
     );
   };
+
   render() {
-    const { data } = this.state;
-    let commentsGot = data.commentsGot;
+    const { data, commentsGot, commentPost } = this.state;
+    
     return (
       <View>
         <ScrollView>
@@ -151,7 +172,7 @@ export default class NewsDetail extends Component {
                 </Text>
               </View>
             </Left>
-            <Right/>
+            <Right />
           </Header>
           <Text
             style={{
@@ -175,7 +196,7 @@ export default class NewsDetail extends Component {
             }}
           >
             <Text style={{ color: "black" }}>Date: </Text>
-            <Text>{data.updatedAt.substring(0, 10)}</Text>
+            <Text>{data.updatedAt}</Text>
             <Text style={{ color: "black", marginLeft: 10 }}>Tags: </Text>
             <Text>{data.tags}</Text>
           </View>
@@ -240,6 +261,7 @@ export default class NewsDetail extends Component {
               keyExtractor={item => item._id}
               renderItem={this.renderItem}
               ItemSeparatorComponent={this.renderSeparator}
+              extraData={commentsGot}
             />
           </View>
         </ScrollView>
@@ -275,12 +297,19 @@ export default class NewsDetail extends Component {
               this.onPostButtonPressed();
             }}
           >
-            <Icon
-              name="ios-send"
-              size={40}
-              color="#003366"
-              style={{ marginTop: 15 }}
-            />
+            <View
+              style={{
+                marginTop: 10,
+                backgroundColor: "#003366",
+                width: 40,
+                borderRadius: 10,
+                height: 40,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Icon name="ios-send" size={40} color="#fff" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -310,7 +339,9 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     fontSize: 16,
     color: "black",
+    width: '90%',
     paddingTop: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
+    paddingRight: 50
   }
 });

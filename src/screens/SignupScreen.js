@@ -115,16 +115,20 @@ export default class SignupScreen extends Component {
       this.setState({ loading: false });
     } else {
       axios
-        .post("http://198.245.53.50:5000/api/signup", {
-          fullName: fullName,
-          email: email,
-          password: password
+        .post("http://198.245.53.50:5000/api/users", {
+          fullName:fullName,
+          email:email,
+          password:password,
+          role:'5c75c04c92746a1b1884a49e'
         })
-        .then(response => console.log(response))
+        .then(response => {console.log('Signup responce:',response)})
         .then(this.getTokenFromLoginRequest())
         .then(this.onSignupSuccess.bind(this))
         .then(() => this.props.navigation.navigate("App"))
-        .catch(this.onSignupFailure.bind(this));
+        .catch(
+        //error =>{console.log('Signup Error:', error);
+        this.onSignupFailure.bind(this)
+      );
     }
   }
   onSignupSuccess() {
