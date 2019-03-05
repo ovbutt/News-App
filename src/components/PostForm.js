@@ -229,7 +229,7 @@ export default class PostForm extends Component {
           </View>
           <View style={{ marginLeft: 10, marginRight: 10 }}>
             <TextInput
-              fontSize={20}
+              fontSize={18}
               onChangeText={title => this.setState({ title })}
               value={this.state.title}
               placeholder="Title"
@@ -237,7 +237,7 @@ export default class PostForm extends Component {
               selectionColor="grey"
             />
             <TextInput
-              fontSize={20}
+              fontSize={18}
               onChangeText={category => this.setState({ category })}
               value={this.state.category}
               placeholder="Category"
@@ -246,7 +246,7 @@ export default class PostForm extends Component {
             />
 
             <TextInput
-              fontSize={20}
+              fontSize={18}
               onChangeText={tags => this.setState({ tags })}
               value={this.state.tags}
               placeholder="Tags"
@@ -255,7 +255,7 @@ export default class PostForm extends Component {
             />
 
             <TextInput
-              fontSize={20}
+              fontSize={18}
               onChangeText={description => this.setState({ description })}
               value={this.state.description}
               placeholder="Description"

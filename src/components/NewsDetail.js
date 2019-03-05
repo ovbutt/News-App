@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   TextInput,
   AsyncStorage,
-  FlatList
+  FlatList,
+  RefreshControl
 } from "react-native";
 import HTMLView from "react-native-htmlview";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -25,6 +26,7 @@ export default class NewsDetail extends Component {
       data: [],
       id: "",
       commentPost: "",
+      pageRefreshing : false,
       //commentsGot: this.props.navigation.state.params.commentsGot
     };
     this.getToken();
@@ -104,11 +106,6 @@ export default class NewsDetail extends Component {
         onLongPress={() => alert("Long Pressed")}
       >
         <View style={{ flexDirection: "row", width: 370 }}>
-          {/* <Image
-            imageStyle={{ borderRadius: 10 }}
-            source={{ uri: item.photoUrl }}
-            style={styles.imageThumbStyle}
-          /> */}
           <Icon
             name="ios-contact"
             size={35}
@@ -140,12 +137,37 @@ export default class NewsDetail extends Component {
     );
   };
 
+  _onRefresh = () => {
+    this.setState({pageRefreshing: true});
+    console.log('Idfromprops: ', this.state.propPostid)
+    const { commentsGot, data } = this.state;
+    axios.get('http://198.245.53.50:5000/api/postsById/' + this.state.propPostid)
+    .then(response => {
+     this.setState({propPostid: response.data._id, data: response.data})
+      //console.log('DataState:',response.data.commentsGot)
+    })
+    .catch(error => console.log('PostById Error:', error))
+    // console.log("Data State:", data);
+    // this.setState({ commentsGot : data.commentsGot });
+    //console.log("Comments Got:", commentsGot);
+    setTimeout(
+      () =>
+        this.setState({
+          pageRefreshing: false
+        }),
+      2000
+    );
+  }
+
   render() {
     const { data, commentsGot, commentPost } = this.state;
     
     return (
       <View>
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl
+          refreshing={this.state.pageRefreshing}
+          onRefresh = {this._onRefresh}
+        />}>
           <Header style={{ backgroundColor: "white" }}>
             <Left>
               <View style={{ flexDirection: "row" }}>

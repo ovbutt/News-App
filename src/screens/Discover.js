@@ -9,8 +9,11 @@ import {
   TouchableOpacity,
   View,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl,
+  NetInfo
 } from "react-native";
+import OfflineNotice from "../components/OfflineNotice";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 
@@ -24,13 +27,16 @@ export default class Discover extends Component {
       refreshing: false,
       loading1: true,
       loading2: true,
-      breaking: []
+      breaking: [],
+      pageRefreshing: false,
+      isConnected: true
     };
   }
 
   static navigationOptions = {
     header: null
   };
+
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -132,10 +138,38 @@ export default class Discover extends Component {
         }),
       2000
     );
+
+  handleConnectivityChange = isConnected => {
+    this.setState({ isConnected });
+  };
+
+  checkConnectionStatus() {
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      this.handleConnectivityChange
+    );
+  }
+
   componentWillMount() {
+    this.checkConnectionStatus();
     this.getBreakingPosts();
     this.getLatestPosts();
   }
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener(
+      "connectionChange",
+      this.handleConnectivityChange
+    );
+  }
+
+  toggleOfflineNotice(){
+    if (!this.state.isConnected) {
+      return <OfflineNotice />;
+    }
+    return null;
+  }
+
   getLatestPosts() {
     this.closeActivityIndicator2();
     axios
@@ -200,9 +234,11 @@ export default class Discover extends Component {
       return null;
     }
   };
+
   handleRefresh() {
     this.setState({ refreshing: true });
   }
+
   handleLoadMore = () => {
     if (this.state.refreshing) {
       return null;
@@ -216,6 +252,44 @@ export default class Discover extends Component {
       }
     );
   };
+
+  _onRefresh = () => {
+    this.setState({ pageRefreshing: true });
+    axios
+      .get("http://198.245.53.50:5000/api/breaking")
+      .then(response => {
+        //console.log(response.data);
+        this.setState({ breaking: response.data.posts });
+      })
+      //.then(() => console.log("News State", this.state.breaking))
+      .catch(function(error) {
+        console.log("Error Is:", error);
+      });
+    // axios
+    // .get("http://198.245.53.50:5000/api/posts/" + this.state.page)
+    // .then(response => {
+    //   console.log(response);
+    //   this.setState({
+    //     dataSource:
+    //       this.state.page === 1
+    //         ? response.data.posts
+    //         : [...this.state.dataSource, ...response.data.posts]
+    //   });
+    // })
+    // .then(() => console.log("DataSource", this.state.dataSource))
+    // .catch(function(error) {
+    //   console.log("error", error);
+    //   //this.setState({refreshing: false})
+    // });
+    setTimeout(
+      () =>
+        this.setState({
+          pageRefreshing: false
+        }),
+      2000
+    );
+  };
+
   render() {
     return (
       <ImageBackground
@@ -224,7 +298,15 @@ export default class Discover extends Component {
       >
         {this.props.children}
         <View>
-          <ScrollView>
+          {this.toggleOfflineNotice()}
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.pageRefreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
+          >
             <Text
               style={{
                 marginTop: 50,

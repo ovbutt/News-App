@@ -25,7 +25,7 @@ export default class Pages extends Component {
   constructor(props) {
     super(props);
     this.state = { token: "", fullName: "", email: "", loading2: true, dataSource: [] };
-    this.getToken();
+    //this.getToken();
   }
   static navigationOptions = {
     header : null
@@ -59,7 +59,7 @@ export default class Pages extends Component {
     }
   }
   componentWillMount() {
-    //this.getToken();
+    this.getToken();
     this.getLatestPosts();
   }
   async removeToken() {

@@ -8,8 +8,10 @@ import {
   ActivityIndicator,
   AsyncStorage,
   ImageBackground,
-  ScrollView
+  ScrollView,
+  NetInfo
 } from "react-native";
+import OfflineNotice from '../components/OfflineNotice'
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -31,8 +33,38 @@ export default class SignupScreen extends Component {
       userEmail: '',
       userName: '',
       userId: '',
+      isConnected: true,
     };
     //this.getTokenFromLoginRequest = this.getTokenFromLoginRequest.bind(this)
+  }
+
+  componentWillMount(){
+    this.checkConnectionStatus();
+  }
+
+  handleConnectivityChange = isConnected => {
+    this.setState({ isConnected });
+  };
+
+  checkConnectionStatus() {
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      this.handleConnectivityChange
+    );
+  }
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener(
+      "connectionChange",
+      this.handleConnectivityChange
+    );
+  }
+
+  toggleOfflineNotice(){
+    if (!this.state.isConnected) {
+      return <OfflineNotice />;
+    }
+    return null;
   }
 
   async storeToken(token, userEmail, userName, userId) {
@@ -147,7 +179,7 @@ export default class SignupScreen extends Component {
   }
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size="large" />;
+      return <ActivityIndicator size="large" style={{marginTop: 50}} />;
     }
     return (
       <TouchableOpacity
@@ -167,6 +199,7 @@ export default class SignupScreen extends Component {
         source={require("../../thum/signupWallpaper.jpg")}
         style={{ height: "100%", width: "100%" }}
       >
+      {this.toggleOfflineNotice()}
         <ScrollView>
           <View style={styles.container}>
             <Text
@@ -201,7 +234,7 @@ export default class SignupScreen extends Component {
                 }}
               />
               <TextInput
-                fontSize={20}
+                fontSize={18}
                 placeholder="Full Name"
                 autoCapitalize="words"
                 autoCorrect={false}
@@ -209,8 +242,8 @@ export default class SignupScreen extends Component {
                 value={this.state.fullName}
                 placeholderTextColor="white"
                 style={{ color: "white", height: "100%", width: "80%" }}
-                selectionColor="white"
-                underlineColorAndroid="white"
+                // selectionColor="white"
+                // underlineColorAndroid="white"
               />
             </View>
             <View
@@ -235,15 +268,15 @@ export default class SignupScreen extends Component {
                 }}
               />
               <TextInput
-                fontSize={20}
+                fontSize={18}
                 placeholder="example@gmail.com"
                 autoCorrect={false}
                 onChangeText={email => this.setState({ email })}
                 value={this.state.email}
                 placeholderTextColor="white"
                 style={{ color: "white", height: "100%", width: "80%" }}
-                selectionColor="white"
-                underlineColorAndroid="white"
+                // selectionColor="white"
+                // underlineColorAndroid="white"
                 autoCapitalize="none"
               />
             </View>
@@ -269,7 +302,7 @@ export default class SignupScreen extends Component {
                 }}
               />
               <TextInput
-                fontSize={20}
+                fontSize={18}
                 placeholder="Password"
                 autoCorrect={false}
                 secureTextEntry={true}
@@ -277,8 +310,8 @@ export default class SignupScreen extends Component {
                 value={this.state.password}
                 placeholderTextColor="white"
                 style={{ color: "white", height: "100%", width: "80%" }}
-                selectionColor="white"
-                underlineColorAndroid="white"
+                // selectionColor="white"
+                // underlineColorAndroid="white"
                 autoCapitalize="none"
               />
             </View>
@@ -304,7 +337,7 @@ export default class SignupScreen extends Component {
                 }}
               />
               <TextInput
-                fontSize={20}
+                fontSize={18}
                 placeholder="Confirm Password"
                 autoCorrect={false}
                 secureTextEntry={true}
@@ -314,8 +347,8 @@ export default class SignupScreen extends Component {
                 value={this.state.password_confirmation}
                 placeholderTextColor="white"
                 style={{ color: "white", height: "100%", width: "80%" }}
-                selectionColor="white"
-                underlineColorAndroid="white"
+                // selectionColor="white"
+                // underlineColorAndroid="white"
                 autoCapitalize="none"
               />
             </View>
@@ -371,7 +404,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 40,
     width: 250,
-    marginTop: 80
+    marginTop: 50
   },
   button2: {
     alignItems: "center",
