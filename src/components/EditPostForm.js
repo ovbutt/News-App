@@ -10,8 +10,7 @@ import {
   PixelRatio,
   Picker,
   PickerIOS,
-  ToastAndroid,
-  Platform
+  ToastAndroid
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import IconFA from "react-native-vector-icons/FontAwesome";
@@ -24,50 +23,31 @@ const inputProps = {
   //keyboardType: 'default',
   placeholder: 'Tags',
   //autoFocus: true,
-  style: {
-    fontSize: 18,
-    marginVertical: Platform.OS == 'ios' ? 10 : -2,
-    //color: 'black',
-    // underlineColorAndroid="grey",
-    // selectionColor="grey"
-  },
+  // style: {
+  //   fontSize: 14,
+  //   marginVertical: Platform.OS == 'ios' ? 10 : -2,
+  // },
 };
-
-const horizontalInputProps = {
-  //keyboardType: 'default',
-  placeholder: 'Tags',
-  //autoFocus: true,
-  style: {
-    fontSize: 18,
-    marginVertical: Platform.OS == 'ios' ? 10 : -2,
-    //color: 'black',
-  },
-};
-
-const horizontalScrollViewProps = {
-  horizontal: true,
-  showsHorizontalScrollIndicator: false,
-};
-
 export default class PostForm extends Component {
   constructor(props) {
     super(props);
+    let data = this.props.navigation.state.params.data
     this.state = {
-      avatarSource: null,
+      avatarSource: data.photoUrl,
       //videoSource: null,
-      title: "",
-      category: "",
+      //data: ,
+      title: data.title,
+      category: data.catagory,
       tags: [],
-      description: "",
+      description: data.description,
       publish: false,
       breaking: false,
-      photoUrl: "",
-      text: ""
+      photoUrl: data.photoUrl,
+      text: "",
     };
-
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
-    //this.selectVideoTapped = this.selectVideoTapped.bind(this);
   }
+  
   componentWillUnmount() {
     this.setState({
       avatarSource: null,
@@ -144,7 +124,7 @@ export default class PostForm extends Component {
     axios
       .post("http://198.245.53.50:5000/api/posts/add", {
         title: title,
-        catagory: category,
+        category: category,
         tags: tags,
         description: description,
         publish: true,
@@ -197,7 +177,7 @@ export default class PostForm extends Component {
     axios
       .post("http://198.245.53.50:5000/api/posts/add", {
         title: title,
-        catagory: category,
+        category: category,
         tags: tags,
         description: description,
         publish: false,
@@ -221,21 +201,6 @@ export default class PostForm extends Component {
         );
         console.log("Post Error", error);
       });
-  }
-
-  
-  onChangeText = (text) => {
-    this.setState({ text });
-
-    const lastTyped = text.charAt(text.length - 1);
-    const parseWhen = [',', ' ', ';', '\n'];
-
-    if (parseWhen.indexOf(lastTyped) > -1) {
-      this.setState({
-        tags: [...this.state.tags, this.state.text],
-        text: "",
-      });
-    }
   }
 
   render() {
@@ -295,7 +260,7 @@ export default class PostForm extends Component {
                 ) : (
                   <Image
                     style={styles.avatar}
-                    source={this.state.avatarSource}
+                    source={{uri: this.state.avatarSource}}
                   />
                 )}
               </View>
@@ -353,12 +318,10 @@ export default class PostForm extends Component {
               onChange={tags => this.setState({ tags })}
               labelExtractor={email => email}
               text={this.state.text}
-              onChangeText={this.onChangeText}
+              onChangeText={text => this.setState({ text })}
               tagColor="#003366"
               tagTextColor="white"
               inputProps={inputProps}
-              inputProps={horizontalInputProps}
-              scrollViewProps={horizontalScrollViewProps}
             />
             {/* <TextInput
               fontSize={18}
@@ -433,7 +396,6 @@ export default class PostForm extends Component {
       <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
       >
       </Image> */}
-      <Text>{this.state.tags}</Text>
         </View>
       </ScrollView>
     );

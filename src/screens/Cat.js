@@ -280,13 +280,13 @@ const styles = StyleSheet.create({
   ImageStyle: {
     width: 170,
     height: 100,
-    marginBottom: 15,
+    marginBottom: 10,
   },
   ImageStyle2: {
     width: 170,
     height: 100,
-    marginBottom: 15,
-    marginLeft: 20
+    marginBottom: 10,
+    marginLeft: 10
   },
   container: {
     alignItems: "center",

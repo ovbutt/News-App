@@ -9,7 +9,8 @@ import {
   Image,
   ImageBackground,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
+  TextInput
 } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { Header, Left, Right } from "native-base";
@@ -98,7 +99,7 @@ export default class SearchResult extends Component {
       alert("Please enter a keyword to search");
     } else {
       axios
-        .get("http://198.245.53.50:5000/api/search/" + this.state.search)
+        .get("http://198.245.53.50:5000/api/search/" + this.state.search.toLowerCase())
         .then(response => {
           console.log(response);
           this.setState({ dataSource: response.data });
@@ -127,11 +128,50 @@ export default class SearchResult extends Component {
   static navigationOptions = {
     header: null
   };
+
+  toggleCancelButton = () =>{
+    if(this.state.loading){
+      return <ActivityIndicator size='small' style={{
+        color: "#000",
+        marginLeft: 10,
+        marginRight: 15,
+        marginTop: 5
+      }} />
+    }
+    else {
+      return  <TouchableOpacity
+      onPress={() => {
+        this.setState({
+          dataSource: [],
+          search: "",
+          loading: false,
+          gotData: true
+        });
+      }}
+    >
+      <Icon
+        name="ios-close-circle-outline"
+        size={25}
+        style={{
+          color: "#000",
+          marginLeft: 10,
+          marginRight: 15,
+          marginTop: 10
+        }}
+      />
+    </TouchableOpacity>
+    }
+  }
+
   render() {
     const { search, loading } = this.state;
     return (
-      <View style={{backgroundColor: '#e4e4e4', flex: 1}}>
-        <Header style={{ backgroundColor: "white" }}>
+      <ImageBackground
+        source={require("../../thum/searchBack.jpg")}
+        style={{ width: "100%", height: "100%", }}
+      >
+        <View style={{ flex: 1 }}>
+          {/* <Header style={{ backgroundColor: "white" }}>
           <Left>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
@@ -158,15 +198,57 @@ export default class SearchResult extends Component {
           <Right>
             <View style={{ height: 0, width: 550, backgroundColor: "grey" }} />
           </Right>
-        </Header>
-        <ScrollView>
-          <View style={{ marginTop: 30 }}>
-            <SearchBar
+        </Header> */}
+          <ScrollView>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "white"
+              }}
+            >
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon
+                  name="ios-arrow-back"
+                  size={30}
+                  style={{
+                    color: "#000",
+                    marginLeft: 15,
+                    marginRight: 10,
+                    marginTop: 7
+                  }}
+                />
+              </TouchableOpacity>
+              <Icon
+                name="ios-search"
+                size={25}
+                style={{
+                  color: "#000",
+                  marginLeft: 10,
+                  marginRight: 10,
+                  marginTop: 10
+                }}
+              />
+              <TextInput
+                placeholder="Type here to search news..."
+                onChangeText={search => this.setState({ search })}
+                value={search}
+                onSubmitEditing={() => {
+                  this.searchIt();
+                  this.setState({ loading: true });
+                }}
+                style={{
+                  color: "grey",
+                  height: "100%",
+                  width: "65%",
+                  fontSize: 18
+                }}
+              />
+                {this.toggleCancelButton()}
+              
+              {/* <SearchBar
               showLoading={loading}
               platform="android"
-              // cancelButtonTitle="Cancel"
-              placeholder="Search"
-              cancelButtonProps={{ color: "#bfbfbf" }}
+              placeholder="Type search keyword here..."
               onChangeText={search => this.setState({ search })}
               value={search}
               onSubmitEditing={() => {
@@ -181,41 +263,38 @@ export default class SearchResult extends Component {
                   gotData: true
                 });
               }}
-              onCancel={() => {
-                this.setState({
-                  dataSource: [],
-                  search: "",
-                  loading: false,
-                  gotData: true
-                });
-              }}
-            />
-          </View>
-          {!this.state.gotData && (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 10
-              }}
-            >
-              <Text style={{ color: "black", fontSize: 20, fontWeight: "700" }}>
-                No News Found
-              </Text>
+              
+            /> */}
             </View>
-          )}
-          <View style={{ marginBottom: 50 }}>
-            {this.state.dataSource.length ? (
-              <FlatList
-                data={this.state.dataSource}
-                keyExtractor={item => item._id}
-                renderItem={this.renderItem}
-                ItemSeparatorComponent={this.renderSeparator}
-              />
-            ) : null}
-          </View>
-        </ScrollView>
-      </View>
+            {!this.state.gotData && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: 1,
+                  marginTop: 50
+                }}
+              >
+                <Text
+                  style={{ color: "black", fontSize: 20, fontWeight: "700" }}
+                >
+                  No News Found
+                </Text>
+              </View>
+            )}
+            <View style={{ marginBottom: 50 }}>
+              {this.state.dataSource.length ? (
+                <FlatList
+                  data={this.state.dataSource}
+                  keyExtractor={item => item._id}
+                  renderItem={this.renderItem}
+                  ItemSeparatorComponent={this.renderSeparator}
+                />
+              ) : null}
+            </View>
+          </ScrollView>
+        </View>
+      </ImageBackground>
     );
   }
 }
@@ -225,7 +304,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     marginTop: 10,
-    marginLeft: 10,
+    //marginLeft: 10,
     marginBottom: 2,
     marginRight: 10,
     borderRadius: 5
@@ -236,7 +315,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 16,
     color: "black",
-    paddingTop: 20
+    paddingTop: 10,
+    paddingBottom: 10
   },
   catagoryStyle: {
     backgroundColor: "transparent",

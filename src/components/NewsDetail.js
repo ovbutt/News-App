@@ -22,29 +22,30 @@ export default class NewsDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      propPostid : this.props.navigation.state.params.data ||'',
+      propPostid: this.props.navigation.state.params.data || "",
       data: [],
       id: "",
       commentPost: "",
-      pageRefreshing : false,
+      pageRefreshing: false
       //commentsGot: this.props.navigation.state.params.commentsGot
     };
     this.getToken();
   }
 
-  componentWillMount(){
-    console.log('Idfromprops: ', this.state.propPostid)
+  componentWillMount() {
+    console.log("Idfromprops: ", this.state.propPostid);
     const { commentsGot, data } = this.state;
-    axios.get('http://198.245.53.50:5000/api/postsById/' + this.state.propPostid)
-    .then(response => {
-     this.setState({propPostid: response.data._id, data: response.data})
-      console.log('DataState:',response.data.commentsGot)
-    })
-    .catch(error => console.log('PostById Error:', error))
+    axios
+      .get("http://198.245.53.50:5000/api/postsById/" + this.state.propPostid)
+      .then(response => {
+        this.setState({ propPostid: response.data._id, data: response.data });
+        console.log("DataState:", response.data.commentsGot);
+      })
+      .catch(error => console.log("PostById Error:", error));
     // console.log("Data State:", data);
     // this.setState({ commentsGot : data.commentsGot });
     console.log("Comments Got:", commentsGot);
-  };
+  }
 
   static navigationOptions = {
     header: null
@@ -83,13 +84,12 @@ export default class NewsDetail extends Component {
       })
       .then(response => {
         console.log("Response Comment: ", response);
-        this.setState({propPostid: response.data._id, data: response.data, commentPost: ''})
-        //this.setState({commentPost : ''})
-        console.log('New Coment Array', this.state.commentsGot)
-        //{this.props.navigation.push('NewsDetail', {data: this.state.propPostid})}
-
-        //this.setState({ commentPost: ''});
-        
+        this.setState({
+          propPostid: response.data._id,
+          data: response.data,
+          commentPost: ""
+        });
+        console.log("New Coment Array", this.state.commentsGot);
       })
       .catch(error => {
         console.log("Error Comment: ", error);
@@ -138,15 +138,16 @@ export default class NewsDetail extends Component {
   };
 
   _onRefresh = () => {
-    this.setState({pageRefreshing: true});
-    console.log('Idfromprops: ', this.state.propPostid)
+    this.setState({ pageRefreshing: true });
+    console.log("Idfromprops: ", this.state.propPostid);
     const { commentsGot, data } = this.state;
-    axios.get('http://198.245.53.50:5000/api/postsById/' + this.state.propPostid)
-    .then(response => {
-     this.setState({propPostid: response.data._id, data: response.data})
-      //console.log('DataState:',response.data.commentsGot)
-    })
-    .catch(error => console.log('PostById Error:', error))
+    axios
+      .get("http://198.245.53.50:5000/api/postsById/" + this.state.propPostid)
+      .then(response => {
+        this.setState({ propPostid: response.data._id, data: response.data });
+        //console.log('DataState:',response.data.commentsGot)
+      })
+      .catch(error => console.log("PostById Error:", error));
     // console.log("Data State:", data);
     // this.setState({ commentsGot : data.commentsGot });
     //console.log("Comments Got:", commentsGot);
@@ -157,17 +158,20 @@ export default class NewsDetail extends Component {
         }),
       2000
     );
-  }
+  };
 
   render() {
     const { data, commentsGot, commentPost } = this.state;
-    
     return (
       <View>
-        <ScrollView refreshControl={<RefreshControl
-          refreshing={this.state.pageRefreshing}
-          onRefresh = {this._onRefresh}
-        />}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.pageRefreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           <Header style={{ backgroundColor: "white" }}>
             <Left>
               <View style={{ flexDirection: "row" }}>
@@ -210,17 +214,21 @@ export default class NewsDetail extends Component {
             style={{
               marginTop: 10,
               marginBottom: 10,
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 5,
               borderColor: "grey"
             }}
           >
-            <Text style={{ color: "black" }}>Date: </Text>
-            <Text>{data.updatedAt}</Text>
-            <Text style={{ color: "black", marginLeft: 10 }}>Tags: </Text>
-            <Text>{data.tags}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ color: "black" }}>Date: </Text>
+              <Text>{data.updatedAt}</Text>
+            </View>
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <Text style={{ color: "black", marginLeft: 10 }}>Tags: </Text>
+              <Text>{data.tags}</Text>
+            </View>
           </View>
 
           <Image
@@ -361,7 +369,7 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     fontSize: 16,
     color: "black",
-    width: '90%',
+    width: "90%",
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 50

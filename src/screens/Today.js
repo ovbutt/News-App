@@ -10,12 +10,15 @@ import {
   PixelRatio,
   ActivityIndicator,
   FlatList,
-  ImageBackground
+  ImageBackground,
+  RefreshControl,
+  ToastAndroid
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
 import { Header, Left, Right } from "native-base";
 import axios from "axios";
+import Swipeout from "react-native-swipeout";
 
 export default class Today extends Component {
   constructor(props) {
@@ -30,13 +33,15 @@ export default class Today extends Component {
       publish: false,
       breaking: false,
       photoUrl: "",
-      loading2: true, dataSource: []
+      loading2: true,
+      dataSource: [],
+      pageRefreshing: false
     };
 
-    this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
+    //this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
- 
-    this.getLatestPosts()
+
+    this.getLatestPosts();
   }
   selectVideoTapped() {
     const options = {
@@ -76,122 +81,122 @@ export default class Today extends Component {
     // )
     header: null
   };
-  selectPhotoTapped() {
-    const options = {
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true
-      }
-    };
+  // selectPhotoTapped() {
+  //   const options = {
+  //     quality: 1.0,
+  //     maxWidth: 500,
+  //     maxHeight: 500,
+  //     storageOptions: {
+  //       skipBackup: true
+  //     }
+  //   };
 
-    ImagePicker.launchImageLibrary(options, response => {
-      console.log("Response = ", response);
+  //   ImagePicker.launchImageLibrary(options, response => {
+  //     console.log("Response = ", response);
 
-      if (response.didCancel) {
-        console.log("User cancelled photo picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
-      } else if (response.customButton) {
-        console.log("User tapped custom button: ", response.customButton);
-      } else {
-        //let source = { uri: response.uri };
+  //     if (response.didCancel) {
+  //       console.log("User cancelled photo picker");
+  //     } else if (response.error) {
+  //       console.log("ImagePicker Error: ", response.error);
+  //     } else if (response.customButton) {
+  //       console.log("User tapped custom button: ", response.customButton);
+  //     } else {
+  //       //let source = { uri: response.uri };
 
-        // You can also display the image using data:
-        let source = { uri: "data:image/jpeg;base64," + response.data };
+  //       // You can also display the image using data:
+  //       let source = { uri: "data:image/jpeg;base64," + response.data };
 
-        this.setState({
-          avatarSource: source,
-          photoUrl: "data:image/jpeg;base64," + response.data
-        });
-      }
-    });
-  }
+  //       this.setState({
+  //         avatarSource: source,
+  //         photoUrl: "data:image/jpeg;base64," + response.data
+  //       });
+  //     }
+  //   });
+  // }
 
-  onPublishButton() {
-    const {
-      title,
-      category,
-      tags,
-      description,
-      publish,
-      breaking,
-      photoUrl
-    } = this.state;
-    //this.setState({publish: true})
-    console.log(
-      "Data in State:",
-      "Title: ",
-      title,
-      "Category: ",
-      category,
-      "tags: ",
-      tags,
-      "description: ",
-      description,
-      "photoUrl: ",
-      photoUrl
-    );
-    axios
-      .post("http://198.245.53.50:5000/api/posts/add", {
-        title: title,
-        category: category,
-        tags: tags,
-        description: description,
-        publish: true,
-        breaking: false,
-        photoUrl: photoUrl
-      })
-      .then(response => {
-        console.log("Post Response", response);
-      })
-      .catch(error => {
-        console.log("Post Error", error);
-      });
-  }
+  // onPublishButton() {
+  //   const {
+  //     title,
+  //     category,
+  //     tags,
+  //     description,
+  //     publish,
+  //     breaking,
+  //     photoUrl
+  //   } = this.state;
+  //   //this.setState({publish: true})
+  //   console.log(
+  //     "Data in State:",
+  //     "Title: ",
+  //     title,
+  //     "Category: ",
+  //     category,
+  //     "tags: ",
+  //     tags,
+  //     "description: ",
+  //     description,
+  //     "photoUrl: ",
+  //     photoUrl
+  //   );
+  //   axios
+  //     .post("http://198.245.53.50:5000/api/posts/add", {
+  //       title: title,
+  //       category: category,
+  //       tags: tags,
+  //       description: description,
+  //       publish: true,
+  //       breaking: false,
+  //       photoUrl: photoUrl
+  //     })
+  //     .then(response => {
+  //       console.log("Post Response", response);
+  //     })
+  //     .catch(error => {
+  //       console.log("Post Error", error);
+  //     });
+  // }
 
-  onSaveButton() {
-    const {
-      title,
-      category,
-      tags,
-      description,
-      publish,
-      breaking,
-      photoUrl
-    } = this.state;
-    //this.setState({publish: true})
-    console.log(
-      "Data in State:",
-      "Title: ",
-      title,
-      "Category: ",
-      category,
-      "tags: ",
-      tags,
-      "description: ",
-      description,
-      "photoUrl: ",
-      photoUrl
-    );
-    axios
-      .post("http://198.245.53.50:5000/api/posts/add", {
-        title: title,
-        category: category,
-        tags: tags,
-        description: description,
-        publish: false,
-        breaking: false,
-        photoUrl: photoUrl
-      })
-      .then(response => {
-        console.log("Post Response", response);
-      })
-      .catch(error => {
-        console.log("Post Error", error);
-      });
-  }
+  // onSaveButton() {
+  //   const {
+  //     title,
+  //     category,
+  //     tags,
+  //     description,
+  //     publish,
+  //     breaking,
+  //     photoUrl
+  //   } = this.state;
+  //   //this.setState({publish: true})
+  //   console.log(
+  //     "Data in State:",
+  //     "Title: ",
+  //     title,
+  //     "Category: ",
+  //     category,
+  //     "tags: ",
+  //     tags,
+  //     "description: ",
+  //     description,
+  //     "photoUrl: ",
+  //     photoUrl
+  //   );
+  //   axios
+  //     .post("http://198.245.53.50:5000/api/posts/add", {
+  //       title: title,
+  //       category: category,
+  //       tags: tags,
+  //       description: description,
+  //       publish: false,
+  //       breaking: false,
+  //       photoUrl: photoUrl
+  //     })
+  //     .then(response => {
+  //       console.log("Post Response", response);
+  //     })
+  //     .catch(error => {
+  //       console.log("Post Error", error);
+  //     });
+  // }
   closeActivityIndicator2 = () =>
     setTimeout(
       () =>
@@ -207,10 +212,7 @@ export default class Today extends Component {
       .then(response => {
         console.log(response);
         this.setState({
-          dataSource:
-            this.state.page === 1
-              ? response.data.posts
-              : [...this.state.dataSource, ...response.data.posts]
+          dataSource: response.data.posts
         });
       })
       .then(() => console.log("DataSource", this.state.dataSource))
@@ -232,6 +234,20 @@ export default class Today extends Component {
     );
   };
   renderItem = ({ item }) => {
+    var swipeoutBtns = [
+      {
+        text: "Delete",
+        backgroundColor: "red",
+        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        onPress: () => { this.deleteData(item._id) }
+      },
+      {
+        text: "Edit",
+        backgroundColor: "#003366",
+        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        onPress: () => { this.editData(item) }
+      }
+    ];
     //item = item.filter(item=>item.breaking === false)
     return (
       <TouchableOpacity
@@ -239,32 +255,88 @@ export default class Today extends Component {
           this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
-        <View style={{ flexDirection: "row", width: 380 }}>
-          <Image
-            imageStyle={{ borderRadius: 10 }}
-            source={{ uri: item.photoUrl }}
-            style={styles.imageThumbStyle}
-          />
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
+        <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }}>
+          <View style={{ flexDirection: "row", width: 380 }}>
+            <Image
+              imageStyle={{ borderRadius: 10 }}
+              source={{ uri: item.photoUrl }}
+              style={styles.imageThumbStyle}
+            />
+            <View style={{ flexDirection: "column" }}>
+              <Text style={styles.catagoryStyle}>{item.catagory}</Text>
 
-            <Text style={styles.titleTextStyle}>
-              {item.title.substring(0, 30) + "..."}
-            </Text>
-            <Text style={{ color: "grey" }}>
-              {item.createdAt.substring(0, 10)}
-            </Text>
+              <Text style={styles.titleTextStyle}>
+                {item.title.substring(0, 30) + "..."}
+              </Text>
+              <Text style={{ color: "grey" }}>
+                {item.createdAt.substring(0, 10)}
+              </Text>
+            </View>
           </View>
-        </View>
+        </Swipeout>
       </TouchableOpacity>
     );
   };
 
+  deleteData(id){
+    console.log('Delete id:', id)
+    axios.get('http://198.245.53.50:5000/api/delpost/' + id )
+    .then(response => {
+      console.log('Responce from Delete:', response)
+      ToastAndroid.showWithGravity(
+        'Post Deleted',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    })
+    .catch(error => {
+      console.log('Error from delete:', error)
+      ToastAndroid.showWithGravity(
+        'Error while deleting post',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    })
+  }
+
+  editData(item){
+    this.props.navigation.navigate('EditPostForm', {data: item})
+  }
+
+  _onRefresh = () => {
+    this.setState({ pageRefreshing: true });
+    //console.log("Idfromprops: ", this.state.propPostid);
+    //const { commentsGot, data } = this.state;
+    axios
+      .get("http://198.245.53.50:5000/api/posts/4")
+      .then(response => {
+        this.setState({ dataSource: response.data.posts });
+        //console.log('DataState:',response.data.commentsGot)
+      })
+      .catch(error => console.log("Today Refresh Error:", error));
+    // console.log("Data State:", data);
+    // this.setState({ commentsGot : data.commentsGot });
+    //console.log("Comments Got:", commentsGot);
+    setTimeout(
+      () =>
+        this.setState({
+          pageRefreshing: false
+        }),
+      500
+    );
+  };
 
   render() {
     return (
-      <View style={{flex:1}}>
-        <ScrollView>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.pageRefreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           <Header style={{ backgroundColor: "white" }}>
             <Left>
               <Text
@@ -272,7 +344,8 @@ export default class Today extends Component {
                   color: "black",
                   fontSize: 18,
                   fontWeight: "bold",
-                  marginLeft: 20
+                  marginLeft: 20,
+                  width: "80%"
                 }}
               >
                 Go Live
@@ -429,7 +502,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     marginTop: 10,
-    marginLeft: 10,
+    //marginLeft: 10,
     marginBottom: 2,
     marginRight: 10,
     borderRadius: 5

@@ -168,7 +168,7 @@ export default class Pages extends Component {
             Profile
           </Text>
           <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 20}}>
-          <View style={{flexDirection: 'row', borderColor: 'white', borderWidth: 1, borderRadius: 25, paddingBottom: 20, paddingLeft: 20, paddingRight: 20}}>
+          <View style={{flexDirection: 'column', borderColor: 'white', borderWidth: 1, borderRadius: 25, paddingBottom: 20, paddingLeft: 20, paddingRight: 20, width: '90%'}}>
           <View
             style={{
               alignItems: "center",
@@ -177,19 +177,19 @@ export default class Pages extends Component {
             }}
           >
 
-            <Icon name="ios-contact" color='white' size={80} />
+            <Icon name="ios-contact" color='white' size={70} />
           </View>
           
           <View style={{ flexDirection: "column", justifyContent: 'center', alignItems: 'flex-start' }}>
             <View
-              style={{ flexDirection: "row", marginLeft: 20, marginTop: 20 }}
+              style={{ flexDirection: "row", marginLeft: 20, marginTop: 20, width: '100%' }}
             >
               <Text style={styles.nameEmailText}>Name: </Text>
               <Text style={styles.nameEmailText}>{fullName}</Text>
             </View>
             
             <View
-              style={{ flexDirection: "row", marginLeft: 20, marginTop: 20 }}
+              style={{ flexDirection: "row", marginLeft: 20, marginTop: 20, width: '100%' }}
             >
               <Text style={styles.nameEmailText}>Email: </Text>
               <Text style={styles.nameEmailText}>{email}</Text>
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     color: "#4f603c"
   },
   nameEmailText: {
-    fontSize: 20,
+    fontSize: 17,
     fontStyle: "normal",
     fontFamily: "Arial",
     fontWeight: "700",
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     marginTop: 10,
-    marginLeft: 10,
+    //marginLeft: 10,
     marginBottom: 2,
     marginRight: 10,
     borderRadius: 5

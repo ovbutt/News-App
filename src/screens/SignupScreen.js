@@ -208,7 +208,8 @@ export default class SignupScreen extends Component {
                 fontSize: 30,
                 fontWeight: "700",
                 marginBottom: 50,
-                marginTop: 120
+                marginTop: 120,
+                
               }}
             >
               Sign Up

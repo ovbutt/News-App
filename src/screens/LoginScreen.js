@@ -174,7 +174,7 @@ export default class LoginScreen extends Component {
                 fontSize: 30,
                 fontWeight: "700",
                 marginBottom: 50,
-                marginTop: 150
+                marginTop: 150,
               }}
             >
               Log In

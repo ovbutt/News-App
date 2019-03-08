@@ -136,7 +136,7 @@ export default class Discover extends Component {
         this.setState({
           refreshing: false
         }),
-      2000
+      1000
     );
 
   handleConnectivityChange = isConnected => {
@@ -163,7 +163,7 @@ export default class Discover extends Component {
     );
   }
 
-  toggleOfflineNotice(){
+  toggleOfflineNotice() {
     if (!this.state.isConnected) {
       return <OfflineNotice />;
     }
@@ -216,7 +216,7 @@ export default class Discover extends Component {
   }
 
   renderFooter = () => {
-    if (this.state.refreshing) {
+   // if (this.state.refreshing) {
       return (
         <View
           style={{
@@ -230,31 +230,41 @@ export default class Discover extends Component {
           )}
         </View>
       );
-    } else {
+    //} else {
       return null;
-    }
+    //}
   };
 
-  handleRefresh() {
-    this.setState({ refreshing: true });
-  }
+
+  // handleRefresh() {
+  //   this.setState({ refreshing: true });
+  // }
+
+  // handleLoadMore = () => {
+    
+  //     this.setState(
+  //       prevState => {
+  //         return { refreshing: true, page: prevState.page + 1 };
+  //       },
+  //       () => {
+  //         this.getLatestPosts();
+  //       }
+  //     );
+    
+  // };
 
   handleLoadMore = () => {
-    if (this.state.refreshing) {
-      return null;
-    }
-    this.setState(
-      prevState => {
-        return { refreshing: true, page: prevState.page + 1 };
-      },
-      () => {
-        this.getLatestPosts();
-      }
-    );
+    this.setState({refreshing: true})
+    //this.closeRefreshingIndicator();
+    this.setState({ page: this.state.page + 1 }, () => {
+      //this.setState({refreshing: flase})
+      this.closeRefreshingIndicator();
+      this.getLatestPosts();
+    });
   };
 
   _onRefresh = () => {
-    this.setState({ pageRefreshing: true });
+    this.setState({ pageRefreshing: true, dataSource: [] });
     axios
       .get("http://198.245.53.50:5000/api/breaking")
       .then(response => {
@@ -265,22 +275,19 @@ export default class Discover extends Component {
       .catch(function(error) {
         console.log("Error Is:", error);
       });
-    // axios
-    // .get("http://198.245.53.50:5000/api/posts/" + this.state.page)
-    // .then(response => {
-    //   console.log(response);
-    //   this.setState({
-    //     dataSource:
-    //       this.state.page === 1
-    //         ? response.data.posts
-    //         : [...this.state.dataSource, ...response.data.posts]
-    //   });
-    // })
-    // .then(() => console.log("DataSource", this.state.dataSource))
-    // .catch(function(error) {
-    //   console.log("error", error);
-    //   //this.setState({refreshing: false})
-    // });
+    axios
+    .get("http://198.245.53.50:5000/api/posts/1")
+    .then(response => {
+      console.log(response);
+      this.setState({
+        dataSource:response.data.posts, page: 1
+      });
+    })
+    .then(() => console.log("DataSource", this.state.dataSource))
+    .catch(function(error) {
+      console.log("error", error);
+      //this.setState({refreshing: false})
+    });
     setTimeout(
       () =>
         this.setState({
@@ -333,6 +340,7 @@ export default class Discover extends Component {
                 renderItem={this.renderBreakingItem}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
+                
               />
             </View>
 
@@ -343,7 +351,7 @@ export default class Discover extends Component {
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: 10,
-                paddingLeft: "5%",
+                paddingLeft: "2%",
                 paddingRight: "5%"
               }}
             >
@@ -358,9 +366,9 @@ export default class Discover extends Component {
                 data={this.state.dataSource}
                 keyExtractor={item => item._id}
                 renderItem={this.renderItem}
-                s
                 ItemSeparatorComponent={this.renderSeparator}
                 onEndReached={this.handleLoadMore}
+                ListFooterComponent={this.renderFooter}
                 onEndReachedThreshold={0.1}
               />
             </View>

@@ -139,7 +139,8 @@ class CategoriesView extends Component {
                     fontSize: 18,
                     fontWeight: "bold",
                     marginLeft: 30,
-                    marginTop: 2
+                    marginTop: 2,
+                    width: '80%'
                   }}
                 >
                   {this.state.catagory}
@@ -205,7 +206,7 @@ export default CategoriesView;
 
 const styles = StyleSheet.create({
   imageThumbStyle: {
-    height: 250,
+    height: 200,
     width: 150,
     marginTop: 10,
     marginLeft: 10,
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
   },
   textViewStyle: {
     justifyContent: "center",
-    paddingTop: 170,
+    paddingTop: 110,
     fontSize: 25,
     alignItems: "center"
   },

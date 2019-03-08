@@ -12,6 +12,7 @@ import Search from "./src/screens/Search";
 import Pages from "./src/screens/Pages";
 import NewsDetail from './src/components//NewsDetail'
 import PostForm from './src/components/PostForm'
+import EditPostForm from './src/components/EditPostForm'
 import SearchResult from './src/components/SearchResult' 
 import Icon from "react-native-vector-icons/Ionicons";
 export default class App extends Component {
@@ -56,6 +57,7 @@ const TodayNavigator = createStackNavigator(
       const GoLiveNavigator = createStackNavigator(
         {
           GoLive : Today,
+          EditPostForm : EditPostForm,
           PostForm : PostForm,
           NewsDetail : NewsDetail,
       
