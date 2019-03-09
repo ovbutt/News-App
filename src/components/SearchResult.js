@@ -208,26 +208,17 @@ export default class SearchResult extends Component {
             >
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Icon
-                  name="ios-arrow-back"
-                  size={30}
+                  name="ios-arrow-round-back"
+                  size={40}
                   style={{
                     color: "#000",
-                    marginLeft: 15,
+                    marginLeft: 20,
                     marginRight: 10,
-                    marginTop: 7
+                    marginTop: 5
                   }}
                 />
               </TouchableOpacity>
-              <Icon
-                name="ios-search"
-                size={25}
-                style={{
-                  color: "#000",
-                  marginLeft: 10,
-                  marginRight: 10,
-                  marginTop: 10
-                }}
-              />
+               
               <TextInput
                 placeholder="Type here to search news..."
                 onChangeText={search => this.setState({ search })}
@@ -239,9 +230,11 @@ export default class SearchResult extends Component {
                 style={{
                   color: "grey",
                   height: "100%",
-                  width: "65%",
-                  fontSize: 18
+                  width: "70%",
+                  fontSize: 18,
+                  marginLeft: 20
                 }}
+                autoFocus={true}
               />
                 {this.toggleCancelButton()}
               

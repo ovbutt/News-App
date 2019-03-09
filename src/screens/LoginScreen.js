@@ -210,6 +210,7 @@ export default class LoginScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
+                keyboardType='email-address'
               />
             </View>
             <View

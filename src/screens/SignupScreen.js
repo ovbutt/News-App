@@ -279,6 +279,7 @@ export default class SignupScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
+                keyboardType='email-address'
               />
             </View>
             <View

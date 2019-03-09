@@ -15,6 +15,7 @@ import HTMLView from "react-native-htmlview";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Header, Left, Right } from "native-base";
 import axios from "axios";
+import Swipeout from "react-native-swipeout";
 
 const ACCESS_ID = "access_id";
 
@@ -38,8 +39,9 @@ export default class NewsDetail extends Component {
     axios
       .get("http://198.245.53.50:5000/api/postsById/" + this.state.propPostid)
       .then(response => {
+        console.log('responce getting post', response.data.commentsGot[0].commentedBy[0].fullName)
         this.setState({ propPostid: response.data._id, data: response.data });
-        console.log("DataState:", response.data.commentsGot);
+        console.log("DataState:", this.state.data);
       })
       .catch(error => console.log("PostById Error:", error));
     // console.log("Data State:", data);
@@ -83,7 +85,7 @@ export default class NewsDetail extends Component {
         comment: commentPost
       })
       .then(response => {
-        console.log("Response Comment: ", response);
+        console.log("Response Comment: ", response.data);
         this.setState({
           propPostid: response.data._id,
           data: response.data,
@@ -97,14 +99,17 @@ export default class NewsDetail extends Component {
   }
 
   renderItem = ({ item }) => {
+    var swipeoutBtns = [
+      {
+        text: "Delete",
+        backgroundColor: "red",
+        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        //onPress: () => { this.deleteData(item._id) }
+      },
+    ];
     //item = item.filter(item=>item.breaking === false)
     return (
-      <TouchableOpacity
-        // onPress={() => {
-        //   this.props.navigation.navigate("NewsDetail", { data: item });
-        // }}
-        onLongPress={() => alert("Long Pressed")}
-      >
+      <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }} disabled={this.state.id == item.commentedBy[0]._id ? false : true } >
         <View style={{ flexDirection: "row", width: 370 }}>
           <Icon
             name="ios-contact"
@@ -115,12 +120,15 @@ export default class NewsDetail extends Component {
             {/* <Text style={styles.catagoryStyle}>{item.comment}</Text> */}
 
             <Text style={styles.titleTextStyle}>{item.comment}</Text>
-            <Text style={{ color: "grey", marginLeft: 200, marginBottom: 10 }}>
-              {item.commentedBy.fullName}
+            <View style={{flexDirection: 'row', marginLeft: 100, marginBottom: 10}}>
+            <Text>Comment by: </Text>
+            <Text style={{ color: "black" }}>
+              {item.commentedBy[0].fullName}
             </Text>
+            </View>
           </View>
         </View>
-      </TouchableOpacity>
+        </Swipeout>
     );
   };
 
@@ -159,6 +167,15 @@ export default class NewsDetail extends Component {
       2000
     );
   };
+
+  toggleSendIcon(){
+    if(!this.state.commentPost.length){
+      return <Image source={require('../../thum/sendGrey.png')} style={{height: 30, width: 30}} />
+    }
+    else{
+      return <Image source={require('../../thum/send.png')} style={{height: 30, width: 30}} />
+    }
+  }
 
   render() {
     const { data, commentsGot, commentPost } = this.state;
@@ -302,7 +319,8 @@ export default class NewsDetail extends Component {
             flexDirection: "row",
             position: "absolute",
             bottom: 0,
-            backgroundColor: "white"
+            backgroundColor: "white",
+            //height: 70
           }}
         >
           <TextInput
@@ -329,16 +347,18 @@ export default class NewsDetail extends Component {
           >
             <View
               style={{
-                marginTop: 10,
-                backgroundColor: "#003366",
-                width: 40,
-                borderRadius: 10,
-                height: 40,
+                marginTop: 15,
+                marginLeft: 5,
+                //backgroundColor: "#003366",
+                //width: 40,
+                //borderRadius: 10,
+                //height: 40,
                 alignItems: "center",
                 justifyContent: "center"
               }}
             >
-              <Icon name="ios-send" size={40} color="#fff" />
+            {this.toggleSendIcon()}
+              {/* <Icon name="ios-send" size={40} color="#fff" /> */}
             </View>
           </TouchableOpacity>
         </View>

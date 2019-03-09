@@ -11,8 +11,11 @@ import {
   Picker,
   PickerIOS,
   ToastAndroid,
-  Platform
+  Platform,
+  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
+
 import Icon from "react-native-vector-icons/Ionicons";
 import IconFA from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
@@ -22,32 +25,34 @@ import TagInput from "react-native-tag-input";
 
 const inputProps = {
   //keyboardType: 'default',
-  placeholder: 'Tags',
+  placeholder: "Tags",
   //autoFocus: true,
   style: {
     fontSize: 18,
-    marginVertical: Platform.OS == 'ios' ? 10 : -2,
+    marginVertical: Platform.OS == "ios" ? 10 : -2
     //color: 'black',
     // underlineColorAndroid="grey",
     // selectionColor="grey"
-  },
+  }
 };
 
 const horizontalInputProps = {
   //keyboardType: 'default',
-  placeholder: 'Tags',
+  placeholder: "Tags",
   //autoFocus: true,
   style: {
     fontSize: 18,
-    marginVertical: Platform.OS == 'ios' ? 10 : -2,
+    marginVertical: Platform.OS == "ios" ? 10 : -2
     //color: 'black',
-  },
+  }
 };
 
 const horizontalScrollViewProps = {
   horizontal: true,
-  showsHorizontalScrollIndicator: false,
+  showsHorizontalScrollIndicator: false
 };
+
+const ACCESS_ID = "access_id";
 
 export default class PostForm extends Component {
   constructor(props) {
@@ -62,12 +67,21 @@ export default class PostForm extends Component {
       publish: false,
       breaking: false,
       photoUrl: "",
-      text: ""
+      text: "",
+      userId: this.props.navigation.state.params.userId,
+      loadingPublish: false,
+      loadingSave: false
     };
-
+    //this.getToken = this.getToken.bind(this);
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     //this.selectVideoTapped = this.selectVideoTapped.bind(this);
+    //this.getToken()
   }
+
+  // componentDidMount(){
+  //   this.getToken()
+  // }
+
   componentWillUnmount() {
     this.setState({
       avatarSource: null,
@@ -79,12 +93,29 @@ export default class PostForm extends Component {
       publish: false,
       breaking: false,
       photoUrl: "",
-      text: ""
+      text: "",
+      userId: "",
+      loadingPublish: false,
+      loadingSave: false
     });
   }
   static navigationOptions = {
     header: null
   };
+
+  // async getToken() {
+  //   //const { fullName, email } = this.state;
+  //   try {
+  //     let id = await AsyncStorage.getItem(ACCESS_ID);
+  //     this.setState({ userId: id });
+  //     console.log("User Id is:", id, "id in state:", this.state.userId);
+  //     return id;
+  //     //this.removeToken();
+  //   } catch (error) {
+  //     console.log("Cannot get user id");
+  //   }
+  // }
+
   selectPhotoTapped() {
     const options = {
       quality: 1.0,
@@ -118,6 +149,8 @@ export default class PostForm extends Component {
     });
   }
   onPublishButton() {
+    this.setState({ loadingPublish: true });
+    //let id = this.getToken();
     const {
       title,
       category,
@@ -125,7 +158,8 @@ export default class PostForm extends Component {
       description,
       publish,
       breaking,
-      photoUrl
+      photoUrl,
+      userId
     } = this.state;
     //this.setState({publish: true})
     console.log(
@@ -139,7 +173,9 @@ export default class PostForm extends Component {
       "description: ",
       description,
       "photoUrl: ",
-      photoUrl
+      photoUrl,
+      "User Id for post is",
+      userId
     );
     axios
       .post("http://198.245.53.50:5000/api/posts/add", {
@@ -148,29 +184,31 @@ export default class PostForm extends Component {
         tags: tags,
         description: description,
         publish: true,
-        breaking: false,
-        photoUrl: photoUrl
+        photoUrl: photoUrl,
+        userId: userId
       })
       .then(response => {
         ToastAndroid.showWithGravity(
-          'Post added to publish',
+          "Post added to publish",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
         console.log("Post Response", response);
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       })
       .catch(error => {
         ToastAndroid.showWithGravity(
-          'Error publishing post',
+          "Error publishing post",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
         console.log("Post Error", error);
       });
   }
 
   onSaveButton() {
+    this.setState({ loadingSave: true });
+    //let id = this.getToken();
     const {
       title,
       category,
@@ -178,7 +216,8 @@ export default class PostForm extends Component {
       description,
       publish,
       breaking,
-      photoUrl
+      photoUrl,
+      userId
     } = this.state;
     //this.setState({publish: true})
     console.log(
@@ -192,7 +231,9 @@ export default class PostForm extends Component {
       "description: ",
       description,
       "photoUrl: ",
-      photoUrl
+      photoUrl,
+      "User Id for post is",
+      userId
     );
     axios
       .post("http://198.245.53.50:5000/api/posts/add", {
@@ -200,41 +241,77 @@ export default class PostForm extends Component {
         catagory: category,
         tags: tags,
         description: description,
-        publish: false,
-        breaking: false,
-        photoUrl: photoUrl
+        photoUrl: photoUrl,
+        userId: userId
       })
       .then(response => {
         console.log("Post Response", response);
         ToastAndroid.showWithGravity(
-          'Post added to saved',
+          "Post added to saved",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       })
       .catch(error => {
         ToastAndroid.showWithGravity(
-          'Error saving post',
+          "Error saving post",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
         console.log("Post Error", error);
       });
   }
 
-  
-  onChangeText = (text) => {
+  onChangeText = text => {
     this.setState({ text });
 
     const lastTyped = text.charAt(text.length - 1);
-    const parseWhen = [',', ' ', ';', '\n'];
+    const parseWhen = [",", " ", ";", "\n"];
 
     if (parseWhen.indexOf(lastTyped) > -1) {
       this.setState({
         tags: [...this.state.tags, this.state.text],
-        text: "",
+        text: ""
       });
+    }
+  };
+
+  toggleSaveButton() {
+    if (this.state.loadingSave) {
+      return <ActivityIndicator size="large" color="#003366" style={{marginRight: 50}} />;
+    } else {
+      return (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            this.onSaveButton();
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+            Save
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  togglePublishButton() {
+    if (this.state.loadingPublish) {
+      return <ActivityIndicator size="large" color="#be0e0e" style={{marginLeft: 50}} />;
+    } else {
+      return (
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => {
+            this.onPublishButton();
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+            Publish
+          </Text>
+        </TouchableOpacity>
+      );
     }
   }
 
@@ -406,7 +483,9 @@ export default class PostForm extends Component {
               marginBottom: 50
             }}
           >
-            <TouchableOpacity
+            {this.toggleSaveButton()}
+            {this.togglePublishButton()}
+            {/* <TouchableOpacity
               style={styles.button}
               onPress={() => {
                 this.onSaveButton();
@@ -425,7 +504,7 @@ export default class PostForm extends Component {
               <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
                 Publish
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           {/* <Text style={styles.todayText}>
         Go Live
@@ -433,7 +512,7 @@ export default class PostForm extends Component {
       <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
       >
       </Image> */}
-      <Text>{this.state.tags}</Text>
+          {/* <Text>{this.state.tags}</Text> */}
         </View>
       </ScrollView>
     );

@@ -12,7 +12,8 @@ import {
   FlatList,
   ImageBackground,
   RefreshControl,
-  ToastAndroid
+  ToastAndroid,
+  AsyncStorage
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
@@ -20,6 +21,9 @@ import { Header, Left, Right } from "native-base";
 import axios from "axios";
 import Swipeout from "react-native-swipeout";
 
+
+const ACCESS_ID = "access_id";
+const ACCESS_TOKEN = "access_token";
 export default class Today extends Component {
   constructor(props) {
     super(props);
@@ -35,14 +39,33 @@ export default class Today extends Component {
       photoUrl: "",
       loading2: true,
       dataSource: [],
-      pageRefreshing: false
+      pageRefreshing: false,
+      userId: '',
+      token: ''
     };
-
-    //this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
-
-    this.getLatestPosts();
   }
+
+  componentWillMount(){
+    this.getToken()
+   
+  }
+
+  async getToken() {
+    //const { fullName, email } = this.state;
+    try {
+      let id = await AsyncStorage.getItem(ACCESS_ID);
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      this.setState({ userId: id, token: token });
+      console.log("User Id is:", id, "id in state:", this.state.userId);
+      this.getLatestPosts(token);
+      return id;
+      //this.removeToken();
+    } catch (error) {
+      console.log("Cannot get user id");
+    }
+  }
+
   selectVideoTapped() {
     const options = {
       title: "Video Picker",
@@ -68,135 +91,8 @@ export default class Today extends Component {
     });
   }
   static navigationOptions = {
-    // headerTitle: "Go Live",
-    // headerRight: (
-    //   <TouchableOpacity  onPress={()=>this.selectPhotoTapped.bind(this)}>
-    //   <Icon
-    //     name="tv"
-
-    //     size={30}
-    //     style={{ marginRight: 20, color: "#000" }}
-    //   />
-    //   </TouchableOpacity>
-    // )
     header: null
   };
-  // selectPhotoTapped() {
-  //   const options = {
-  //     quality: 1.0,
-  //     maxWidth: 500,
-  //     maxHeight: 500,
-  //     storageOptions: {
-  //       skipBackup: true
-  //     }
-  //   };
-
-  //   ImagePicker.launchImageLibrary(options, response => {
-  //     console.log("Response = ", response);
-
-  //     if (response.didCancel) {
-  //       console.log("User cancelled photo picker");
-  //     } else if (response.error) {
-  //       console.log("ImagePicker Error: ", response.error);
-  //     } else if (response.customButton) {
-  //       console.log("User tapped custom button: ", response.customButton);
-  //     } else {
-  //       //let source = { uri: response.uri };
-
-  //       // You can also display the image using data:
-  //       let source = { uri: "data:image/jpeg;base64," + response.data };
-
-  //       this.setState({
-  //         avatarSource: source,
-  //         photoUrl: "data:image/jpeg;base64," + response.data
-  //       });
-  //     }
-  //   });
-  // }
-
-  // onPublishButton() {
-  //   const {
-  //     title,
-  //     category,
-  //     tags,
-  //     description,
-  //     publish,
-  //     breaking,
-  //     photoUrl
-  //   } = this.state;
-  //   //this.setState({publish: true})
-  //   console.log(
-  //     "Data in State:",
-  //     "Title: ",
-  //     title,
-  //     "Category: ",
-  //     category,
-  //     "tags: ",
-  //     tags,
-  //     "description: ",
-  //     description,
-  //     "photoUrl: ",
-  //     photoUrl
-  //   );
-  //   axios
-  //     .post("http://198.245.53.50:5000/api/posts/add", {
-  //       title: title,
-  //       category: category,
-  //       tags: tags,
-  //       description: description,
-  //       publish: true,
-  //       breaking: false,
-  //       photoUrl: photoUrl
-  //     })
-  //     .then(response => {
-  //       console.log("Post Response", response);
-  //     })
-  //     .catch(error => {
-  //       console.log("Post Error", error);
-  //     });
-  // }
-
-  // onSaveButton() {
-  //   const {
-  //     title,
-  //     category,
-  //     tags,
-  //     description,
-  //     publish,
-  //     breaking,
-  //     photoUrl
-  //   } = this.state;
-  //   //this.setState({publish: true})
-  //   console.log(
-  //     "Data in State:",
-  //     "Title: ",
-  //     title,
-  //     "Category: ",
-  //     category,
-  //     "tags: ",
-  //     tags,
-  //     "description: ",
-  //     description,
-  //     "photoUrl: ",
-  //     photoUrl
-  //   );
-  //   axios
-  //     .post("http://198.245.53.50:5000/api/posts/add", {
-  //       title: title,
-  //       category: category,
-  //       tags: tags,
-  //       description: description,
-  //       publish: false,
-  //       breaking: false,
-  //       photoUrl: photoUrl
-  //     })
-  //     .then(response => {
-  //       console.log("Post Response", response);
-  //     })
-  //     .catch(error => {
-  //       console.log("Post Error", error);
-  //     });
-  // }
   closeActivityIndicator2 = () =>
     setTimeout(
       () =>
@@ -205,10 +101,12 @@ export default class Today extends Component {
         }),
       3000
     );
-  getLatestPosts() {
+  getLatestPosts(token) {
     this.closeActivityIndicator2();
     axios
-      .get("http://198.245.53.50:5000/api/posts/4")
+      .post("http://198.245.53.50:5000/api/users/profile", {
+        token: token
+      })
       .then(response => {
         console.log(response);
         this.setState({
@@ -250,12 +148,13 @@ export default class Today extends Component {
     ];
     //item = item.filter(item=>item.breaking === false)
     return (
+      <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }}>
       <TouchableOpacity
         onPress={() => {
           this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
-        <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }}>
+        
           <View style={{ flexDirection: "row", width: 380 }}>
             <Image
               imageStyle={{ borderRadius: 10 }}
@@ -273,8 +172,9 @@ export default class Today extends Component {
               </Text>
             </View>
           </View>
-        </Swipeout>
+        
       </TouchableOpacity>
+      </Swipeout>
     );
   };
 
@@ -305,18 +205,20 @@ export default class Today extends Component {
 
   _onRefresh = () => {
     this.setState({ pageRefreshing: true });
+    this.getLatestPosts(this.state.token)
     //console.log("Idfromprops: ", this.state.propPostid);
     //const { commentsGot, data } = this.state;
-    axios
-      .get("http://198.245.53.50:5000/api/posts/4")
-      .then(response => {
-        this.setState({ dataSource: response.data.posts });
-        //console.log('DataState:',response.data.commentsGot)
-      })
-      .catch(error => console.log("Today Refresh Error:", error));
+    // axios
+    //   .get("http://198.245.53.50:5000/api/posts/4")
+    //   .then(response => {
+    //     this.setState({ dataSource: response.data.posts });
+    //     //console.log('DataState:',response.data.commentsGot)
+    //   })
+    //   .catch(error => console.log("Today Refresh Error:", error));
     // console.log("Data State:", data);
     // this.setState({ commentsGot : data.commentsGot });
     //console.log("Comments Got:", commentsGot);
+    
     setTimeout(
       () =>
         this.setState({
@@ -446,7 +348,7 @@ export default class Today extends Component {
             borderRadius: 100
           }}
           onPress={() => {
-            this.props.navigation.navigate("PostForm");
+            this.props.navigation.navigate("PostForm", {userId: this.state.userId});
           }}
         >
           <Icon name="plus" size={25} color="#fff" />

@@ -10,7 +10,9 @@ import {
   PixelRatio,
   Picker,
   PickerIOS,
-  ToastAndroid
+  ToastAndroid,
+  Platform,
+  ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import IconFA from "react-native-vector-icons/FontAwesome";
@@ -21,33 +23,53 @@ import TagInput from "react-native-tag-input";
 
 const inputProps = {
   //keyboardType: 'default',
-  placeholder: 'Tags',
+  placeholder: "Tags"
   //autoFocus: true,
   // style: {
   //   fontSize: 14,
   //   marginVertical: Platform.OS == 'ios' ? 10 : -2,
   // },
 };
+
+const horizontalInputProps = {
+  //keyboardType: 'default',
+  placeholder: "Tags",
+  //autoFocus: true,
+  style: {
+    fontSize: 18,
+    marginVertical: Platform.OS == "ios" ? 10 : -2
+    //color: 'black',
+  }
+};
+
+const horizontalScrollViewProps = {
+  horizontal: true,
+  showsHorizontalScrollIndicator: false
+};
+
 export default class PostForm extends Component {
   constructor(props) {
     super(props);
-    let data = this.props.navigation.state.params.data
+    let data = this.props.navigation.state.params.data;
     this.state = {
       avatarSource: data.photoUrl,
       //videoSource: null,
       //data: ,
       title: data.title,
       category: data.catagory,
-      tags: [],
+      tags: [data.tags],
       description: data.description,
       publish: false,
       breaking: false,
       photoUrl: data.photoUrl,
       text: "",
+      id: data._id,
+      loadingPublish: false,
+      loadingSave: false
     };
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
   }
-  
+
   componentWillUnmount() {
     this.setState({
       avatarSource: null,
@@ -59,7 +81,10 @@ export default class PostForm extends Component {
       publish: false,
       breaking: false,
       photoUrl: "",
-      text: ""
+      text: "",
+      id: '',
+      loadingPublish: false,
+      loadingSave: false
     });
   }
   static navigationOptions = {
@@ -98,15 +123,8 @@ export default class PostForm extends Component {
     });
   }
   onPublishButton() {
-    const {
-      title,
-      category,
-      tags,
-      description,
-      publish,
-      breaking,
-      photoUrl
-    } = this.state;
+    this.setState({loadingPublish: true})
+    const { title, category, tags, description, photoUrl } = this.state;
     //this.setState({publish: true})
     console.log(
       "Data in State:",
@@ -122,35 +140,35 @@ export default class PostForm extends Component {
       photoUrl
     );
     axios
-      .post("http://198.245.53.50:5000/api/posts/add", {
+      .post("http://198.245.53.50:5000/api/posts/edit/" + this.state.id, {
         title: title,
-        category: category,
+        catagory: category,
         tags: tags,
         description: description,
         publish: true,
-        breaking: false,
         photoUrl: photoUrl
       })
       .then(response => {
         ToastAndroid.showWithGravity(
-          'Post added to publish',
+          "Post added to publish",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
         console.log("Post Response", response);
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       })
       .catch(error => {
         ToastAndroid.showWithGravity(
-          'Error publishing post',
+          "Error publishing post",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
         console.log("Post Error", error);
       });
   }
 
   onSaveButton() {
+    this.setState({loadingSave: true})
     const {
       title,
       category,
@@ -175,32 +193,94 @@ export default class PostForm extends Component {
       photoUrl
     );
     axios
-      .post("http://198.245.53.50:5000/api/posts/add", {
+      .post("http://198.245.53.50:5000/api/posts/edit/" + this.state.id, {
         title: title,
-        category: category,
+        catagory: category,
         tags: tags,
         description: description,
-        publish: false,
-        breaking: false,
         photoUrl: photoUrl
       })
       .then(response => {
-        console.log("Post Response", response);
+        console.log("Post Edit Response", response);
         ToastAndroid.showWithGravity(
-          'Post added to saved',
+          "Post added to saved",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       })
       .catch(error => {
         ToastAndroid.showWithGravity(
-          'Error saving post',
+          "Error saving post",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.CENTER
         );
-        console.log("Post Error", error);
+        console.log("Post Edit Error", error);
       });
+  }
+
+  onChangeText = text => {
+    this.setState({ text });
+
+    const lastTyped = text.charAt(text.length - 1);
+    const parseWhen = [",", " ", ";", "\n"];
+
+    if (parseWhen.indexOf(lastTyped) > -1) {
+      this.setState({
+        tags: [...this.state.tags, this.state.text],
+        text: ""
+      });
+    }
+  };
+
+  toggleSaveButton() {
+    if (this.state.loadingSave) {
+      return (
+        <ActivityIndicator
+          size="large"
+          color="#003366"
+          style={{ marginRight: 50 }}
+        />
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            this.onSaveButton();
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+            Save
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  togglePublishButton() {
+    if (this.state.loadingPublish) {
+      return (
+        <ActivityIndicator
+          size="large"
+          color="#be0e0e"
+          style={{ marginLeft: 50 }}
+        />
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => {
+            this.onPublishButton();
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+            Publish
+          </Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
   render() {
@@ -260,7 +340,7 @@ export default class PostForm extends Component {
                 ) : (
                   <Image
                     style={styles.avatar}
-                    source={{uri: this.state.avatarSource}}
+                    source={{ uri: this.state.photoUrl }}
                   />
                 )}
               </View>
@@ -318,10 +398,12 @@ export default class PostForm extends Component {
               onChange={tags => this.setState({ tags })}
               labelExtractor={email => email}
               text={this.state.text}
-              onChangeText={text => this.setState({ text })}
+              onChangeText={this.onChangeText}
               tagColor="#003366"
               tagTextColor="white"
               inputProps={inputProps}
+              inputProps={horizontalInputProps}
+              scrollViewProps={horizontalScrollViewProps}
             />
             {/* <TextInput
               fontSize={18}
@@ -369,7 +451,10 @@ export default class PostForm extends Component {
               marginBottom: 50
             }}
           >
-            <TouchableOpacity
+            {this.toggleSaveButton()}
+            {this.togglePublishButton()}
+
+            {/* <TouchableOpacity
               style={styles.button}
               onPress={() => {
                 this.onSaveButton();
@@ -388,7 +473,7 @@ export default class PostForm extends Component {
               <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
                 Publish
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           {/* <Text style={styles.todayText}>
         Go Live
