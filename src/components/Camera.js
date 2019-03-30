@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  ImageBackground
+} from "react-native";
 import { RNCamera } from "react-native-camera";
 
 export default class Camera extends Component {
@@ -39,8 +46,28 @@ export default class Camera extends Component {
   }
 
   toggleTime() {
-    if (this.state.live) return <Text style={{ color: "black" }}>00:10</Text>;
-    else return null;
+    if (this.state.live)
+      return (
+        <ImageBackground
+          source={require("./../../thum/camera_button_366472.png")}
+          style={{
+            width: 120,
+            height: 120,
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Text style={{ color: "black" }}>00:10</Text>
+        </ImageBackground>
+      );
+    else {
+      return (
+        <Image
+          source={require("./../../thum/camera_button_366471.png")}
+          style={{ width: 120, height: 120 }}
+        />
+      );
+    }
   }
 
   render() {
@@ -69,15 +96,15 @@ export default class Camera extends Component {
           >
             <View
               style={{
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: this.state.live ? "red" : "grey",
-                width: 100,
-                height: 100,
+                //borderRadius: 100,
+                //borderWidth: 1,
+                //borderColor: this.state.live ? "red" : "grey",
+                // width: 100,
+                //height: 100,
                 marginTop: this.state.live ? 400 : 470,
                 justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: this.state.live ? "red" : "grey"
+                alignItems: "center"
+                //backgroundColor: this.state.live ? "red" : "grey"
               }}
             >
               {this.toggleTime()}
