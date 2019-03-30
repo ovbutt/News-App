@@ -22,23 +22,14 @@ import axios from "axios";
 import TagInput from "react-native-tag-input";
 
 const inputProps = {
-  //keyboardType: 'default',
   placeholder: "Tags"
-  //autoFocus: true,
-  // style: {
-  //   fontSize: 14,
-  //   marginVertical: Platform.OS == 'ios' ? 10 : -2,
-  // },
 };
 
 const horizontalInputProps = {
-  //keyboardType: 'default',
   placeholder: "Tags",
-  //autoFocus: true,
   style: {
     fontSize: 18,
     marginVertical: Platform.OS == "ios" ? 10 : -2
-    //color: 'black',
   }
 };
 
@@ -312,17 +303,7 @@ export default class PostForm extends Component {
             </View>
           </Left>
           <Right>
-            {/* <TouchableOpacity
-            onPress={() => {
-              this.selectVideoTapped();
-            }}
-          >
-            <IconFA
-              name="tv"
-              size={30}
-              style={{ marginRight: 20, color: "#000" }}
-            />
-          </TouchableOpacity> */}
+            
           </Right>
         </Header>
         <View style={{ marginTop: 20 }}>
@@ -405,23 +386,6 @@ export default class PostForm extends Component {
               inputProps={horizontalInputProps}
               scrollViewProps={horizontalScrollViewProps}
             />
-            {/* <TextInput
-              fontSize={18}
-              onChangeText={category => this.setState({ category })}
-              value={this.state.category}
-              placeholder="Category"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            />
-
-            <TextInput
-              fontSize={18}
-              onChangeText={tags => this.setState({ tags })}
-              value={this.state.tags}
-              placeholder="Tags"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            /> */}
 
             <TextInput
               fontSize={18}
@@ -454,33 +418,8 @@ export default class PostForm extends Component {
             {this.toggleSaveButton()}
             {this.togglePublishButton()}
 
-            {/* <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                this.onSaveButton();
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Save
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button2}
-              onPress={() => {
-                this.onPublishButton();
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Publish
-              </Text>
-            </TouchableOpacity> */}
           </View>
-          {/* <Text style={styles.todayText}>
-        Go Live
-      </Text>
-      <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
-      >
-      </Image> */}
+          
         </View>
       </ScrollView>
     );

@@ -21,7 +21,6 @@ import { Header, Left, Right } from "native-base";
 import axios from "axios";
 import Swipeout from "react-native-swipeout";
 
-
 const ACCESS_ID = "access_id";
 const ACCESS_TOKEN = "access_token";
 export default class Today extends Component {
@@ -40,15 +39,14 @@ export default class Today extends Component {
       loading2: true,
       dataSource: [],
       pageRefreshing: false,
-      userId: '',
-      token: ''
+      userId: "",
+      token: ""
     };
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
   }
 
-  componentWillMount(){
-    this.getToken()
-   
+  componentWillMount() {
+    this.getToken();
   }
 
   async getToken() {
@@ -137,24 +135,27 @@ export default class Today extends Component {
         text: "Delete",
         backgroundColor: "red",
         underlayColor: "rgba(0, 0, 0, 1, 0.6)",
-        onPress: () => { this.deleteData(item._id) }
+        onPress: () => {
+          this.deleteData(item._id);
+        }
       },
       {
         text: "Edit",
         backgroundColor: "#003366",
         underlayColor: "rgba(0, 0, 0, 1, 0.6)",
-        onPress: () => { this.editData(item) }
+        onPress: () => {
+          this.editData(item);
+        }
       }
     ];
     //item = item.filter(item=>item.breaking === false)
     return (
       <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }}>
-      <TouchableOpacity
-        onPress={() => {
-          this.props.navigation.navigate("NewsDetail", { data: item._id });
-        }}
-      >
-        
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("NewsDetail", { data: item._id });
+          }}
+        >
           <View style={{ flexDirection: "row", width: 380 }}>
             <Image
               imageStyle={{ borderRadius: 10 }}
@@ -172,40 +173,40 @@ export default class Today extends Component {
               </Text>
             </View>
           </View>
-        
-      </TouchableOpacity>
+        </TouchableOpacity>
       </Swipeout>
     );
   };
 
-  deleteData(id){
-    console.log('Delete id:', id)
-    axios.get('http://198.245.53.50:5000/api/delpost/' + id )
-    .then(response => {
-      console.log('Responce from Delete:', response)
-      ToastAndroid.showWithGravity(
-        'Post Deleted',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-    })
-    .catch(error => {
-      console.log('Error from delete:', error)
-      ToastAndroid.showWithGravity(
-        'Error while deleting post',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-    })
+  deleteData(id) {
+    console.log("Delete id:", id);
+    axios
+      .get("http://198.245.53.50:5000/api/delpost/" + id)
+      .then(response => {
+        console.log("Responce from Delete:", response);
+        ToastAndroid.showWithGravity(
+          "Post Deleted",
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+      })
+      .catch(error => {
+        console.log("Error from delete:", error);
+        ToastAndroid.showWithGravity(
+          "Error while deleting post",
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+      });
   }
 
-  editData(item){
-    this.props.navigation.navigate('EditPostForm', {data: item})
+  editData(item) {
+    this.props.navigation.navigate("EditPostForm", { data: item });
   }
 
   _onRefresh = () => {
     this.setState({ pageRefreshing: true });
-    this.getLatestPosts(this.state.token)
+    this.getLatestPosts(this.state.token);
     //console.log("Idfromprops: ", this.state.propPostid);
     //const { commentsGot, data } = this.state;
     // axios
@@ -218,7 +219,7 @@ export default class Today extends Component {
     // console.log("Data State:", data);
     // this.setState({ commentsGot : data.commentsGot });
     //console.log("Comments Got:", commentsGot);
-    
+
     setTimeout(
       () =>
         this.setState({
@@ -239,7 +240,7 @@ export default class Today extends Component {
             />
           }
         >
-          <Header style={{ backgroundColor: "white" }}>
+          {/* <Header style={{ backgroundColor: "white" }}>
             <Left>
               <Text
                 style={{
@@ -266,13 +267,13 @@ export default class Today extends Component {
                 />
               </TouchableOpacity>
             </Right>
-          </Header>
+          </Header> */}
 
           <View>
             <Text
               style={{
                 color: "black",
-                fontSize: 25,
+                fontSize: 30,
                 fontWeight: "bold",
                 marginLeft: 20,
                 marginTop: 20
@@ -348,7 +349,9 @@ export default class Today extends Component {
             borderRadius: 100
           }}
           onPress={() => {
-            this.props.navigation.navigate("PostForm", {userId: this.state.userId});
+            this.props.navigation.navigate("PostForm", {
+              userId: this.state.userId
+            });
           }}
         >
           <Icon name="plus" size={25} color="#fff" />

@@ -11,7 +11,7 @@ import {
   ScrollView,
   NetInfo
 } from "react-native";
-import OfflineNotice from '../components/OfflineNotice'
+import OfflineNotice from "../components/OfflineNotice";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -30,15 +30,15 @@ export default class SignupScreen extends Component {
       password_confirmation: "",
       loading: false,
       token: "",
-      userEmail: '',
-      userName: '',
-      userId: '',
-      isConnected: true,
+      userEmail: "",
+      userName: "",
+      userId: "",
+      isConnected: true
     };
     //this.getTokenFromLoginRequest = this.getTokenFromLoginRequest.bind(this)
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.checkConnectionStatus();
   }
 
@@ -60,7 +60,7 @@ export default class SignupScreen extends Component {
     );
   }
 
-  toggleOfflineNotice(){
+  toggleOfflineNotice() {
     if (!this.state.isConnected) {
       return <OfflineNotice />;
     }
@@ -90,18 +90,28 @@ export default class SignupScreen extends Component {
         password: password
       })
       .then(response => {
-        console.log(response);
-        console.log('token', response.data.token, 'userName', response.data.user.fullName, 'userEmail', response.data.user.email)
+        console.log("Login Responce: ", response);
+        console.log(
+          "token",
+          response.data.token,
+          "userName",
+          response.data.user.fullName,
+          "userEmail",
+          response.data.user.email
+        );
         //this.setState({ token: response.data.token, userEmail: response.data.user.email, userName: response.data.user.fullName  });
         let token = response.data.token;
-        let userEmail = response.data.user.email
-        let userName = response.data.user.fullName
-        let userId = response.data.user._id
-        console.log('states', token, userName, userEmail, userId)
-        this.storeToken(token, userEmail, userName, userId )
+        let userEmail = response.data.user.email;
+        let userName = response.data.user.fullName;
+        let userId = response.data.user._id;
+        console.log("states", token, userName, userEmail, userId);
+        this.storeToken(token, userEmail, userName, userId);
       })
-     //.then(this.storeToken(token, userEmail, ));
-  }
+      .catch(error => {
+        console.log("Error from login Request: ", error);
+      });
+    //.then(this.storeToken(token, userEmail, ));
+  };
 
   static navigationOptions = {
     header: null
@@ -148,19 +158,26 @@ export default class SignupScreen extends Component {
     } else {
       axios
         .post("http://198.245.53.50:5000/api/users", {
-          fullName:fullName,
-          email:email,
-          password:password,
-          role:'5c75c04c92746a1b1884a49e'
+          fullName: fullName,
+          email: email,
+          password: password,
+          role: "5c75c04c92746a1b1884a49e"
         })
-        .then(response => {console.log('Signup responce:',response)})
-        .then(this.getTokenFromLoginRequest())
-        .then(this.onSignupSuccess.bind(this))
-        .then(() => this.props.navigation.navigate("App"))
+        .then(response => {
+          console.log("Signup responce:", response);
+          this.getTokenFromLoginRequest();
+          this.onSignupSuccess.bind(this);
+          {
+            this.props.navigation.navigate("App");
+          }
+        })
+        // .then()
+        // .then()
+        // .then()
         .catch(
-        //error =>{console.log('Signup Error:', error);
-        this.onSignupFailure.bind(this)
-      );
+          //error =>{console.log('Signup Error:', error);
+          this.onSignupFailure.bind(this)
+        );
     }
   }
   onSignupSuccess() {
@@ -179,7 +196,7 @@ export default class SignupScreen extends Component {
   }
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size="large" style={{marginTop: 50}} />;
+      return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
     }
     return (
       <TouchableOpacity
@@ -199,7 +216,7 @@ export default class SignupScreen extends Component {
         source={require("../../thum/signupWallpaper.jpg")}
         style={{ height: "100%", width: "100%" }}
       >
-      {this.toggleOfflineNotice()}
+        {this.toggleOfflineNotice()}
         <ScrollView>
           <View style={styles.container}>
             <Text
@@ -208,8 +225,7 @@ export default class SignupScreen extends Component {
                 fontSize: 30,
                 fontWeight: "700",
                 marginBottom: 50,
-                marginTop: 120,
-                
+                marginTop: 120
               }}
             >
               Sign Up
@@ -220,8 +236,8 @@ export default class SignupScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%"
+                height: 45,
+                width: "90%"
               }}
             >
               <Icon
@@ -253,8 +269,8 @@ export default class SignupScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%",
+                height: 45,
+                width: "90%",
                 marginTop: 10
               }}
             >
@@ -279,7 +295,7 @@ export default class SignupScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
-                keyboardType='email-address'
+                keyboardType="email-address"
               />
             </View>
             <View
@@ -288,8 +304,8 @@ export default class SignupScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%",
+                height: 45,
+                width: "90%",
                 marginTop: 10
               }}
             >
@@ -323,8 +339,8 @@ export default class SignupScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%",
+                height: 45,
+                width: "90%",
                 marginTop: 10
               }}
             >
@@ -404,8 +420,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     borderRadius: 25,
-    height: 40,
-    width: 250,
+    height: 45,
+    width: "90%",
     marginTop: 50
   },
   button2: {
@@ -414,8 +430,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#003366",
     borderRadius: 25,
     marginTop: 10,
-    height: 40,
-    width: 250
+    height: 45,
+    width: "90%"
   },
   textStyle: {
     fontSize: 20,

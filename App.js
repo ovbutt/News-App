@@ -19,7 +19,11 @@ import NewsDetail from "./src/components//NewsDetail";
 import PostForm from "./src/components/PostForm";
 import EditPostForm from "./src/components/EditPostForm";
 import SearchResult from "./src/components/SearchResult";
+import LiveVideos from "./src/screens/LiveVideos";
+import Camera from "./src/components/Camera";
 import Icon from "react-native-vector-icons/Ionicons";
+import IconFA from "react-native-vector-icons/FontAwesome";
+import LiveVideoDetail from "./src/components/LiveVideoDetail";
 export default class App extends Component {
   render() {
     return <AppContainer />;
@@ -81,6 +85,28 @@ SearchNavigator.navigationOptions = ({ navigation }) => {
     tabBarVisible
   };
 };
+const LiveVideosStack = createStackNavigator(
+  {
+    LiveVideos: LiveVideos,
+    Camera: Camera,
+    LiveVideoDetail: LiveVideoDetail
+  },
+  {
+    defaultNavigationOptions: {
+      header: null
+    }
+  }
+);
+LiveVideosStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible
+  };
+};
 const GoLiveNavigator = createStackNavigator({
   GoLive: Today,
   EditPostForm: EditPostForm,
@@ -114,13 +140,13 @@ ProfileNavigator.navigationOptions = ({ navigation }) => {
 };
 const AppTabNavigator = createBottomTabNavigator(
   {
-    Explore: {
-      screen: TodayNavigator
-    },
-    // Categories: {
-    //   screen: CategoryNavigator
+    // Explore: {
+    //   screen: TodayNavigator
     // },
-    GoLive: {
+    LiveVideos: {
+      screen: LiveVideosStack
+    },
+    MyPosts: {
       screen: GoLiveNavigator
     },
     Search: {
@@ -151,10 +177,12 @@ const AppTabNavigator = createBottomTabNavigator(
           iconName = "ios-apps";
         } else if (routeName === "Search") {
           iconName = "ios-search";
-        } else if (routeName === "GoLive") {
+        } else if (routeName === "MyPosts") {
           iconName = "ios-add-circle";
         } else if (routeName === "Profile") {
           iconName = "ios-contact";
+        } else if (routeName === "LiveVideos") {
+          return <IconFA name="tv" size={25} color={tintColor} />;
         }
         return <Icon name={iconName} size={25} color={tintColor} />;
       }
@@ -182,7 +210,7 @@ const AuthSwitchNavigator = createSwitchNavigator(
     Auth: AuthStack
   },
   {
-    initialRouteName: "AuthLoadingScreen"
+    initialRouteName: "App"
   }
 );
 

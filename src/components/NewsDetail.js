@@ -39,14 +39,14 @@ export default class NewsDetail extends Component {
     axios
       .get("http://198.245.53.50:5000/api/postsById/" + this.state.propPostid)
       .then(response => {
-        console.log('responce getting post', response.data.commentsGot[0].commentedBy[0].fullName)
+        //console.log('responce getting post', response.data.commentsGot[0].commentedBy[0].fullName)
         this.setState({ propPostid: response.data._id, data: response.data });
         console.log("DataState:", this.state.data);
       })
       .catch(error => console.log("PostById Error:", error));
     // console.log("Data State:", data);
     // this.setState({ commentsGot : data.commentsGot });
-    console.log("Comments Got:", commentsGot);
+    //console.log("Comments Got:", commentsGot);
   }
 
   static navigationOptions = {
@@ -92,6 +92,9 @@ export default class NewsDetail extends Component {
           commentPost: ""
         });
         console.log("New Coment Array", this.state.commentsGot);
+        //this.refs.scrollView.scrollTo({ y:0, animated: true });
+        //this.refs.commentsList.scrollToEnd()
+        this.scrollView.scrollToEnd({ animated: true });
       })
       .catch(error => {
         console.log("Error Comment: ", error);
@@ -103,13 +106,17 @@ export default class NewsDetail extends Component {
       {
         text: "Delete",
         backgroundColor: "red",
-        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        underlayColor: "rgba(0, 0, 0, 1, 0.6)"
         //onPress: () => { this.deleteData(item._id) }
-      },
+      }
     ];
     //item = item.filter(item=>item.breaking === false)
     return (
-      <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }} disabled={this.state.id == item.commentedBy[0]._id ? false : true } >
+      <Swipeout
+        right={swipeoutBtns}
+        style={{ backgroundColor: "white" }}
+        disabled={this.state.id == item.commentedBy[0]._id ? false : true}
+      >
         <View style={{ flexDirection: "row", width: 370 }}>
           <Icon
             name="ios-contact"
@@ -120,15 +127,21 @@ export default class NewsDetail extends Component {
             {/* <Text style={styles.catagoryStyle}>{item.comment}</Text> */}
 
             <Text style={styles.titleTextStyle}>{item.comment}</Text>
-            <View style={{flexDirection: 'row', marginLeft: 100, marginBottom: 10}}>
-            <Text>Comment by: </Text>
-            <Text style={{ color: "black" }}>
-              {item.commentedBy[0].fullName}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginLeft: 100,
+                marginBottom: 10
+              }}
+            >
+              <Text>Comment by: </Text>
+              <Text style={{ color: "black" }}>
+                {item.commentedBy[0].fullName}
+              </Text>
             </View>
           </View>
         </View>
-        </Swipeout>
+      </Swipeout>
     );
   };
 
@@ -139,7 +152,6 @@ export default class NewsDetail extends Component {
           height: 1,
           width: "100%",
           backgroundColor: "#CED0CE"
-          //marginLeft: "23%"
         }}
       />
     );
@@ -153,27 +165,32 @@ export default class NewsDetail extends Component {
       .get("http://198.245.53.50:5000/api/postsById/" + this.state.propPostid)
       .then(response => {
         this.setState({ propPostid: response.data._id, data: response.data });
-        //console.log('DataState:',response.data.commentsGot)
       })
       .catch(error => console.log("PostById Error:", error));
-    // console.log("Data State:", data);
-    // this.setState({ commentsGot : data.commentsGot });
-    //console.log("Comments Got:", commentsGot);
     setTimeout(
       () =>
         this.setState({
           pageRefreshing: false
         }),
-      2000
+      1000
     );
   };
 
-  toggleSendIcon(){
-    if(!this.state.commentPost.length){
-      return <Image source={require('../../thum/sendGrey.png')} style={{height: 30, width: 30}} />
-    }
-    else{
-      return <Image source={require('../../thum/send.png')} style={{height: 30, width: 30}} />
+  toggleSendIcon() {
+    if (!this.state.commentPost.length) {
+      return (
+        <Image
+          source={require("../../thum/sendApp.png")}
+          style={{ height: 30, width: 30 }}
+        />
+      );
+    } else {
+      return (
+        <Image
+          source={require("../../thum/send.png")}
+          style={{ height: 30, width: 30 }}
+        />
+      );
     }
   }
 
@@ -188,6 +205,11 @@ export default class NewsDetail extends Component {
               onRefresh={this._onRefresh}
             />
           }
+          //ref="scrollView"
+          ref={ref => (this.scrollView = ref)}
+          // onContentSizeChange={(contentWidth, contentHeight) => {
+          //   this.scrollView.scrollToEnd({ animated: true });
+          // }}
         >
           <Header style={{ backgroundColor: "white" }}>
             <Left>
@@ -247,7 +269,6 @@ export default class NewsDetail extends Component {
               <Text>{data.tags}</Text>
             </View>
           </View>
-
           <Image
             source={{ uri: data.photoUrl }}
             style={{
@@ -257,7 +278,6 @@ export default class NewsDetail extends Component {
               marginTop: 8
             }}
           />
-
           <View
             style={{
               marginTop: 5,
@@ -269,7 +289,6 @@ export default class NewsDetail extends Component {
             <Text style={{ color: "black" }}>Category: </Text>
             <Text>{data.catagory}</Text>
           </View>
-
           <View
             style={{
               padding: 15,
@@ -280,7 +299,6 @@ export default class NewsDetail extends Component {
           >
             <HTMLView value={data.description} stylesheet={styles} />
           </View>
-
           <Text
             style={{
               color: "black",
@@ -291,7 +309,9 @@ export default class NewsDetail extends Component {
           >
             Comments
           </Text>
-
+          <Text style={{ marginLeft: 20, marginTop: 10, fontSize: 14 }}>
+            Swipe left on comment to delete
+          </Text>
           <View
             style={{
               flexDirection: "column",
@@ -309,6 +329,7 @@ export default class NewsDetail extends Component {
               renderItem={this.renderItem}
               ItemSeparatorComponent={this.renderSeparator}
               extraData={commentsGot}
+              ref="commentsList"
             />
           </View>
         </ScrollView>
@@ -319,8 +340,7 @@ export default class NewsDetail extends Component {
             flexDirection: "row",
             position: "absolute",
             bottom: 0,
-            backgroundColor: "white",
-            //height: 70
+            backgroundColor: "white"
           }}
         >
           <TextInput
@@ -349,16 +369,11 @@ export default class NewsDetail extends Component {
               style={{
                 marginTop: 15,
                 marginLeft: 5,
-                //backgroundColor: "#003366",
-                //width: 40,
-                //borderRadius: 10,
-                //height: 40,
                 alignItems: "center",
                 justifyContent: "center"
               }}
             >
-            {this.toggleSendIcon()}
-              {/* <Icon name="ios-send" size={40} color="#fff" /> */}
+              {this.toggleSendIcon()}
             </View>
           </TouchableOpacity>
         </View>

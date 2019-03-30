@@ -236,22 +236,7 @@ export default class Discover extends Component {
   };
 
 
-  // handleRefresh() {
-  //   this.setState({ refreshing: true });
-  // }
 
-  // handleLoadMore = () => {
-    
-  //     this.setState(
-  //       prevState => {
-  //         return { refreshing: true, page: prevState.page + 1 };
-  //       },
-  //       () => {
-  //         this.getLatestPosts();
-  //       }
-  //     );
-    
-  // };
 
   handleLoadMore = () => {
     this.setState({refreshing: true})
@@ -342,6 +327,20 @@ export default class Discover extends Component {
                 showsHorizontalScrollIndicator={false}
                 
               />
+            </View>
+
+            <Text style={(style = styles.todayText)} >Live Videos</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 10,
+                paddingLeft: "2%",
+                paddingRight: "5%"
+              }}
+            >
+
             </View>
 
             <Text style={(style = styles.todayText)}>Latest Posts</Text>

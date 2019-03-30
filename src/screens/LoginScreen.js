@@ -11,7 +11,7 @@ import {
   ScrollView,
   NetInfo
 } from "react-native";
-import OfflineNotice from '../components/OfflineNotice'
+import OfflineNotice from "../components/OfflineNotice";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -19,8 +19,6 @@ const ACCESS_TOKEN = "access_token";
 const ACCESS_EMAIL = "access_email";
 const ACCESS_NAME = "access_name";
 const ACCESS_ID = "access_id";
-
-
 
 export default class LoginScreen extends Component {
   constructor() {
@@ -32,14 +30,14 @@ export default class LoginScreen extends Component {
       loading: false,
       hidePassword: true,
       token: "",
-      userEmail: '',
-      userName: '',
-      userId: '',
+      userEmail: "",
+      userName: "",
+      userId: "",
       isConnected: true
     };
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.checkConnectionStatus();
   }
 
@@ -61,7 +59,7 @@ export default class LoginScreen extends Component {
     );
   }
 
-  toggleOfflineNotice(){
+  toggleOfflineNotice() {
     if (!this.state.isConnected) {
       return <OfflineNotice />;
     }
@@ -94,7 +92,9 @@ export default class LoginScreen extends Component {
       alert("Email cannot be empty");
       this.setState({ loading: false });
     } else if (!emailCheckRegex.test(email)) {
-      alert("Invalid Email, Please enter a valid Email (e.g example@gmail.com)");
+      alert(
+        "Invalid Email, Please enter a valid Email (e.g example@gmail.com)"
+      );
       this.setState({ loading: false });
     } else if (!password.length) {
       alert("Password cannot be empty");
@@ -112,10 +112,10 @@ export default class LoginScreen extends Component {
           console.log(response);
           //this.setState({ token: response.data.token, userEmail: response.data.user.email, userName: response.data.user.fullName, userId: response.data.user._id });
           let token = response.data.token;
-        let userEmail = response.data.user.email
-        let userName = response.data.user.fullName
-        let userId = response.data.user._id
-        this.storeToken(token, userEmail, userName, userId )
+          let userEmail = response.data.user.email;
+          let userName = response.data.user.fullName;
+          let userId = response.data.user._id;
+          this.storeToken(token, userEmail, userName, userId);
         })
         //.then(this.storeToken.bind(this))
         .then(this.onLoginSuccess.bind(this))
@@ -143,7 +143,7 @@ export default class LoginScreen extends Component {
 
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size="large" style={{marginTop: 80}} />;
+      return <ActivityIndicator size="large" style={{ marginTop: 80 }} />;
     } else {
       return (
         <TouchableOpacity
@@ -165,7 +165,7 @@ export default class LoginScreen extends Component {
         source={require("../../thum/loginwallpaper.png")}
         style={{ height: "100%", width: "100%" }}
       >
-      {this.toggleOfflineNotice()}
+        {this.toggleOfflineNotice()}
         <ScrollView>
           <View style={styles.container}>
             <Text
@@ -174,7 +174,7 @@ export default class LoginScreen extends Component {
                 fontSize: 30,
                 fontWeight: "700",
                 marginBottom: 50,
-                marginTop: 150,
+                marginTop: 150
               }}
             >
               Log In
@@ -185,8 +185,8 @@ export default class LoginScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%"
+                height: 45,
+                width: "90%"
               }}
             >
               <Icon
@@ -210,7 +210,7 @@ export default class LoginScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
-                keyboardType='email-address'
+                keyboardType="email-address"
               />
             </View>
             <View
@@ -219,8 +219,8 @@ export default class LoginScreen extends Component {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 25,
-                height: "8%",
-                width: "70%",
+                height: 45,
+                width: "90%",
                 marginTop: 20
               }}
             >
@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     borderRadius: 25,
-    height: 40,
-    width: 250,
+    height: 45,
+    width: "90%",
     marginTop: 80
   },
   button2: {
@@ -311,8 +311,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#003366",
     borderRadius: 25,
     marginTop: 10,
-    height: 40,
-    width: 250
+    height: 45,
+    width: "90%"
   },
   showButton: {
     paddingTop: 8,
