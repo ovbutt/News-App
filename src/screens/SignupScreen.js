@@ -196,16 +196,21 @@ export default class SignupScreen extends Component {
   }
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+      return (
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 50 }}
+          color="#f54b64"
+        />
+      );
     }
     return (
       <TouchableOpacity
         style={styles.button}
         onPress={this.onSignupButtonPress.bind(this)}
       >
-        <Text style={{ color: "#003366", fontSize: 18, fontWeight: "700" }}>
-          {" "}
-          Sign Up{" "}
+        <Text style={{ color: "#f54b64", fontSize: 18, fontWeight: "700" }}>
+          SIGN UP
         </Text>
       </TouchableOpacity>
     );
@@ -213,7 +218,7 @@ export default class SignupScreen extends Component {
   render() {
     return (
       <ImageBackground
-        source={require("../../thum/signupWallpaper.jpg")}
+        source={require("../../thum/forgotPasswordBG.png")}
         style={{ height: "100%", width: "100%" }}
       >
         {this.toggleOfflineNotice()}
@@ -259,8 +264,7 @@ export default class SignupScreen extends Component {
                 value={this.state.fullName}
                 placeholderTextColor="white"
                 style={{ color: "white", height: "100%", width: "80%" }}
-                // selectionColor="white"
-                // underlineColorAndroid="white"
+                selectionColor="#fff"
               />
             </View>
             <View
@@ -296,6 +300,7 @@ export default class SignupScreen extends Component {
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
                 keyboardType="email-address"
+                selectionColor="#fff"
               />
             </View>
             <View
@@ -331,6 +336,7 @@ export default class SignupScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
+                selectionColor="#fff"
               />
             </View>
             <View
@@ -368,6 +374,7 @@ export default class SignupScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
+                selectionColor="#fff"
               />
             </View>
 
@@ -427,7 +434,7 @@ const styles = StyleSheet.create({
   button2: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#003366",
+    backgroundColor: "#f54b64",
     borderRadius: 25,
     marginTop: 10,
     height: 45,

@@ -11,8 +11,12 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
-  NetInfo
+  NetInfo,
+  YellowBox
 } from "react-native";
+
+//YellowBox.ignoreWarnings(["Warning: ReactNative.createElement"]);
+
 import OfflineNotice from "../components/OfflineNotice";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -39,26 +43,167 @@ export default class Discover extends Component {
 
   renderItem = ({ item }) => {
     return (
+      // <TouchableOpacity
+      //   onPress={() => {
+      //     this.props.navigation.navigate("NewsDetail", { data: item._id });
+      //   }}
+      // >
+      //   <View style={{ flexDirection: "row", width: 380 }}>
+      //     <Image
+      //       imageStyle={{ borderRadius: 10 }}
+      //       source={{ uri: item.photoUrl }}
+      //       style={styles.imageThumbStyle}
+      //     />
+      //     <View style={{ flexDirection: "column" }}>
+      //       <Text style={styles.catagoryStyle}>{item.catagory}</Text>
+
+      //       <Text style={styles.titleTextStyle}>
+      //         {item.title.substring(0, 30) + "..."}
+      //       </Text>
+      //       <Text style={{ color: "white" }}>
+      //         {item.createdAt.substring(0, 10)}
+      //       </Text>
+      //     </View>
+      //   </View>
+      // </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
           this.props.navigation.navigate("NewsDetail", { data: item._id });
         }}
       >
-        <View style={{ flexDirection: "row", width: 380 }}>
+        <View
+          style={{
+            marginLeft: 20,
+            width: "90%",
+            height: 440,
+            elevation: 5,
+            borderRadius: 10,
+            borderColor: "grey",
+            //borderWidth: 1,
+            marginBottom: 20,
+            shadowColor: "white"
+          }}
+        >
+          {/* <View style={{ position: "absolute", right: 30, top: 15 }}>
+            <Icon name="ios-more" color="white" size={35} />
+          </View> */}
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 20,
+              marginLeft: 20
+            }}
+          >
+            <Image
+              source={require("./../../thum/thumb-6.jpg")}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 100,
+                borderWidth: 2,
+                borderColor: "#f54b64"
+              }}
+            />
+            <View
+              style={{ flexDirection: "column", marginLeft: 10, width: "100%" }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  marginLeft: 5,
+                  marginTop: 5,
+                  fontSize: 18,
+                  width: "100%"
+                }}
+              >
+                {item.addedByUser[0] != null
+                  ? item.addedByUser[0].fullName
+                  : ""}
+              </Text>
+              <Text style={{ marginLeft: 5, marginTop: 5, color: "grey" }}>
+                {item.createdAt.substring(0, 10)}
+              </Text>
+            </View>
+          </View>
+          <Text
+            style={{
+              color: "#f54b64",
+              marginLeft: 20,
+              marginTop: 10,
+              fontSize: 16
+            }}
+          >
+            {item.tags}
+          </Text>
+          <Text
+            style={{
+              color: "#fff",
+              marginLeft: 15,
+              marginTop: 10,
+              fontSize: 16,
+              marginBottom: 10
+            }}
+          >
+            {item.title.substring(0, 60) + "..."}
+          </Text>
           <Image
-            imageStyle={{ borderRadius: 10 }}
             source={{ uri: item.photoUrl }}
-            style={styles.imageThumbStyle}
+            style={{ width: "100%", height: "50%" }}
           />
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.catagoryStyle}>{item.catagory}</Text>
-
-            <Text style={styles.titleTextStyle}>
-              {item.title.substring(0, 30) + "..."}
-            </Text>
-            <Text style={{ color: "white" }}>
-              {item.createdAt.substring(0, 10)}
-            </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 10,
+              marginBottom: 5,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            {/* <View style={{ flexDirection: "row" }}>
+              <Icon name="ios-thumbs-up" size={30} color="white" />
+              <Text
+                style={{
+                  color: "white",
+                  marginLeft: 10,
+                  fontSize: 15,
+                  marginTop: 5
+                }}
+              >
+                {item.likes}
+              </Text>
+            </View> */}
+            <View style={{ flexDirection: "row", marginLeft: 20 }}>
+              <Icon name="ios-chatbubbles" size={30} color="white" />
+              <Text
+                style={{
+                  color: "white",
+                  marginLeft: 10,
+                  fontSize: 15,
+                  marginTop: 5
+                }}
+              >
+                {item.commentsGot.length}
+              </Text>
+            </View>
+            {/* <View
+              style={{
+                flexDirection: "row",
+                position: "absolute",
+                right: 30
+              }}
+            >
+              <Icon name="ios-share-alt" size={30} color="white" />
+              <Text
+                style={{
+                  color: "white",
+                  marginLeft: 10,
+                  fontSize: 15,
+                  marginTop: 5
+                }}
+              >
+                {item.shares}
+              </Text>
+            </View> */}
           </View>
         </View>
       </TouchableOpacity>
@@ -75,35 +220,48 @@ export default class Discover extends Component {
         >
           <ImageBackground
             source={{ uri: item.photoUrl }}
-            imageStyle={{ borderRadius: 25 }}
+            imageStyle={{ borderRadius: 10 }}
             style={styles.imageThumbStyleBig}
           >
             <View
               style={{
-                paddingTop: 230,
+                paddingTop: 150,
                 flexDirection: "row",
                 //marginBottom: 10,
                 alignContent: "space-around"
               }}
             >
-              <View style={{ flex: 4 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  height: "100%",
+                  flex: 1
+                }}
+              >
                 <Text
                   style={{
-                    fontSize: 30,
-                    color: "white",
+                    fontSize: 15,
+                    color: "#f9f9f9",
                     marginLeft: 5,
                     fontStyle: "normal",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
+                    width: "60%"
                   }}
                 >
-                  {item.title.substring(0, 30) + "..."}
+                  {item.title.substring(0, 15) + "..."}
                 </Text>
-              </View>
-              <View style={{ flex: 1 }}>
+
                 <Icon
                   name="ios-chatbubbles"
-                  size={30}
-                  style={{ color: "grey", marginTop: 80 }}
+                  size={20}
+                  style={{
+                    color: "#f9f9f9",
+                    position: "absolute",
+                    right: 10,
+                    top: 20
+                    //bottom: 20
+                  }}
                 >
                   {item.commentsGot.length}
                 </Icon>
@@ -216,30 +374,27 @@ export default class Discover extends Component {
   }
 
   renderFooter = () => {
-   // if (this.state.refreshing) {
-      return (
-        <View
-          style={{
-            paddingVertical: 20,
-            borderTopWidth: 1,
-            borderTopColor: "#CED0CE"
-          }}
-        >
-          {this.state.refreshing && (
-            <ActivityIndicator size="large" color="white" />
-          )}
-        </View>
-      );
+    // if (this.state.refreshing) {
+    return (
+      <View
+        style={{
+          paddingVertical: 20
+          // borderTopWidth: 1,
+          // borderTopColor: "#CED0CE"
+        }}
+      >
+        {this.state.refreshing && (
+          <ActivityIndicator size="large" color="white" />
+        )}
+      </View>
+    );
     //} else {
-      return null;
+    return null;
     //}
   };
 
-
-
-
   handleLoadMore = () => {
-    this.setState({refreshing: true})
+    this.setState({ refreshing: true });
     //this.closeRefreshingIndicator();
     this.setState({ page: this.state.page + 1 }, () => {
       //this.setState({refreshing: flase})
@@ -261,18 +416,19 @@ export default class Discover extends Component {
         console.log("Error Is:", error);
       });
     axios
-    .get("http://198.245.53.50:5000/api/posts/1")
-    .then(response => {
-      console.log(response);
-      this.setState({
-        dataSource:response.data.posts, page: 1
+      .get("http://198.245.53.50:5000/api/posts/1")
+      .then(response => {
+        console.log(response);
+        this.setState({
+          dataSource: response.data.posts,
+          page: 1
+        });
+      })
+      .then(() => console.log("DataSource", this.state.dataSource))
+      .catch(function(error) {
+        console.log("error", error);
+        //this.setState({refreshing: false})
       });
-    })
-    .then(() => console.log("DataSource", this.state.dataSource))
-    .catch(function(error) {
-      console.log("error", error);
-      //this.setState({refreshing: false})
-    });
     setTimeout(
       () =>
         this.setState({
@@ -284,53 +440,102 @@ export default class Discover extends Component {
 
   render() {
     return (
-      <ImageBackground
-        source={require("../../thum/crop.jpg")}
-        style={styles.backgroundImage}
-      >
-        {this.props.children}
-        <View>
-          {this.toggleOfflineNotice()}
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.pageRefreshing}
-                onRefresh={this._onRefresh}
-              />
-            }
+      <View style={{ flex: 1, backgroundColor: "#242a38" }}>
+        {this.toggleOfflineNotice()}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.pageRefreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderColor: "white",
+              //borderWidth: 1,
+              borderRadius: 25,
+              height: 40,
+              width: "90%",
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+              alignSelf: "center",
+              marginTop: 20,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+            onPress={() => {
+              this.props.navigation.navigate("SearchResult");
+            }}
           >
-            <Text
+            {/* <View
               style={{
-                marginTop: 50,
-                marginLeft: 10,
-                fontSize: 16,
+                flexDirection: "row",
+                borderColor: "white",
+                //borderWidth: 1,
+                borderRadius: 25,
+                height: 40,
+                width: "90%",
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+                alignSelf: "center",
+                marginTop: 10,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            > */}
+            <Icon
+              name="ios-search"
+              size={25}
+              style={{
                 color: "white"
               }}
+            />
+
+            <Text
+              style={{
+                fontSize: 20,
+                color: "white",
+                fontWeight: "300",
+                //marginTop: 5,
+                paddingLeft: 20
+              }}
             >
-              {date}
+              Search
             </Text>
-            <Text style={styles.todayText}>Breaking</Text>
-            {this.state.loading1 && (
-              <ActivityIndicator
-                size="large"
-                animating={this.state.loading1}
-                color="white"
-              />
-            )}
+            {/* </View> */}
+          </TouchableOpacity>
+          <Text
+            style={{
+              marginTop: 30,
+              marginLeft: 20,
+              fontSize: 16,
+              color: "white"
+            }}
+          >
+            {date}
+          </Text>
+          <Text style={styles.todayText}>Breaking</Text>
+          {this.state.loading1 && (
+            <ActivityIndicator
+              size="large"
+              animating={this.state.loading1}
+              color="white"
+            />
+          )}
 
-            <View style={{ flexDirection: "row" }}>
-              <FlatList
-                data={this.state.breaking}
-                keyExtractor={item => item._id}
-                renderItem={this.renderBreakingItem}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                
-              />
-            </View>
+          <View style={{ flexDirection: "row" }}>
+            <FlatList
+              data={this.state.breaking}
+              keyExtractor={item => item._id}
+              renderItem={this.renderBreakingItem}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
 
-            <Text style={(style = styles.todayText)} >Live Videos</Text>
-            <View
+          {/* <Text style={(style = styles.todayText)}>Live Videos</Text> */}
+          {/* <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -339,41 +544,39 @@ export default class Discover extends Component {
                 paddingLeft: "2%",
                 paddingRight: "5%"
               }}
-            >
+            /> */}
 
-            </View>
-
-            <Text style={(style = styles.todayText)}>Latest Posts</Text>
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 10,
-                paddingLeft: "2%",
-                paddingRight: "5%"
-              }}
-            >
-              {this.state.loading2 && (
-                <ActivityIndicator
-                  size="large"
-                  animating={this.state.loading2}
-                  color="white"
-                />
-              )}
-              <FlatList
-                data={this.state.dataSource}
-                keyExtractor={item => item._id}
-                renderItem={this.renderItem}
-                ItemSeparatorComponent={this.renderSeparator}
-                onEndReached={this.handleLoadMore}
-                ListFooterComponent={this.renderFooter}
-                onEndReachedThreshold={0.1}
+          <Text style={(style = styles.todayText)}>Latest Posts</Text>
+          <View
+          // style={{
+          //   flexDirection: "column",
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          //   marginTop: 10,
+          //   paddingLeft: "2%",
+          //   paddingRight: "5%"
+          // }}
+          >
+            {this.state.loading2 && (
+              <ActivityIndicator
+                size="large"
+                animating={this.state.loading2}
+                color="white"
               />
-            </View>
-          </ScrollView>
-        </View>
-      </ImageBackground>
+            )}
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={this.state.dataSource}
+              keyExtractor={item => item._id}
+              renderItem={this.renderItem}
+              // ItemSeparatorComponent={this.renderSeparator}
+              onEndReached={this.handleLoadMore}
+              // ListFooterComponent={this.renderFooter}
+              onEndReachedThreshold={0}
+            />
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -387,9 +590,9 @@ const styles = StyleSheet.create({
   },
   todayText: {
     fontSize: 30,
-    marginLeft: 10,
-    marginTop: 5,
-    marginBottom: 10,
+    marginLeft: 20,
+    marginTop: 10,
+    marginBottom: 20,
     fontFamily: "Baskerville",
     fontWeight: "bold",
     color: "white"
@@ -427,8 +630,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   imageThumbStyleBig: {
-    height: 350,
-    width: 320,
+    height: 200,
+    width: 150,
     marginBottom: 30
   },
   containerBig: {

@@ -143,16 +143,21 @@ export default class LoginScreen extends Component {
 
   renderButton() {
     if (this.state.loading) {
-      return <ActivityIndicator size="large" style={{ marginTop: 80 }} />;
+      return (
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 80 }}
+          color="#f54b64"
+        />
+      );
     } else {
       return (
         <TouchableOpacity
           style={styles.button}
           onPress={this.onLoginButtonPress.bind(this)}
         >
-          <Text style={{ color: "#003366", fontSize: 18, fontWeight: "700" }}>
-            {" "}
-            Log In{" "}
+          <Text style={{ color: "#f54b64", fontSize: 18, fontWeight: "700" }}>
+            LOG IN
           </Text>
         </TouchableOpacity>
       );
@@ -162,7 +167,7 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <ImageBackground
-        source={require("../../thum/loginwallpaper.png")}
+        source={require("../../thum/signupBG.png")}
         style={{ height: "100%", width: "100%" }}
       >
         {this.toggleOfflineNotice()}
@@ -211,6 +216,7 @@ export default class LoginScreen extends Component {
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
                 keyboardType="email-address"
+                selectionColor="#fff"
               />
             </View>
             <View
@@ -245,6 +251,7 @@ export default class LoginScreen extends Component {
                 // selectionColor="white"
                 // underlineColorAndroid="white"
                 autoCapitalize="none"
+                selectionColor="#fff"
               />
               <TouchableOpacity
                 onPress={this.toggleShowButton.bind(this)}
@@ -308,7 +315,7 @@ const styles = StyleSheet.create({
   button2: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#003366",
+    backgroundColor: "#f54b64",
     borderRadius: 25,
     marginTop: 10,
     height: 45,

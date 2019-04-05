@@ -56,7 +56,7 @@ export default class Today extends Component {
       let token = await AsyncStorage.getItem(ACCESS_TOKEN);
       this.setState({ userId: id, token: token });
       console.log("User Id is:", id, "id in state:", this.state.userId);
-      this.getLatestPosts(token);
+      this.getLatestPosts(id);
       return id;
       //this.removeToken();
     } catch (error) {
@@ -99,22 +99,20 @@ export default class Today extends Component {
         }),
       3000
     );
-  getLatestPosts(token) {
+  getLatestPosts(id) {
     this.closeActivityIndicator2();
     axios
-      .post("http://198.245.53.50:5000/api/users/profile", {
-        token: token
-      })
+      .get("http://198.245.53.50:5000/api/getMyposts/" + id)
       .then(response => {
-        console.log(response);
+        console.log("Response in myPosts", response.data[0].posts);
         this.setState({
-          dataSource: response.data.posts
+          dataSource: response.data[0].posts
         });
       })
-      .then(() => console.log("DataSource", this.state.dataSource))
+      // .then(() => console.log("DataSource", this.state.dataSource))
       .catch(function(error) {
-        console.log("error", error);
-        //this.setState({refreshing: false})
+        console.log("Error in getting my posts", error);
+        this.setState({ refreshing: false });
       });
   }
   renderSeparator = () => {
@@ -150,13 +148,17 @@ export default class Today extends Component {
     ];
     //item = item.filter(item=>item.breaking === false)
     return (
-      <Swipeout right={swipeoutBtns} style={{ backgroundColor: "white" }}>
+      <Swipeout
+        right={swipeoutBtns}
+        style={{ backgroundColor: "white" }}
+        autoClose={true}
+      >
         <TouchableOpacity
           onPress={() => {
             this.props.navigation.navigate("NewsDetail", { data: item._id });
           }}
         >
-          <View style={{ flexDirection: "row", width: 380 }}>
+          <View style={{ flexDirection: "row", width: "95%" }}>
             <Image
               imageStyle={{ borderRadius: 10 }}
               source={{ uri: item.photoUrl }}
@@ -206,7 +208,7 @@ export default class Today extends Component {
 
   _onRefresh = () => {
     this.setState({ pageRefreshing: true });
-    this.getLatestPosts(this.state.token);
+    this.getLatestPosts(this.state.userId);
     //console.log("Idfromprops: ", this.state.propPostid);
     //const { commentsGot, data } = this.state;
     // axios
@@ -287,9 +289,10 @@ export default class Today extends Component {
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: 10,
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                marginBottom: 10
+                // paddingLeft: "5%",
+                // paddingRight: "5%",
+                marginBottom: 10,
+                width: "100%"
               }}
             >
               {this.state.loading2 && (

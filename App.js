@@ -24,6 +24,7 @@ import Camera from "./src/components/Camera";
 import Icon from "react-native-vector-icons/Ionicons";
 import IconFA from "react-native-vector-icons/FontAwesome";
 import LiveVideoDetail from "./src/components/LiveVideoDetail";
+import Comments from "./src/components/Comments";
 export default class App extends Component {
   render() {
     return <AppContainer />;
@@ -32,7 +33,9 @@ export default class App extends Component {
 const TodayNavigator = createStackNavigator(
   {
     Today: Discover,
-    NewsDetail: NewsDetail
+    SearchResult: SearchResult,
+    NewsDetail: NewsDetail,
+    Comments: Comments
   },
   {
     defaultNavigationOptions: {
@@ -54,7 +57,8 @@ const CategoryNavigator = createStackNavigator(
   {
     Categories: Cat,
     CategoriesView: CategoriesView,
-    NewsDetail: NewsDetail
+    NewsDetail: NewsDetail,
+    Comments: Comments
   },
   {
     defaultNavigationOptions: {
@@ -67,7 +71,8 @@ const SearchNavigator = createStackNavigator(
     Search: Search,
     SearchResult: SearchResult,
     CategoriesView: CategoriesView,
-    NewsDetail: NewsDetail
+    NewsDetail: NewsDetail,
+    Comments: Comments
   },
   {
     defaultNavigationOptions: {
@@ -111,7 +116,8 @@ const GoLiveNavigator = createStackNavigator({
   GoLive: Today,
   EditPostForm: EditPostForm,
   PostForm: PostForm,
-  NewsDetail: NewsDetail
+  NewsDetail: NewsDetail,
+  Comments: Comments
 });
 GoLiveNavigator.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -126,7 +132,10 @@ GoLiveNavigator.navigationOptions = ({ navigation }) => {
 const ProfileNavigator = createStackNavigator({
   Profile: Pages,
   //  CategoriesView : CategoriesView,
-  NewsDetail: NewsDetail
+  EditPostForm: EditPostForm,
+  PostForm: PostForm,
+  NewsDetail: NewsDetail,
+  Comments: Comments
 });
 ProfileNavigator.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -140,15 +149,15 @@ ProfileNavigator.navigationOptions = ({ navigation }) => {
 };
 const AppTabNavigator = createBottomTabNavigator(
   {
-    // Explore: {
-    //   screen: TodayNavigator
-    // },
+    Explore: {
+      screen: TodayNavigator
+    },
     LiveVideos: {
       screen: LiveVideosStack
     },
-    MyPosts: {
-      screen: GoLiveNavigator
-    },
+    // MyPosts: {
+    //   screen: GoLiveNavigator
+    // },
     Search: {
       screen: SearchNavigator
     },
@@ -162,10 +171,11 @@ const AppTabNavigator = createBottomTabNavigator(
     swipeEnabled: true,
     tabBarPosition: "bottom",
     tabBarOptions: {
-      activeTintColor: "#003366",
+      activeTintColor: "#f54b64",
       inactiveTintColor: "#d1cece",
       showLabel: true,
-      showIcon: true
+      showIcon: true,
+      style: { backgroundColor: "#242a38" }
     },
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
@@ -210,7 +220,7 @@ const AuthSwitchNavigator = createSwitchNavigator(
     Auth: AuthStack
   },
   {
-    initialRouteName: "App"
+    initialRouteName: "AuthLoadingScreen"
   }
 );
 

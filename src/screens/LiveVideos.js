@@ -73,34 +73,38 @@ export default class LiveVideos extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.todayText}> Live Videos </Text>
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              right: 30,
-              top: 20,
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-            onPress={() => this.props.navigation.navigate("Camera")}
-          >
-            <Icon name="md-videocam" size={25} />
-            <Text>Go Live</Text>
-          </TouchableOpacity>
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <FlatList
-              data={this.state.dataSource}
-              keyExtractor={item => item._id}
-              renderItem={this.renderItem}
-              showsVerticalScrollIndicator={false}
-              //ItemSeparatorComponent={this.renderSeparator}
-              numColumns={2}
-            />
-          </View>
-          {/* <Video
+      <ImageBackground
+        source={require("./../../thum/liveback.jpg")}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <ScrollView>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.todayText}> Live Videos </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                right: 30,
+                top: 20,
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+              onPress={() => this.props.navigation.navigate("Camera")}
+            >
+              <Icon name="md-videocam" size={25} />
+              <Text>Go Live</Text>
+            </TouchableOpacity>
+            <View style={{ alignItems: "center", justifyContent: "center" }}>
+              <FlatList
+                data={this.state.dataSource}
+                keyExtractor={item => item._id}
+                renderItem={this.renderItem}
+                showsVerticalScrollIndicator={false}
+                //ItemSeparatorComponent={this.renderSeparator}
+                numColumns={2}
+              />
+            </View>
+            {/* <Video
           source={Nike}
           ref={ref => {
             this.player = ref;
@@ -114,8 +118,9 @@ export default class LiveVideos extends Component {
           //fullscreen={true}
           paused={true}
         /> */}
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
+      </ImageBackground>
     );
   }
 }
