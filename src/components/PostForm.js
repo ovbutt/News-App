@@ -23,31 +23,15 @@ import { Header, Left, Right } from "native-base";
 import axios from "axios";
 import TagInput from "react-native-tag-input";
 
-const inputProps = {
-  //keyboardType: 'default',
-  placeholder: "Tags",
-  //placeholderTextColor: 'white',
-  //autoFocus: true,
-  style: {
-    fontSize: 18,
-    marginVertical: Platform.OS == "ios" ? 10 : -2
-    //color: 'black',
-    // underlineColorAndroid="grey",
-    //selectionColor="white",
-    //color: 'white'
-  }
-};
-
 const horizontalInputProps = {
-  //keyboardType: 'default',
   placeholder: "Tags",
-  // placeholderTextColor: 'white',
+  placeholderTextColor: "white",
+  //selectionColor="#fff",
   //autoFocus: true,
   style: {
     fontSize: 18,
-    marginVertical: Platform.OS == "ios" ? 10 : -2
-    //selectionColor="white",
-    //color: 'white'
+    marginVertical: Platform.OS == "ios" ? 10 : -2,
+    color: "white"
   }
 };
 
@@ -57,7 +41,7 @@ const horizontalScrollViewProps = {
 };
 
 const ACCESS_ID = "access_id";
-//http://198.245.53.50:5000/public/uploads/1554287721094-images.jpg
+
 export default class PostForm extends Component {
   constructor(props) {
     super(props);
@@ -65,7 +49,7 @@ export default class PostForm extends Component {
       avatarSource: null,
       //videoSource: null,
       title: "",
-      category: "",
+      category: "Business",
       tags: [],
       description: "",
       publish: false,
@@ -77,15 +61,8 @@ export default class PostForm extends Component {
       loadingSave: false,
       imageResponse: ""
     };
-    //this.getToken = this.getToken.bind(this);
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
-    //this.selectVideoTapped = this.selectVideoTapped.bind(this);
-    //this.getToken()
   }
-
-  // componentDidMount(){
-  //   this.getToken()
-  // }
 
   componentWillUnmount() {
     this.setState({
@@ -107,19 +84,6 @@ export default class PostForm extends Component {
   static navigationOptions = {
     header: null
   };
-
-  // async getToken() {
-  //   //const { fullName, email } = this.state;
-  //   try {
-  //     let id = await AsyncStorage.getItem(ACCESS_ID);
-  //     this.setState({ userId: id });
-  //     console.log("User Id is:", id, "id in state:", this.state.userId);
-  //     return id;
-  //     //this.removeToken();
-  //   } catch (error) {
-  //     console.log("Cannot get user id");
-  //   }
-  // }
 
   selectPhotoTapped() {
     const options = {
@@ -218,7 +182,7 @@ export default class PostForm extends Component {
         title: title,
         catagory: category,
         tags: tags,
-        description: description,
+        description: "<p>" + description + "</p>",
         publish: true,
         photoUrl: imageURL,
         addedByUser: userId
@@ -242,63 +206,6 @@ export default class PostForm extends Component {
       });
   }
 
-  onSaveButton() {
-    this.setState({ loadingSave: true });
-    //let id = this.getToken();
-    const {
-      title,
-      category,
-      tags,
-      description,
-      publish,
-      breaking,
-      photoUrl,
-      userId
-    } = this.state;
-    //this.setState({publish: true})
-    console.log(
-      "Data in State:",
-      "Title: ",
-      title,
-      "Category: ",
-      category,
-      "tags: ",
-      tags,
-      "description: ",
-      description,
-      "photoUrl: ",
-      photoUrl,
-      "User Id for post is",
-      userId
-    );
-    axios
-      .post("http://198.245.53.50:5000/api/posts/add", {
-        title: title,
-        catagory: category,
-        tags: tags,
-        description: description,
-        photoUrl: photoUrl,
-        userId: userId
-      })
-      .then(response => {
-        console.log("Post Response", response);
-        ToastAndroid.showWithGravity(
-          "Post added to saved",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
-        );
-        this.props.navigation.goBack();
-      })
-      .catch(error => {
-        ToastAndroid.showWithGravity(
-          "Error saving post",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
-        );
-        console.log("Post Error", error);
-      });
-  }
-
   onChangeText = text => {
     this.setState({ text });
 
@@ -313,38 +220,13 @@ export default class PostForm extends Component {
     }
   };
 
-  toggleSaveButton() {
-    if (this.state.loadingSave) {
-      return (
-        <ActivityIndicator
-          size="large"
-          color="#003366"
-          style={{ marginRight: 50 }}
-        />
-      );
-    } else {
-      return (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            this.onSaveButton();
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-            Save
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-  }
-
   togglePublishButton() {
     if (this.state.loadingPublish) {
       return (
         <ActivityIndicator
           size="large"
           color="#f54b64"
-          style={{ marginLeft: 50 }}
+          style={{ marginLeft: 30 }}
         />
       );
     } else {
@@ -352,7 +234,19 @@ export default class PostForm extends Component {
         <TouchableOpacity
           style={styles.button2}
           onPress={() => {
-            this.onPublishButtonImage();
+            if (!this.state.imageResponse) {
+              alert("Please add an Image");
+            } else if (!this.state.title) {
+              alert("Please enter title for the post");
+            } else if (!this.state.category) {
+              alert("Please select a category");
+            } else if (this.state.tags.length == 0) {
+              alert("Please enter tags");
+            } else if (!this.state.description) {
+              alert("Please enter description");
+            } else {
+              this.onPublishButtonImage();
+            }
           }}
         >
           <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
@@ -366,45 +260,6 @@ export default class PostForm extends Component {
   render() {
     return (
       <ScrollView style={{ backgroundColor: "#242a38" }}>
-        {/* <Header style={{ backgroundColor: "white" }}>
-          <Left>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Icon
-                  name="ios-arrow-back"
-                  size={30}
-                  style={{ color: "#000", marginLeft: 10, marginRight: 10 }}
-                />
-              </TouchableOpacity>
-
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  marginLeft: 30,
-                  marginTop: 2,
-                  width: "100%"
-                }}
-              >
-                Add Post
-              </Text>
-            </View>
-          </Left>
-          <Right> */}
-        {/* <TouchableOpacity
-            onPress={() => {
-              this.selectVideoTapped();
-            }}
-          >
-            <IconFA
-              name="tv"
-              size={30}
-              style={{ marginRight: 20, color: "#000" }}
-            />
-          </TouchableOpacity> */}
-        {/* </Right> */}
-        {/* </Header> */}
         <Icon
           name="ios-arrow-round-back"
           color="#fff"
@@ -494,27 +349,10 @@ export default class PostForm extends Component {
               onChangeText={this.onChangeText}
               tagColor="#f54b64"
               tagTextColor="white"
-              inputProps={inputProps}
+              //inputProps={inputProps}
               inputProps={horizontalInputProps}
               scrollViewProps={horizontalScrollViewProps}
             />
-            {/* <TextInput
-              fontSize={18}
-              onChangeText={category => this.setState({ category })}
-              value={this.state.category}
-              placeholder="Category"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            />
-
-            <TextInput
-              fontSize={18}
-              onChangeText={tags => this.setState({ tags })}
-              value={this.state.tags}
-              placeholder="Tags"
-              underlineColorAndroid="grey"
-              selectionColor="grey"
-            /> */}
 
             <TextInput
               placeholderTextColor="white"
@@ -547,36 +385,8 @@ export default class PostForm extends Component {
               marginBottom: 50
             }}
           >
-            {/* {this.toggleSaveButton()} */}
             {this.togglePublishButton()}
-            {/* <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                this.onSaveButton();
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Save
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button2}
-              onPress={() => {
-                this.onPublishButton();
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-                Publish
-              </Text>
-            </TouchableOpacity> */}
           </View>
-          {/* <Text style={styles.todayText}>
-        Go Live
-      </Text>
-      <Image source={ require('../../thum/thumb-6.jpg')} style={{height: 300 , width: 400}}
-      >
-      </Image> */}
-          {/* <Text>{this.state.tags}</Text> */}
         </View>
       </ScrollView>
     );

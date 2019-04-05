@@ -13,7 +13,6 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Header, Left, Right } from "native-base";
 
-
 class CategoriesView extends Component {
   constructor(props) {
     super(props);
@@ -29,19 +28,24 @@ class CategoriesView extends Component {
     //   <Icon name="ios-search" color={tintColor}  size={30} />
     // )
     //headerTitle : 'Categories'
-    header : null
+    header: null
   };
-  closeActivityIndicator = () => setTimeout(() => this.setState({
-    loading: false
-  }), 3000)
+  closeActivityIndicator = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          loading: false
+        }),
+      3000
+    );
   componentWillMount() {
-    this.closeActivityIndicator()
+    this.closeActivityIndicator();
     axios
       .get(
         "http://198.245.53.50:5000/api/post-by-catagory/" + this.state.catagory
       )
-      .then(response => this.setState({ dataSource: response.data }))
-      //.then(this.setState({loading : false}));
+      .then(response => this.setState({ dataSource: response.data }));
+    //.then(this.setState({loading : false}));
   }
 
   renderItem = ({ item }) => {
@@ -57,7 +61,9 @@ class CategoriesView extends Component {
           style={styles.imageThumbStyle}
         >
           <View style={styles.textViewStyle}>
-            <Text style={styles.titleTextStyle}>{item.title.substring(0,30)+"..."}</Text>
+            <Text style={styles.titleTextStyle}>
+              {item.title.substring(0, 30) + "..."}
+            </Text>
           </View>
         </ImageBackground>
       </TouchableOpacity>
@@ -74,9 +80,15 @@ class CategoriesView extends Component {
   // }
 
   renderList() {
-    this.setState()
+    this.setState();
     if (this.state.loading) {
-      return <ActivityIndicator size="large"animating={this.state.loading} />;
+      return (
+        <ActivityIndicator
+          size="large"
+          animating={this.state.loading}
+          color="white"
+        />
+      );
     } else {
       return (
         <FlatList
@@ -101,14 +113,14 @@ class CategoriesView extends Component {
   //       {this.state.refreshing && (
   //         <ActivityIndicator size="large" color="white" />
   //       )}
-        
+
   //     </View>
   //   );}
   //   else {return null}
   // }
 
   handleLoadMore = () => {
-    console.warn('HandleLoadMore')
+    console.warn("HandleLoadMore");
     // this.setState({refreshing: true})
     // this.closeRefreshingIndicator();
     // this.setState({ page: this.state.page + 1 }, () => {
@@ -117,62 +129,43 @@ class CategoriesView extends Component {
   };
 
   render() {
-    
     return (
-      <ScrollView>
-      <Header style={{ backgroundColor: "white" }}>
-            <Left>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.goBack()}
-                >
-                  <Icon
-                    name="ios-arrow-back"
-                    size={30}
-                    style={{ color: "#000", marginLeft: 10, marginRight: 10 }}
-                  />
-                </TouchableOpacity>
-
-                <Text
-                  style={{
-                    color: "black",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    marginLeft: 30,
-                    marginTop: 2,
-                    width: '80%'
-                  }}
-                >
-                  {this.state.catagory}
-                </Text>
-              </View>
-            </Left>
-            <Right/>
-          </Header>
-      <View style={styles.container}>
-        {/* <Text
-          style={{
-            fontSize: 26,
-            margin: 10,
-            color: "black",
-            fontWeight: "700"
-          }}
-        >
-          {this.state.catagory}
-        </Text> */}
-        {this.state.loading && (<ActivityIndicator size='large'/>)}
-        {/* {this.renderList()} */}
-        <FlatList
-          data={this.state.dataSource}
-          renderItem={this.renderItem}
-          keyExtractor={item => item._id}
-          numColumns={2}
-          //ListFooterComponent={this.renderFooter}
-          // onEndReached={this.handleLoadMore}
-          // onEndReachedThreshold={1}
-        />
-        
-      </View>
+      <ScrollView style={{ backgroundColor: "#242a38" }}>
+        <View style={{ marginTop: 20, marginLeft: 20, flexDirection: "row" }}>
+          <Icon
+            name="ios-arrow-round-back"
+            color="#fff"
+            size={40}
+            onPress={() => this.props.navigation.goBack()}
+          />
+          <Text
+            style={{
+              fontSize: 26,
+              marginBottom: 20,
+              color: "#fff",
+              fontWeight: "700",
+              alignSelf: "center",
+              marginLeft: 100
+            }}
+          >
+            {this.state.catagory}
+          </Text>
+        </View>
+        <View style={styles.container}>
+          {this.state.loading && (
+            <ActivityIndicator size="large" color="white" />
+          )}
+          {/* {this.renderList()} */}
+          <FlatList
+            data={this.state.dataSource}
+            renderItem={this.renderItem}
+            keyExtractor={item => item._id}
+            numColumns={2}
+            //ListFooterComponent={this.renderFooter}
+            // onEndReached={this.handleLoadMore}
+            // onEndReachedThreshold={1}
+          />
+        </View>
       </ScrollView>
     );
   }
@@ -219,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     padding: 8,
-    fontSize: 18,
+    fontSize: 18
   },
   textViewStyle: {
     justifyContent: "center",
@@ -231,5 +224,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#242a38"
   }
 });

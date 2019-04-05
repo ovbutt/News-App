@@ -263,7 +263,8 @@ export default class Pages extends Component {
               color: "#f54b64",
               marginLeft: 20,
               marginTop: 10,
-              fontSize: 16
+              fontSize: 16,
+              width: "90%"
             }}
           >
             {item.tags}

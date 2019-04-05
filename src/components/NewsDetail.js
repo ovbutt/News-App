@@ -314,7 +314,7 @@ export default class NewsDetail extends Component {
                     fontSize: 20,
                     fontWeight: "bold",
                     color: "white",
-                    margin: 10,
+                    //margin: 10,
                     width: "90%",
                     position: "absolute",
                     bottom: 20,
@@ -342,7 +342,8 @@ export default class NewsDetail extends Component {
               padding: 15,
               alignItems: "center",
               justifyContent: "center",
-              flex: 1
+              flex: 1,
+              marginBottom: 50
             }}
           >
             <HTMLView value={data.description} stylesheet={styles} />

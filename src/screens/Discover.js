@@ -16,7 +16,7 @@ import {
 } from "react-native";
 
 //YellowBox.ignoreWarnings(["Warning: ReactNative.createElement"]);
-
+import { Fonts } from "./../utils/Font";
 import OfflineNotice from "../components/OfflineNotice";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -130,10 +130,11 @@ export default class Discover extends Component {
               color: "#f54b64",
               marginLeft: 20,
               marginTop: 10,
-              fontSize: 16
+              fontSize: 16,
+              width: "90%"
             }}
           >
-            {item.tags}
+            {item.tags.substring(0, 30) + "..."}
           </Text>
           <Text
             style={{
@@ -593,7 +594,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     marginBottom: 20,
-    fontFamily: "Baskerville",
+    fontFamily: Fonts.Indie,
     fontWeight: "bold",
     color: "white"
   },

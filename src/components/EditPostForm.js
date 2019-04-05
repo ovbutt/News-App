@@ -9,27 +9,22 @@ import {
   ScrollView,
   PixelRatio,
   Picker,
-  PickerIOS,
   ToastAndroid,
   Platform,
   ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import IconFA from "react-native-vector-icons/FontAwesome";
 import ImagePicker from "react-native-image-picker";
-import { Header, Left, Right } from "native-base";
 import axios from "axios";
 import TagInput from "react-native-tag-input";
 
-const inputProps = {
-  placeholder: "Tags"
-};
-
 const horizontalInputProps = {
   placeholder: "Tags",
+  placeholderTextColor: "white",
   style: {
     fontSize: 18,
-    marginVertical: Platform.OS == "ios" ? 10 : -2
+    marginVertical: Platform.OS == "ios" ? 10 : -2,
+    color: "white"
   }
 };
 
@@ -48,7 +43,7 @@ export default class PostForm extends Component {
       //data: ,
       title: data.title,
       category: data.catagory,
-      tags: [data.tags],
+      tags: data.tags.split(","),
       description: data.description,
       publish: false,
       breaking: false,
@@ -253,57 +248,57 @@ export default class PostForm extends Component {
       });
   }
 
-  onSaveButton() {
-    this.setState({ loadingSave: true });
-    const {
-      title,
-      category,
-      tags,
-      description,
-      publish,
-      breaking,
-      photoUrl
-    } = this.state;
-    //this.setState({publish: true})
-    console.log(
-      "Data in State:",
-      "Title: ",
-      title,
-      "Category: ",
-      category,
-      "tags: ",
-      tags,
-      "description: ",
-      description,
-      "photoUrl: ",
-      photoUrl
-    );
-    axios
-      .post("http://198.245.53.50:5000/api/posts/edit/" + this.state.id, {
-        title: title,
-        catagory: category,
-        tags: tags,
-        description: description,
-        photoUrl: photoUrl
-      })
-      .then(response => {
-        console.log("Post Edit Response", response);
-        ToastAndroid.showWithGravity(
-          "Post added to saved",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
-        );
-        this.props.navigation.goBack();
-      })
-      .catch(error => {
-        ToastAndroid.showWithGravity(
-          "Error saving post",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
-        );
-        console.log("Post Edit Error", error);
-      });
-  }
+  // onSaveButton() {
+  //   this.setState({ loadingSave: true });
+  //   const {
+  //     title,
+  //     category,
+  //     tags,
+  //     description,
+  //     publish,
+  //     breaking,
+  //     photoUrl
+  //   } = this.state;
+  //   //this.setState({publish: true})
+  //   console.log(
+  //     "Data in State:",
+  //     "Title: ",
+  //     title,
+  //     "Category: ",
+  //     category,
+  //     "tags: ",
+  //     tags,
+  //     "description: ",
+  //     description,
+  //     "photoUrl: ",
+  //     photoUrl
+  //   );
+  //   axios
+  //     .post("http://198.245.53.50:5000/api/posts/edit/" + this.state.id, {
+  //       title: title,
+  //       catagory: category,
+  //       tags: tags,
+  //       description: description,
+  //       photoUrl: photoUrl
+  //     })
+  //     .then(response => {
+  //       console.log("Post Edit Response", response);
+  //       ToastAndroid.showWithGravity(
+  //         "Post added to saved",
+  //         ToastAndroid.SHORT,
+  //         ToastAndroid.CENTER
+  //       );
+  //       this.props.navigation.goBack();
+  //     })
+  //     .catch(error => {
+  //       ToastAndroid.showWithGravity(
+  //         "Error saving post",
+  //         ToastAndroid.SHORT,
+  //         ToastAndroid.CENTER
+  //       );
+  //       console.log("Post Edit Error", error);
+  //     });
+  // }
 
   onChangeText = text => {
     this.setState({ text });
@@ -319,30 +314,30 @@ export default class PostForm extends Component {
     }
   };
 
-  toggleSaveButton() {
-    if (this.state.loadingSave) {
-      return (
-        <ActivityIndicator
-          size="large"
-          color="#003366"
-          style={{ marginRight: 50 }}
-        />
-      );
-    } else {
-      return (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            this.onSaveButton();
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
-            Save
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-  }
+  // toggleSaveButton() {
+  //   if (this.state.loadingSave) {
+  //     return (
+  //       <ActivityIndicator
+  //         size="large"
+  //         color="#003366"
+  //         style={{ marginRight: 30 }}
+  //       />
+  //     );
+  //   } else {
+  //     return (
+  //       <TouchableOpacity
+  //         style={styles.button}
+  //         onPress={() => {
+  //           this.onSaveButton();
+  //         }}
+  //       >
+  //         <Text style={{ color: "white", fontSize: 16, fontWeight: "400" }}>
+  //           Save
+  //         </Text>
+  //       </TouchableOpacity>
+  //     );
+  //   }
+  // }
 
   togglePublishButton() {
     if (this.state.loadingPublish) {
@@ -350,7 +345,7 @@ export default class PostForm extends Component {
         <ActivityIndicator
           size="large"
           color="#f54b64"
-          style={{ marginLeft: 50 }}
+          style={{ marginLeft: 30 }}
         />
       );
     } else {
@@ -487,7 +482,7 @@ export default class PostForm extends Component {
               onChangeText={this.onChangeText}
               tagColor="#f54b64"
               tagTextColor="white"
-              inputProps={inputProps}
+              //inputProps={inputProps}
               inputProps={horizontalInputProps}
               scrollViewProps={horizontalScrollViewProps}
             />

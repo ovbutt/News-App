@@ -142,7 +142,7 @@ export default class Comments extends Component {
         style={{ backgroundColor: "#2a2d3b" }}
         disabled={this.state.id == item.commentedBy[0]._id ? false : true}
       >
-        <View style={{ flexDirection: "row", width: "90%" }}>
+        <View style={{ flexDirection: "row", width: "85%" }}>
           <Icon
             name="ios-contact"
             size={45}
@@ -276,7 +276,8 @@ export default class Comments extends Component {
               marginTop: 10,
               paddingLeft: "5%",
               paddingRight: "5%",
-              marginBottom: 80
+              marginBottom: 80,
+              width: "100%"
             }}
           >
             <FlatList
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     fontSize: 16,
     color: "#fff",
-    width: "60%",
+    //width: "80%",
     marginTop: 5,
     paddingBottom: 10
   }

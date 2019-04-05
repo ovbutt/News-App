@@ -2,6 +2,11 @@
   "name": "News",
   "version": "0.0.1",
   "private": true,
+  "rnpm": {
+    "assets": [
+      "./assets/fonts"
+    ]
+  },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
@@ -24,7 +29,8 @@
     "react-native-tag-input": "0.0.21",
     "react-native-vector-icons": "^6.1.0",
     "react-native-video": "^4.4.0",
-    "react-navigation": "^3.2.3"
+    "react-navigation": "^3.2.3",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
