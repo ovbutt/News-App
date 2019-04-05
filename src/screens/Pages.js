@@ -27,6 +27,7 @@ import {
   MenuProvider,
   renderers
 } from "react-native-popup-menu";
+import { Fonts } from "./../utils/Font";
 
 const ACCESS_TOKEN = "access_token";
 const ACCESS_EMAIL = "access_email";
@@ -415,7 +416,7 @@ export default class Pages extends Component {
           style={{
             color: "white",
             fontSize: 25,
-            fontWeight: "bold",
+            fontFamily: Fonts.AvenirBlack,
             marginLeft: 20,
             marginTop: 20
           }}

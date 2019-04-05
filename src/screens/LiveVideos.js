@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Video from "react-native-video";
 import Nike from "../../thum/Nike.mp4";
-
+import { Fonts } from "./../utils/Font";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 
@@ -131,8 +131,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 15,
     marginBottom: 10,
-    fontFamily: "Baskerville",
-    fontWeight: "bold",
+    fontFamily: Fonts.AvenirBlack,
     color: "black"
   },
   backgroundVideo: {

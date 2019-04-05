@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import { Fonts } from "./../utils/Font";
 
 export default class Search extends Component {
   constructor() {
@@ -86,7 +87,7 @@ export default class Search extends Component {
           >
             <Text
               style={{
-                fontWeight: "bold",
+                fontFamily: Fonts.AvenirBlack,
                 fontSize: 24,
                 color: "white",
                 marginLeft: 20,

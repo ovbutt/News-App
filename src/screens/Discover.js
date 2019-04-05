@@ -511,7 +511,8 @@ export default class Discover extends Component {
               marginTop: 30,
               marginLeft: 20,
               fontSize: 16,
-              color: "white"
+              color: "white",
+              fontFamily: Fonts.AvenirBook
             }}
           >
             {date}
@@ -594,8 +595,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     marginBottom: 20,
-    fontFamily: Fonts.Indie,
-    fontWeight: "bold",
+    fontFamily: Fonts.AvenirBlack,
     color: "white"
   },
   imageThumbStyle: {
