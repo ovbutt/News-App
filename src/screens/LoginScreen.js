@@ -9,7 +9,8 @@ import {
   AsyncStorage,
   ImageBackground,
   ScrollView,
-  NetInfo
+  NetInfo,
+  BackHandler
 } from "react-native";
 import OfflineNotice from "../components/OfflineNotice";
 import axios from "axios";
@@ -35,10 +36,20 @@ export default class LoginScreen extends Component {
       userId: "",
       isConnected: true
     };
+
+    BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
   }
+
+  onBackPress = () => {
+    this.props.navigation.goBack();
+  };
 
   componentWillMount() {
     this.checkConnectionStatus();
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
   }
 
   handleConnectivityChange = isConnected => {
@@ -120,7 +131,7 @@ export default class LoginScreen extends Component {
         //.then(this.storeToken.bind(this))
         .then(this.onLoginSuccess.bind(this))
         .then(() => {
-          this.props.navigation.navigate("App");
+          this.props.navigation.goBack();
         })
         .catch(this.onloginFailure.bind(this));
     }

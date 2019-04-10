@@ -19,8 +19,10 @@ import { Header, Left, Right } from "native-base";
 import axios from "axios";
 import Swipeout from "react-native-swipeout";
 import LinearGradient from "react-native-linear-gradient";
+import CheckUser from "./../functions/CheckUser";
 
 const ACCESS_ID = "access_id";
+const ACCESS_TOKEN = "access_token";
 
 export default class NewsDetail extends Component {
   constructor(props) {
@@ -30,7 +32,8 @@ export default class NewsDetail extends Component {
       data: [],
       id: "",
       commentPost: "",
-      pageRefreshing: false
+      pageRefreshing: false,
+      token: ""
       //commentsGot: this.props.navigation.state.params.commentsGot
     };
     this.getToken();
@@ -59,11 +62,54 @@ export default class NewsDetail extends Component {
     header: null
   };
 
+  // async getToken() {
+  //   try {
+  //     let id = await AsyncStorage.getItem(ACCESS_ID);
+  //     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+  //     this.setState({ id: id, token: token });
+  //     console.log("Id is", id);
+  //     this.checkToken(token);
+  //   } catch (error) {
+  //     console.log("Cannot get token");
+  //   }
+  // }
+
+  // checkToken(token) {
+  //   const { authenticated } = this.state;
+  //   axios
+  //     .post("http://198.245.53.50:5000/api/users/check", {
+  //       token: token
+  //     })
+  //     .then(response => {
+  //       console.log("Authenticated:", response.data.authenticated);
+  //       //this.setState({ authenticated: response.data.authenticated });
+  //       let authenticated = response.data.authenticated;
+  //       this.renderScreen(authenticated);
+  //     });
+  //   //   .then(() => {
+  //   //     console.log("Authenticated State:", authenticated);
+  //   //     this.props.navigation.navigate(authenticated ? "App" : "Auth");
+  //   //   });
+  // }
+
+  // renderScreen(authenticated) {
+  //   {
+  //     this.props.navigation.navigate(authenticated ? "" : "Login");
+  //   }
+  // }
+
   async getToken() {
     try {
-      let id = await AsyncStorage.getItem(ACCESS_ID);
-      this.setState({ id: id });
-      console.log("Id is", id);
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      axios
+        .post("http://198.245.53.50:5000/api/users/check", {
+          token: token
+        })
+        .then(response => {
+          console.log("Authenticated:", response.data.authenticated);
+          let authenticated = response.data.authenticated;
+          this.props.navigation.navigate(authenticated ? "" : "Login");
+        });
     } catch (error) {
       console.log("Cannot get token");
     }

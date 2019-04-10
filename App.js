@@ -35,6 +35,8 @@ const TodayNavigator = createStackNavigator(
     Today: Discover,
     SearchResult: SearchResult,
     NewsDetail: NewsDetail,
+    Login: LoginScreen,
+    Signup: SignupScreen,
     Comments: Comments
   },
   {
@@ -94,6 +96,8 @@ const LiveVideosStack = createStackNavigator(
   {
     LiveVideos: LiveVideos,
     Camera: Camera,
+    Login: LoginScreen,
+    Signup: SignupScreen,
     LiveVideoDetail: LiveVideoDetail
   },
   {
@@ -135,7 +139,9 @@ const ProfileNavigator = createStackNavigator({
   EditPostForm: EditPostForm,
   PostForm: PostForm,
   NewsDetail: NewsDetail,
-  Comments: Comments
+  Comments: Comments,
+  Login: LoginScreen,
+  Signup: SignupScreen
 });
 ProfileNavigator.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -195,7 +201,8 @@ const AppTabNavigator = createBottomTabNavigator(
           return <IconFA name="tv" size={25} color={tintColor} />;
         }
         return <Icon name={iconName} size={25} color={tintColor} />;
-      }
+      },
+      header: null
     })
   }
 );
@@ -207,17 +214,25 @@ const AppStack = createStackNavigator(
     }
   }
 );
-const AuthStack = createStackNavigator({
-  Login: LoginScreen,
-  Signup: SignupScreen,
-  Profile: Pages
-});
+const AuthStack = createStackNavigator(
+  {
+    AppTabNavigator: AppTabNavigator,
+    Login: LoginScreen,
+    Signup: SignupScreen,
+    Profile: Pages
+  },
+  {
+    defaultNavigationOptions: {
+      header: null
+    }
+  }
+);
 
 const AuthSwitchNavigator = createSwitchNavigator(
   {
     AuthLoadingScreen: AuthLoadingScreen,
-    App: AppStack,
-    Auth: AuthStack
+    App: AppTabNavigator
+    //Auth: AuthStack
   },
   {
     initialRouteName: "AuthLoadingScreen"

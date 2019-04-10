@@ -168,7 +168,7 @@ export default class SignupScreen extends Component {
           this.getTokenFromLoginRequest();
           this.onSignupSuccess.bind(this);
           {
-            this.props.navigation.navigate("App");
+            this.props.navigation.popToTop();
           }
         })
         // .then()

@@ -48,7 +48,7 @@ export default class Pages extends Component {
       modalVisible: false,
       opened: false
     };
-    //this.getToken();
+    this.getToken2();
   }
   static navigationOptions = {
     header: null
@@ -69,6 +69,22 @@ export default class Pages extends Component {
       });
       console.log("Token is", token);
       this.getLatestPosts(id);
+    } catch (error) {
+      console.log("Cannot get token");
+    }
+  }
+  async getToken2() {
+    try {
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      axios
+        .post("http://198.245.53.50:5000/api/users/check", {
+          token: token
+        })
+        .then(response => {
+          console.log("Authenticated:", response.data.authenticated);
+          let authenticated = response.data.authenticated;
+          this.props.navigation.navigate(authenticated ? "" : "Login");
+        });
     } catch (error) {
       console.log("Cannot get token");
     }

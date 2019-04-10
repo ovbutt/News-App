@@ -14,7 +14,7 @@ export default class AuthLoadingScreen extends Component {
   constructor() {
     super();
     this.state = { token: "", authenticated: true };
-    this.getToken();
+    // this.getToken();
   }
   async getToken() {
     try {
@@ -28,6 +28,15 @@ export default class AuthLoadingScreen extends Component {
     }
   }
 
+  componentWillMount() {
+    {
+      this.closeSplashScreen();
+    }
+  }
+
+  closeSplashScreen = () =>
+    setTimeout(() => this.props.navigation.navigate("App"), 1000);
+
   checkToken(token) {
     const { authenticated } = this.state;
     axios
@@ -37,17 +46,19 @@ export default class AuthLoadingScreen extends Component {
       .then(response => {
         console.log("Authenticated:", response.data.authenticated);
         //this.setState({ authenticated: response.data.authenticated });
-         let authenticated = response.data.authenticated
-         this.renderScreen(authenticated)
-      })
+        let authenticated = response.data.authenticated;
+        this.renderScreen(authenticated);
+      });
     //   .then(() => {
     //     console.log("Authenticated State:", authenticated);
     //     this.props.navigation.navigate(authenticated ? "App" : "Auth");
     //   });
   }
 
-  renderScreen(authenticated){
-    {this.props.navigation.navigate(authenticated ? "App" : "Auth")}
+  renderScreen(authenticated) {
+    {
+      this.props.navigation.navigate(authenticated ? "App" : "Auth");
+    }
   }
 
   render() {
